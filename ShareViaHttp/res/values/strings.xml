@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, AaaHttpServerActivity!</string>
+    
+    
+    <string name="app_name">Share via Http</string>
+
+
+    <string name="header_msg">Your phone is now sharing the chosen file. In order to open it on any computer, just type</string>
+    <string name="standar_url">http://127.0.0.1/</string>    
+    <string name="header_msg2">on any browser !</string>
+
+
+	<string name="technical_info">Technical restrictions: On 3G, the file transfer will be slow but everybody will have access to it. On WiFi, transfers will be fast but only people on the same network (LAN) will be able to access your files. </string>
+    <string name="botton_msg">Also, if you install the <a href="http://market.android.com/details?id=com.google.zxing.client.android">Barcode Scanner</a>, this URL can be sent as a barcode as well.</string>
+        
+    <string name="button_rate">Rate this App</string>
+    <string name="stop_server">Stop Server</string>
+</resources>
