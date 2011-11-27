@@ -91,7 +91,7 @@ public class MyHttpServer extends Thread {
 		return "http://" + getLocalIpAddress() + ":" + port + "/";
 	}
 
-	public void stopServer() {
+	public synchronized void stopServer() {
 		s("Closing server...\n\n");
 		webserverLoop = false;
 		if (serversocket != null) {
