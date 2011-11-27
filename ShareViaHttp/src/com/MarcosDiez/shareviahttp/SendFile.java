@@ -74,6 +74,7 @@ public class SendFile extends Activity {
 		// Log.d("aa", "myUri.getEncodedPath():" + myUri.getEncodedPath());
 		// Log.d("myUri.getPath():" + dataIntent.getPath() );
 
+		
 		TextView t2 = (TextView) findViewById(R.id.uriPath);
 		t2.setText("File: " + Uri.decode(myUri.toString()));
 
@@ -84,13 +85,16 @@ public class SendFile extends Activity {
 
 		generateBarCodeIfPossible(theHttpServer.getServerUrl());
 
-		((TextView) findViewById(R.id.link_msg)).setText(theHttpServer
-				.getServerUrl());
-
+		formatHyperlinks();
 		formatBarcodeLink();
 		makeButtonsWork();
 	}
 
+	void formatHyperlinks(){
+		((TextView) findViewById(R.id.link_msg)).setText(theHttpServer
+				.getServerUrl());	
+	}
+	
 	void makeButtonsWork() {
 		Button b = (Button) findViewById(R.id.button_rate);
 		b.setOnClickListener(new OnClickListener() {

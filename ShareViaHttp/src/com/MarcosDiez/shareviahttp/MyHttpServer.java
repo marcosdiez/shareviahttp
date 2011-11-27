@@ -60,7 +60,7 @@ import android.util.Log;
 // it's really just a macho coding thing.
 public class MyHttpServer extends Thread {
 
-	// by desing, we can only serve one file at a time.
+	// by design, we only serve one file at a time.
 
 	public static void SetFile(Uri fileUri) {
 		MyHttpServer.fileUri = fileUri;
@@ -70,10 +70,7 @@ public class MyHttpServer extends Thread {
 		MyHttpServer.fileUri = Uri.parse(path);
 	}
 
-	// the constructor method
-	// the parameters it takes is what port to bind to, the default tcp port
-	// for a httpserver is port 80. the other parameter is a reference to
-	// the gui, this is to pass messages to our nice interface
+	// default port is 80
 	public MyHttpServer(int listen_port) {
 		port = listen_port;
 		if (serversocket == null) {
@@ -81,7 +78,7 @@ public class MyHttpServer extends Thread {
 		}
 	}
 
-	private static int port; // port we are going to listen to
+	private static int port;
 	private static Uri fileUri;
 
 	private static ServerSocket serversocket = null;
@@ -158,7 +155,8 @@ public class MyHttpServer extends Thread {
 	}
 
 	/*
-	 * // TODO.... // ./iptables_armv5 -t nat -A PREROUTING -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 9999 // so we could "bind" port 80 on a
+	 * // TODO.... // ./iptables_armv5 -t nat -A PREROUTING -p tcp -m tcp
+	 * --dport 80 -j REDIRECT --to-ports 9999 // so we could "bind" port 80 on a
 	 * rooted android device...
 	 * 
 	 * public boolean rootBind() { boolean retval = false; Process suProcess;
@@ -201,23 +199,16 @@ public class MyHttpServer extends Thread {
 		// response
 		while (webserverLoop) {
 			s("Ready, Waiting for requests...\n");
-
-			// this call waits/blocks until someone connects to the port we
-			// are listening to
-
 			try {
 				Socket connectionsocket = serversocket.accept();
 				new HttpServerConnection(fileUri, connectionsocket);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
-		} // go back in loop, wait for next request
+		}
 	}
 
 	private void s(String s2) { // an alias to avoid typing so much!
 		Log.d(Util.myLogName, s2);
 	}
-
-} // class phhew caffeine yes please!
+}
