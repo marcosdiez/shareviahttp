@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Mandar por Http</string>
+    <string name="app_name">Mandar por HTTP</string>
 
     <string name="header_msg">Seu despositivo está compartilhando o arquivo escolhido. Para abri-lo em em qualquer lugar, apenas digite</string>
     <string name="standar_url">http://127.0.0.1/</string>    
@@ -12,4 +12,6 @@
         
     <string name="button_rate">Dar uma nota para este App</string>
     <string name="stop_server">Desligar Compartilhamento</string>
+    <string name="now_sharing_anymore">O arquivo não está mais sendo compartilhado.</string>
+        
 </resources>

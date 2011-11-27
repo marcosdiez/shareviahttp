@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="hello">Hello World, AaaHttpServerActivity!</string>
-    <string name="app_name">Share via Http</string>
+    <string name="app_name">Share via HTTP</string>
 
     <string name="header_msg">Your device is now sharing the chosen file. In order to open it anywhere, just type</string>
     <string name="standar_url">http://127.0.0.1/</string>    
@@ -13,4 +13,5 @@
         
     <string name="button_rate">Rate this App</string>
     <string name="stop_server">Stop Server</string>
+    <string name="now_sharing_anymore">The requested file is not being shared anymore.</string>
 </resources>

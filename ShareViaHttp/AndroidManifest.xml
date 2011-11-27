@@ -25,7 +25,7 @@
 		</activity>
 		 -->
 
-		<activity android:label="Share via HTTP" android:name=".SendFile">
+		<activity android:label="@string/app_name" android:name=".SendFile">
 			<intent-filter>
 				<action android:name="android.intent.action.SEND">
 				</action>

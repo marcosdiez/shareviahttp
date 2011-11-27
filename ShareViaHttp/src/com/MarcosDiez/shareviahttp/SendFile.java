@@ -119,7 +119,7 @@ public class SendFile extends Activity {
 				if (p != null) {
 					p.stopServer();
 				}
-				Toast.makeText(a, "Server stopped", Toast.LENGTH_SHORT).show();
+				Toast.makeText(a, R.string.now_sharing_anymore, Toast.LENGTH_SHORT).show();
 			}
 		});
 
