@@ -38,7 +38,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @version 1.0
  */
 
-
 package com.MarcosDiez.shareviahttp;
 
 import java.io.BufferedReader;
@@ -52,22 +51,17 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URLDecoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import android.content.ContentResolver;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
 
-// file: server.java
-// the real (http) serverclass
-// it extends thread so the server is run in a different
-// thread than the gui, that is to make it responsive.
-// it's really just a macho coding thing.
 public class HttpServerConnection extends Thread {
 
-	// the constructor method
-	// the parameters it takes is what port to bind to, the default tcp port
-	// for a httpserver is port 80. the other parameter is a reference to
-	// the gui, this is to pass messages to our nice interface
 	public HttpServerConnection(Uri fileUri, Socket connectionsocket) {
 		this.fileUri = fileUri;
 		this.connectionsocket = connectionsocket;
@@ -78,18 +72,14 @@ public class HttpServerConnection extends Thread {
 	private Uri fileUri;
 	private String ipAddress = "";
 
-	// this is a overridden method from the Thread class we extended from
 	public void run() {
-		// we are now inside our own thread separated from the gui.
-		InetAddress client = connectionsocket.getInetAddress();
-		ipAddress = client.getHostAddress() + "/" + client.getHostName();
+		ipAddress = getClientIpAddress();
 
 		InputStream theInputStream;
 		try {
 			theInputStream = connectionsocket.getInputStream();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			s("Error getting inputString from connection socket.");
+			s("Error getting the InputString from connection socket.");
 			e1.printStackTrace();
 			return;
 		}
@@ -98,7 +88,7 @@ public class HttpServerConnection extends Thread {
 		try {
 			theOuputStream = connectionsocket.getOutputStream();
 		} catch (IOException e1) {
-			s("Error getting theOuputStream from connection socket.");
+			s("Error getting the OuputStream from connection socket.");
 			e1.printStackTrace();
 			return;
 		}
@@ -108,74 +98,50 @@ public class HttpServerConnection extends Thread {
 
 		DataOutputStream output = new DataOutputStream(theOuputStream);
 		http_handler(input, output);
-
 		s("Closing connection.");
+	}
+
+	private String getClientIpAddress() {
+		InetAddress client = connectionsocket.getInetAddress();
+		return client.getHostAddress() + "/" + client.getHostName();
 	}
 
 	// our implementation of the hypertext transfer protocol
 	// its very basic and stripped down
 	private void http_handler(BufferedReader input, DataOutputStream output) {
-		int method = 0; // 1 get, 0 not supported
-		String path = new String(); // the various things, what http v, what
-									// path,
+		String header;
 		try {
-			// This is the two types of request we can handle
-			// GET /index.html HTTP/1.0
-			// HEAD /index.html HTTP/1.0
-			String tmp = input.readLine(); // read from the stream
-			String tmp2 = new String(tmp);
-			tmp.toUpperCase(); // convert it to uppercase
-			if (tmp.startsWith("GET")) { // compare it is it GET
-				method = 1;
-			} // if we set it to method 1
-				// if (tmp.startsWith("HEAD")) { // same here is it HEAD
-				// method = 2;
-				// } // set method to 2
+			header = input.readLine();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			return;
+		}
+		String upperCaseHeader = header.toUpperCase();
+		Boolean sendOnlyHeader = false;
 
-			if (method == 0) { // not supported
-				try {
-					output.writeBytes(construct_http_header(501, null));
-					output.close();
-					return;
-				} catch (Exception e3) { // if some error happened catch it
-					s("_error:" + e3.getMessage());
-				} // and display error
+		if (upperCaseHeader.startsWith("HEAD")) {
+			sendOnlyHeader = true;
+		} else {
+			if (!upperCaseHeader.startsWith("GET")) {
+				dealWithUnsuporthedMethod(output);
+				return;
 			}
-			// }
+		}
 
-			// tmp contains "GET /index.html HTTP/1.0 ......."
-			// find first space
-			// find next space
-			// copy whats between minus slash, then you get "index.html"
-			// it's a bit of dirty code, but bear with me...
-			int start = 0;
-			int end = 0;
-			for (int a = 0; a < tmp2.length(); a++) {
-				if (tmp2.charAt(a) == ' ' && start != 0) {
-					end = a;
-					break;
-				}
-				if (tmp2.charAt(a) == ' ' && start == 0) {
-					start = a;
-				}
-			}
-			path = tmp2.substring(start + 1, end); // fill in the path
-		} catch (Exception e) {
-			s("errorr" + e.getMessage());
-		} // catch any exception
+		String path = getRequestedFile(header);
 
-		// path do now have the filename to what to the file it wants to open
-
-		if (path == null) {
+		if (path == null || path == "") {
 			s("path is null!!!");
+			return;
 		}
 		if (fileUri == null) {
 			s("fileUri is null");
+			return;
 		}
 
 		s("Client requested: [" + path + "][" + fileUri.toString() + "]");
 
-		if (path.equals("/favicon.ico")) {
+		if (path.equals("/favicon.ico")) { // we have now favicon
 			try {
 				// if you could not open the file send a 404
 				output.writeBytes(construct_http_header(404, null));
@@ -190,7 +156,8 @@ public class HttpServerConnection extends Thread {
 		String mime = cr.getType(fileUri);
 
 		if (path.equals("/")) {
-			String thePath = fixPath(fileUri.getEncodedPath(), mime);
+			String thePath = addExtensionToUriIfNecessary(
+					fileUri.getEncodedPath(), mime);
 
 			String redirectOutput = construct_http_header(302, null, thePath);
 			try {
@@ -206,13 +173,6 @@ public class HttpServerConnection extends Thread {
 		InputStream requestedfile = null;
 
 		try {
-			// NOTE that there are several security consideration when passing
-			// the untrusted string "path" to FileInputStream.
-			// You can access all files the current user has read access to!!!
-			// current user is the user running the javaprogram.
-			// you can do this by passing "../" in the url or specify absoulute
-			// path
-			// or change drive (win)
 
 			// try to open the file,
 			requestedfile = cr.openInputStream(fileUri);
@@ -233,31 +193,17 @@ public class HttpServerConnection extends Thread {
 
 		// happy day scenario
 
-		String outputString = construct_http_header(200, mime);
+		String outputString = construct_http_header(200, getMimeFromUri( fileUri , mime ) );
 
 		try {
 			output.writeBytes(outputString);
 
 			// if it was a HEAD request, we don't print any BODY
-			if (method == 1) { // 1 is GET 2 is head and skips the body
-				byte[] b = new byte[4096];
-
-				for (int n; (n = requestedfile.read(b)) != -1;) {
-					output.write(b, 0, n);
-
-					// out.append(new String(b, 0, n));
+			if (!sendOnlyHeader) {
+				byte[] buffer = new byte[4096];
+				for (int n; (n = requestedfile.read(buffer)) != -1;) {
+					output.write(buffer, 0, n);
 				}
-				// return out.toString();
-
-				/*
-				 * // read the file from filestream, and print out through the
-				 * // client-outputstream on a byte per byte base. int b =
-				 * requestedfile.read(); if (b == -1) { break; // end of file }
-				 * output.write(b);
-				 */
-
-				// clean up the files, close open handles
-
 			}
 
 			output.close();
@@ -266,15 +212,46 @@ public class HttpServerConnection extends Thread {
 		}
 	}
 
-	// this function adds an extention to files without extensions, according to
+	private String getRequestedFile(String inputHeader) {
+		String path;
+		String tmp2 = new String(inputHeader);
+
+		// tmp contains "GET /index.html HTTP/1.0 ......."
+		// find first space
+		// find next space
+		// copy whats between minus slash, then you get "index.html"
+		// it's a bit of dirty code, but bear with me...
+		int start = 0;
+		int end = 0;
+		for (int a = 0; a < tmp2.length(); a++) {
+			if (tmp2.charAt(a) == ' ' && start != 0) {
+				end = a;
+				break;
+			}
+			if (tmp2.charAt(a) == ' ' && start == 0) {
+				start = a;
+			}
+		}
+		path = tmp2.substring(start + 1, end); // fill in the path
+		return path;
+	}
+
+	private void dealWithUnsuporthedMethod(DataOutputStream output) {
+		try {
+			output.writeBytes(construct_http_header(501, null));
+			output.close();
+			return;
+		} catch (Exception e3) { // if some error happened catch it
+			s("_error:" + e3.getMessage());
+		} // and display error
+	}
+
+	// this function adds an extension to URIs without extensions, according to
 	// it's mime type.
-	// this is usefull because of the gallery
-	private String fixPath(String encodedPath, String mime) {
+	// this is useful because of the android gallery
+	private String addExtensionToUriIfNecessary(String encodedPath, String mime) {
 		if (mime == null || encodedPath.indexOf('.') >= 0)
 			return encodedPath;
-
-		// there is not "." on the name ( android gallery stuff...) , let's add
-		// one according to the MIME type
 
 		if (mime.equals("image/jpeg"))
 			return encodedPath + ".jpg";
@@ -306,20 +283,20 @@ public class HttpServerConnection extends Thread {
 	private static String httpReturnCodeToString(int return_code) {
 		switch (return_code) {
 		case 200:
-			return ("200 OK");
+			return "200 OK";
 		case 302:
 			return "302 Moved Temporarily";
 		case 400:
-			return ("400 Bad Request");
+			return "400 Bad Request";
 		case 403:
-			return ("403 Forbidden");
+			return "403 Forbidden";
 		case 404:
-			return ("404 Not Found");
+			return "404 Not Found";
 		case 500:
-			return ("500 Internal Server Error");
+			return "500 Internal Server Error";
 		case 501:
 		default:
-			return ("501 Not Implemented");
+			return "501 Not Implemented";
 		}
 	}
 
@@ -334,9 +311,9 @@ public class HttpServerConnection extends Thread {
 		if (pos > -1) {
 			path = path.substring(pos + 3);
 		}
-		
+
 		try {
-			File f = new File(path);		
+			File f = new File(path);
 			long size = f.length();
 			if (size == 0) {
 				String newUrl = URLDecoder.decode(path);
@@ -361,14 +338,16 @@ public class HttpServerConnection extends Thread {
 
 		StringBuilder output = new StringBuilder();
 		output.append("HTTP/1.0 ");
-		output.append(httpReturnCodeToString(return_code));
-		output.append("\r\n"); // other header fields,
+		output.append(httpReturnCodeToString(return_code) + "\r\n");
 		output.append(getFileSizeHeader());
+		SimpleDateFormat format = new SimpleDateFormat(
+				"EEE, dd MMM yyyy HH:mm:ss zzz");
+		output.append("Date: " + format.format(new Date()) + "\r\n");
+
 		output.append("Connection: close\r\n"); // we can't handle persistent
-		// connections
+												// connections
 		output.append("Server: " + Util.myLogName + " " + Util.getAppVersion()
-				+ "\r\n"); // server
-		// name
+				+ "\r\n");
 		if (location != null) {
 			// we don't want cache for the root URL
 			output.append("Location: " + location + "\r\n"); // server name
@@ -380,21 +359,32 @@ public class HttpServerConnection extends Thread {
 			output.append("Cache-Control: post-check=0, pre-check=0\r\n");
 			output.append("Pragma: no-cache\r\n");
 		}
-
-		// Construct the right Content-Type for the header.
-		// This is so the browser knows what to do with the
-		// file, you may know the browser dosen't look on the file
-		// extension, it is the servers job to let the browser know
-		// what kind of file is being transmitted. You may have experienced
-		// if the server is miss configured it may result in
-		// pictures displayed as text!
 		if (mime != null) {
 			output.append("Content-Type: " + mime + "\r\n");
 		}
-		// //so on and so on......
-		output.append("\r\n"); // this marks the end of the httpheader
-		// and the start of the body
-		// ok return our newly created header!
+		output.append("\r\n");
 		return output.toString();
 	}
+
+	String getMimeFromUri(Uri fileUri, String originalMime) {
+		if( originalMime != null && ! originalMime.equals("")){
+			return originalMime;
+		}
+		
+        String mPath = fileUri.getPath();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        String extension = MimeTypeMap.getFileExtensionFromUrl(mPath);
+        if (TextUtils.isEmpty(extension)) {
+            // getMimeTypeFromExtension() doesn't handle spaces in filenames nor can it handle
+            // urlEncoded strings. Let's try one last time at finding the extension.
+            int dotPos = mPath.lastIndexOf('.');
+            if (0 <= dotPos) {
+                extension = mPath.substring(dotPos + 1);
+            }
+        }
+        String mime = mimeTypeMap.getMimeTypeFromExtension(extension);
+        return mime;
+
+	}
+
 }
