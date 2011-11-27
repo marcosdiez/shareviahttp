@@ -142,31 +142,25 @@ public class HttpServerConnection extends Thread {
 		s("Client requested: [" + path + "][" + fileUri.toString() + "]");
 
 		if (path.equals("/favicon.ico")) { // we have now favicon
-			try {
-				// if you could not open the file send a 404
-				output.writeBytes(construct_http_header(404, null));
-				// close the stream
-				output.close();
-			} catch (Exception e2) {
-			}
+			shareFavIcon(output);
 			return;
 		}
 
 		ContentResolver cr = Util.theContext.getContentResolver();
 		String mime = cr.getType(fileUri);
-
+		String fileUriStr = fileUri.toString();
+		if(fileUriStr.startsWith("http://") || 
+				fileUriStr.startsWith("https://") || 
+				fileUriStr.startsWith("ftp://") 
+				){
+			// we will work as a simple URL redirector
+			redirectToFinalPath(output,fileUriStr);
+			return;
+		}
+		
+		
 		if (path.equals("/")) {
-			String thePath = addExtensionToUriIfNecessary(
-					fileUri.getEncodedPath(), mime);
-
-			String redirectOutput = construct_http_header(302, null, thePath);
-			try {
-				// if you could not open the file send a 404
-				output.writeBytes(redirectOutput);
-				// close the stream
-				output.close();
-			} catch (IOException e2) {
-			}
+			shareRootUrl(output, mime);
 			return;
 		}
 
@@ -210,6 +204,43 @@ public class HttpServerConnection extends Thread {
 			output.close();
 			requestedfile.close();
 		} catch (IOException e) {
+		}
+	}
+
+	private void redirectToFinalPath(DataOutputStream output, String thePath) {
+
+
+		String redirectOutput = construct_http_header(302, null, thePath);
+		try {
+			// if you could not open the file send a 404
+			output.writeBytes(redirectOutput);
+			// close the stream
+			output.close();
+		} catch (IOException e2) {
+		}
+	}
+	
+	private void shareRootUrl(DataOutputStream output, String mime) {
+		String thePath = addExtensionToUriIfNecessary(
+				fileUri.getEncodedPath(), mime);
+
+		String redirectOutput = construct_http_header(302, null, thePath);
+		try {
+			// if you could not open the file send a 404
+			output.writeBytes(redirectOutput);
+			// close the stream
+			output.close();
+		} catch (IOException e2) {
+		}
+	}
+
+	private void shareFavIcon(DataOutputStream output) {
+		try {
+			// if you could not open the file send a 404
+			output.writeBytes(construct_http_header(404, null));
+			// close the stream
+			output.close();
+		} catch (IOException  e2) {
 		}
 	}
 
