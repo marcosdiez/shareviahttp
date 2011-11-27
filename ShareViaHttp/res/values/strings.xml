@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="hello">Hello World, AaaHttpServerActivity!</string>
-    
-    
     <string name="app_name">Share via Http</string>
 
-
-    <string name="header_msg">Your phone is now sharing the chosen file. In order to open it on any computer, just type</string>
+    <string name="header_msg">Your device is now sharing the chosen file. In order to open it anywhere, just type</string>
     <string name="standar_url">http://127.0.0.1/</string>    
     <string name="header_msg2">on any browser !</string>
 
