@@ -128,7 +128,7 @@ public class HttpServerConnection extends Thread {
 			}
 		}
 
-		String path = getRequestedFile(header);
+		String path = getRequestedFilePath(header);
 
 		if (path == null || path == "") {
 			s("path is null!!!");
@@ -193,7 +193,8 @@ public class HttpServerConnection extends Thread {
 
 		// happy day scenario
 
-		String outputString = construct_http_header(200, getMimeFromUri( fileUri , mime ) );
+		String outputString = construct_http_header(200,
+				getMimeFromUri(fileUri, mime));
 
 		try {
 			output.writeBytes(outputString);
@@ -212,7 +213,7 @@ public class HttpServerConnection extends Thread {
 		}
 	}
 
-	private String getRequestedFile(String inputHeader) {
+	private String getRequestedFilePath(String inputHeader) {
 		String path;
 		String tmp2 = new String(inputHeader);
 
@@ -249,7 +250,8 @@ public class HttpServerConnection extends Thread {
 	// this function adds an extension to URIs without extensions, according to
 	// it's mime type.
 	// this is useful because of the android gallery
-	private String addExtensionToUriIfNecessary(String encodedPath, String mime) {
+	private static String addExtensionToUriIfNecessary(String encodedPath,
+			String mime) {
 		if (mime == null || encodedPath.indexOf('.') >= 0)
 			return encodedPath;
 
@@ -273,6 +275,10 @@ public class HttpServerConnection extends Thread {
 		if (mime.equals("video/quicktime") || mime.equals("video/mov"))
 			return encodedPath + ".mov";
 
+		
+		if (mime.endsWith("text/x-vcard")) 
+			return encodedPath + ".vcf";
+		
 		return encodedPath;
 	}
 
@@ -320,14 +326,46 @@ public class HttpServerConnection extends Thread {
 				f = new File(newUrl);
 				size = f.length();
 				if (size == 0) {
-					return "";
+					size = getFileSizeBruteForceMethod();
+					if (size == 0) {
+						return "";
+					}
 				}
 			}
 			return "Content-Length: " + Long.toString(size) + "\r\n";
 		} catch (Exception e) {
 			return "";
 		}
+	}
 
+	private long getFileSizeBruteForceMethod() {
+		long maxSize = 20 * 1024 * 1024; // 20MBs
+		ContentResolver cr = Util.theContext.getContentResolver();
+		InputStream requestedfile = null;
+		try {
+			requestedfile = cr.openInputStream(fileUri);
+		} catch (FileNotFoundException e) {
+			s("FileNotFound getting filesize...");
+			// TODO Auto-generated catch block
+			return 0;
+		}
+
+		long fileSize = 0;
+		byte[] buffer = new byte[4096];
+		try {
+			for (int n; (n = requestedfile.read(buffer)) != -1;) {
+				fileSize += n;
+				if (fileSize > maxSize) {
+					requestedfile.close();
+					return 0;
+				}
+			}
+			requestedfile.close();
+		} catch (IOException e) {
+			s("IOException getting filesize...");
+			return 0;
+		}
+		return fileSize;
 	}
 
 	// this method makes the HTTP header for the response
@@ -367,23 +405,25 @@ public class HttpServerConnection extends Thread {
 	}
 
 	String getMimeFromUri(Uri fileUri, String originalMime) {
-		if( originalMime != null && ! originalMime.equals("")){
+		if (originalMime != null && !originalMime.equals("")) {
 			return originalMime;
 		}
-		
-        String mPath = fileUri.getPath();
-        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        String extension = MimeTypeMap.getFileExtensionFromUrl(mPath);
-        if (TextUtils.isEmpty(extension)) {
-            // getMimeTypeFromExtension() doesn't handle spaces in filenames nor can it handle
-            // urlEncoded strings. Let's try one last time at finding the extension.
-            int dotPos = mPath.lastIndexOf('.');
-            if (0 <= dotPos) {
-                extension = mPath.substring(dotPos + 1);
-            }
-        }
-        String mime = mimeTypeMap.getMimeTypeFromExtension(extension);
-        return mime;
+
+		String mPath = fileUri.getPath();
+		MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+		String extension = MimeTypeMap.getFileExtensionFromUrl(mPath);
+		if (TextUtils.isEmpty(extension)) {
+			// getMimeTypeFromExtension() doesn't handle spaces in filenames nor
+			// can it handle
+			// urlEncoded strings. Let's try one last time at finding the
+			// extension.
+			int dotPos = mPath.lastIndexOf('.');
+			if (0 <= dotPos) {
+				extension = mPath.substring(dotPos + 1);
+			}
+		}
+		String mime = mimeTypeMap.getMimeTypeFromExtension(extension);
+		return mime;
 
 	}
 
