@@ -141,7 +141,7 @@ public class HttpServerConnection extends Thread {
 
 		s("Client requested: [" + path + "][" + fileUri.toString() + "]");
 
-		if (path.equals("/favicon.ico")) { // we have now favicon
+		if (path.equals("/favicon.ico")) { // we have no favicon
 			shareFavIcon(output);
 			return;
 		}

@@ -13,5 +13,10 @@
         
     <string name="button_rate">Rate this App</string>
     <string name="stop_server">Stop Server</string>
+    <string name="change_ip">Choose the IP Address</string>
+    <string name="alert_dialog_ok">OK</string>
+    <string name="alert_dialog_cancel">Cancel</string>
+    
+        
     <string name="now_sharing_anymore">The requested file is not being shared anymore.</string>
 </resources>

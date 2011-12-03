@@ -32,6 +32,7 @@ import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 
 import android.net.Uri;
@@ -84,11 +85,11 @@ public class MyHttpServer extends Thread {
 	private static ServerSocket serversocket = null;
 	private boolean webserverLoop = true;
 
-	public String getServerUrl() {
+	private String getServerUrl(String ipAddress) {
 		if (port == 80) {
-			return "http://" + getLocalIpAddress() + "/";
+			return "http://" + ipAddress + "/";
 		}
-		return "http://" + getLocalIpAddress() + ":" + port + "/";
+		return "http://" + ipAddress + ":" + port + "/";
 	}
 
 	public synchronized void stopServer() {
@@ -105,7 +106,49 @@ public class MyHttpServer extends Thread {
 		}
 	}
 
-	public String getLocalIpAddress() {
+	public CharSequence[] ListOfIpAddresses() {
+		ArrayList<String> arrayOfIps = new ArrayList<String>();
+		String firstIp = "0.0.0.0";
+		arrayOfIps.add(firstIp);
+
+		try {
+			for (Enumeration<NetworkInterface> en = NetworkInterface
+					.getNetworkInterfaces(); en.hasMoreElements();) {
+				NetworkInterface intf = en.nextElement();
+				for (Enumeration<InetAddress> enumIpAddr = intf
+						.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+					InetAddress inetAddress = enumIpAddr.nextElement();
+
+					String theIp = inetAddress.getHostAddress().toString();
+					theIp = getServerUrl(theIp);
+
+					if (inetAddress instanceof Inet6Address
+							|| inetAddress.isLoopbackAddress()) {
+						arrayOfIps.add(theIp);
+						continue;
+					}
+
+					if (arrayOfIps.get(0) == firstIp) { // the first non local
+														// IPv4 is the prefered
+														// one...
+						arrayOfIps.remove(0);
+						arrayOfIps.add(0, theIp);
+					} else {
+						arrayOfIps.add(theIp);
+					}
+				}
+			}
+		} catch (SocketException ex) {
+			Log.e("httpServer", ex.toString());
+		}
+
+		CharSequence[] output = arrayOfIps.toArray(new CharSequence[arrayOfIps
+				.size()]);
+		return output;
+	}
+
+	public static String getLocalIpAddress() {
+
 		try {
 			InetAddress localAddress = null;
 			InetAddress ipv6 = null;
@@ -193,7 +236,6 @@ public class MyHttpServer extends Thread {
 		if (!normalBind(port)) {
 			return;
 		}
-		s("Bound on " + getServerUrl() + "\n");
 
 		// go in a infinite loop, wait for connections, process request, send
 		// response

@@ -63,7 +63,9 @@
 
 		<Button android:layout_height="wrap_content" android:text="@string/stop_server"
 			android:id="@+id/stop_server" android:layout_width="fill_parent" />
-
+		
+		<Button android:layout_height="wrap_content" android:text="@string/change_ip"
+			android:id="@+id/change_ip" android:layout_width="fill_parent" />
 
 	</LinearLayout>
 </ScrollView>

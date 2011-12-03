@@ -25,7 +25,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.MarcosDiez.shareviahttp;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -41,61 +44,68 @@ public class SendFile extends Activity {
 	/** Called when the activity is first created. */
 
 	static MyHttpServer theHttpServer = null;
+	String preferedServerUri;
+	CharSequence[] listOfServerUris;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		Util.theContext = this.getApplicationContext();
-		Intent dataIntent = getIntent();
-		if (dataIntent == null) {
-			Log.d(Util.myLogName, "no data Intent");
+		Uri myUri = getFileUri();
+		if (myUri == null)
 			return;
-		}
+
+		theHttpServer = new MyHttpServer(9999);
+		listOfServerUris = theHttpServer.ListOfIpAddresses();
+		preferedServerUri = listOfServerUris[0].toString();
+		MyHttpServer.SetFile(myUri);
+		generateBarCodeIfPossible(preferedServerUri);
 
 		setContentView(R.layout.main);
 
-		Bundle extras = dataIntent.getExtras();
+		((TextView) findViewById(R.id.uriPath)).setText("File: "
+				+ Uri.decode(myUri.toString()));
 
+		formatHyperlinks();
+		formatBarcodeLink();
+		prepareBarcodeLinkButton();
+		prepareServerStopButton();
+		prepareChooseIpAddressButton();
+	}
+
+	private Uri getFileUri() {
+		Intent dataIntent = getIntent();
+		if (dataIntent == null) {
+			Log.d(Util.myLogName, "no data Intent");
+			return null;
+		}
+
+		Bundle extras = dataIntent.getExtras();
 		Uri myUri = (Uri) extras.get(Intent.EXTRA_STREAM);
 
-	
 		if (myUri == null) {
 			myUri = Uri.parse((String) extras.get(Intent.EXTRA_TEXT));
 
 			if (myUri == null) {
 				Toast.makeText(this, "Error obtaining the file path",
 						Toast.LENGTH_LONG).show();
-				return;
+				return null;
 			}
 		}
+		return myUri;
+	}
 
-		// Log.d("aa", "myUri.toString():" + myUri.toString());
-		// Log.d("aa", "myUri.getEncodedPath():" + myUri.getEncodedPath());
-		// Log.d("myUri.getPath():" + dataIntent.getPath() );
+	void formatHyperlinks() {
+		((TextView) findViewById(R.id.link_msg)).setText(preferedServerUri);
+	}
 
-		
-		TextView t2 = (TextView) findViewById(R.id.uriPath);
-		t2.setText("File: " + Uri.decode(myUri.toString()));
-
-		// Toast.makeText(this, theFile, Toast.LENGTH_LONG).show();
-
-		theHttpServer = new MyHttpServer(9999);
-		MyHttpServer.SetFile(myUri);
-
-		generateBarCodeIfPossible(theHttpServer.getServerUrl());
-
+	private void serverUriChanged() {
 		formatHyperlinks();
-		formatBarcodeLink();
-		makeButtonsWork();
+		generateBarCodeIfPossible(preferedServerUri);
 	}
 
-	void formatHyperlinks(){
-		((TextView) findViewById(R.id.link_msg)).setText(theHttpServer
-				.getServerUrl());	
-	}
-	
-	void makeButtonsWork() {
+	private void prepareBarcodeLinkButton() {
 		Button b = (Button) findViewById(R.id.button_rate);
 		b.setOnClickListener(new OnClickListener() {
 			@Override
@@ -107,8 +117,10 @@ public class SendFile extends Activity {
 				startActivity(browse);
 			}
 		});
+	}
 
-		final Activity a = this;
+	private void prepareServerStopButton() {
+		final Activity thisActivity = this;
 
 		Button c = (Button) findViewById(R.id.stop_server);
 		c.setOnClickListener(new OnClickListener() {
@@ -119,10 +131,39 @@ public class SendFile extends Activity {
 				if (p != null) {
 					p.stopServer();
 				}
-				Toast.makeText(a, R.string.now_sharing_anymore, Toast.LENGTH_SHORT).show();
+				Toast.makeText(thisActivity, R.string.now_sharing_anymore,
+						Toast.LENGTH_SHORT).show();
 			}
 		});
+	}
 
+	private void prepareChooseIpAddressButton() {
+		Button d = (Button) findViewById(R.id.change_ip);
+		d.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				showDialog(42);
+
+			}
+		});
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		AlertDialog.Builder b = new AlertDialog.Builder(this);
+		b.setTitle(R.string.change_ip);
+		b.setSingleChoiceItems(listOfServerUris, 0,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						preferedServerUri = listOfServerUris[whichButton].toString();
+						serverUriChanged();
+						dialog.dismiss();
+					}
+				});
+		AlertDialog theAlertDialog = b.create();
+
+		return theAlertDialog;
 	}
 
 	void formatBarcodeLink() {
@@ -130,7 +171,7 @@ public class SendFile extends Activity {
 		t2.setMovementMethod(LinkMovementMethod.getInstance());
 	}
 
-	public void generateBarCodeIfPossible(String message) {		
+	public void generateBarCodeIfPossible(String message) {
 		Intent intent = new Intent("com.google.zxing.client.android.ENCODE");
 		intent.putExtra("ENCODE_TYPE", "TEXT_TYPE");
 		intent.putExtra("ENCODE_DATA", message);
