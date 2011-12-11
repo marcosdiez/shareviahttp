@@ -8,6 +8,7 @@ package com.MarcosDiez.shareviahttp;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.URLDecoder;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -60,16 +61,19 @@ public class UriInterpretation {
 		if (size <= 0) {
 			String uriString = uri.toString();
 			if (uriString.startsWith("file://")) {
-				Log.v(Util.myLogName, uriString.substring("file://".length()));
 				File f = new File(uriString.substring("file://".length()));
 				size = f.length();
+				if (size == 0) {
+					uriString = URLDecoder.decode(uriString).substring("file://".length());					
+					f = new File(uriString);
+					size = f.length();
+				}
+				Log.v(Util.myLogName, "zzz" + size);
+
 			} else {
 				Log.v(Util.myLogName, "Not a file: " + uriString);
 			}
-		} // else {
-			// Log.v(Util.myLogName, "old file size: " + size);
-		// }
-		// Log.v(Util.myLogName, "new file size: " + size);
+		} 
 	}
 
 	private void getMime(Uri uri, ContentResolver contentResolver) {
@@ -77,5 +81,54 @@ public class UriInterpretation {
 		if (mime == null) {
 			mime = "application/octet-stream";
 		}
+		if (mime.equals("application/octet-stream")) {
+			// we can do better than that
+			int pos = name.lastIndexOf('.');
+			if (pos < 0)
+				return;
+			String extension = name.substring(pos).toLowerCase();
+			if (extension.equals(".jpg")) {
+				mime = "image/jpeg";
+				return;
+			}
+			if (extension.equals(".png")) {
+				mime = "image/png";
+				return;
+			}
+			if (extension.equals(".gif")) {
+				mime = "image/gif";
+				return;
+			}
+			if (extension.equals(".mp4")) {
+				mime = "video/mp4";
+				return;
+			}
+			if (extension.equals(".avi")) {
+				mime = "video/avi";
+				return;
+			}
+			if (extension.equals(".mov")) {
+				mime = "video/mov";
+				return;
+			}
+			if (extension.equals(".vcf")) {
+				mime = "text/x-vcard";
+				return;
+			}
+			if (extension.equals(".txt")) {
+				mime = "text/plain";
+				return;
+			}
+			if (extension.equals(".html")) {
+				mime = "text/html";
+				return;
+			}
+			if (extension.equals(".json")) {
+				mime = "application/json";
+				return;
+			}
+
+		}
+
 	}
 }
