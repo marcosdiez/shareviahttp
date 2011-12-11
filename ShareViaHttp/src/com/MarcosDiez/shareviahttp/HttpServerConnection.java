@@ -55,12 +55,12 @@ import java.util.Date;
 import android.net.Uri;
 import android.util.Log;
 
-public class HttpServerConnection extends Thread {
+public class HttpServerConnection implements Runnable {
 
 	public HttpServerConnection(Uri fileUri, Socket connectionsocket) {
 		this.fileUriZ = fileUri;
 		this.connectionsocket = connectionsocket;
-		this.start();
+		
 	}
 
 	private UriInterpretation theUriInterpretation;

@@ -34,6 +34,8 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import android.net.Uri;
 import android.util.Log;
@@ -196,7 +198,7 @@ public class MyHttpServer extends Thread {
 		return true;
 	}
 
-
+	private static final ExecutorService threadPool = Executors.newCachedThreadPool();
 
 	public void run() {
 		s("Starting " + Util.myLogName + " server v" + Util.getAppVersion());
@@ -210,7 +212,11 @@ public class MyHttpServer extends Thread {
 			s("Ready, Waiting for requests...\n");
 			try {
 				Socket connectionsocket = serversocket.accept();
-				new HttpServerConnection(fileUri, connectionsocket);
+				HttpServerConnection theHttpConnection = new HttpServerConnection(fileUri,
+						connectionsocket);
+				
+				threadPool.submit(theHttpConnection);
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -220,7 +226,7 @@ public class MyHttpServer extends Thread {
 	private void s(String s2) { // an alias to avoid typing so much!
 		Log.d(Util.myLogName, s2);
 	}
-	
+
 	/*
 	 * // TODO.... // ./iptables_armv5 -t nat -A PREROUTING -p tcp -m tcp
 	 * --dport 80 -j REDIRECT --to-ports 9999 // so we could "bind" port 80 on a
@@ -254,5 +260,5 @@ public class MyHttpServer extends Thread {
 	 * 
 	 * return retval; }
 	 */
-	
+
 }
