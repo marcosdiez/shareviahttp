@@ -15,10 +15,9 @@ import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.util.Log;
 
-
 public class UriInterpretation {
 
-	public long size = -1;	
+	public long size = -1;
 	public String name = null;
 	public String mime;
 	Uri uri;
@@ -30,7 +29,7 @@ public class UriInterpretation {
 
 	public UriInterpretation(Uri uri) {
 		this.uri = uri;
-		
+
 		contentResolver = Util.theContext.getContentResolver();
 		Cursor metadataCursor = contentResolver.query(uri, new String[] {
 				OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE }, null,
@@ -67,10 +66,10 @@ public class UriInterpretation {
 			} else {
 				Log.v(Util.myLogName, "Not a file: " + uriString);
 			}
-		} else {
-			Log.v(Util.myLogName, "old file size: " + size);
-		}
-		Log.v(Util.myLogName, "new file size: " + size);
+		} // else {
+			// Log.v(Util.myLogName, "old file size: " + size);
+		// }
+		// Log.v(Util.myLogName, "new file size: " + size);
 	}
 
 	private void getMime(Uri uri, ContentResolver contentResolver) {

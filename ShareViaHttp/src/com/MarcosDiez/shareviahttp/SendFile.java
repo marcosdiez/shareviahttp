@@ -24,7 +24,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.MarcosDiez.shareviahttp;
 
-import java.util.Set;
+import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -34,8 +34,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -43,7 +43,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class SendFile extends Activity {
-	private static final boolean String = false;
 	/** Called when the activity is first created. */
 
 	static MyHttpServer theHttpServer = null;
@@ -55,20 +54,20 @@ public class SendFile extends Activity {
 		super.onCreate(savedInstanceState);
 
 		Util.theContext = this.getApplicationContext();
-		Uri myUri = getFileUri();
-		if (myUri == null)
+		ArrayList<Uri> myUris = getFileUris();
+		if (myUris.size() == 0)
 			return;
 
 		theHttpServer = new MyHttpServer(9999);
 		listOfServerUris = theHttpServer.ListOfIpAddresses();
 		preferedServerUri = listOfServerUris[0].toString();
-		MyHttpServer.SetFile(myUri);
+		MyHttpServer.SetFiles(myUris);
 		generateBarCodeIfPossible(preferedServerUri);
 
 		setContentView(R.layout.main);
 
-		((TextView) findViewById(R.id.uriPath)).setText("File: "
-				+ Uri.decode(myUri.toString()));
+		((TextView) findViewById(R.id.uriPath)).setText("File(s): "
+				+ Uri.decode(myUris.toString()));
 
 		formatHyperlinks();
 		formatBarcodeLink();
@@ -77,42 +76,28 @@ public class SendFile extends Activity {
 		prepareChooseIpAddressButton();
 	}
 
-	private Uri getFileUri() {
+	private ArrayList<Uri> getFileUris() {
 		Intent dataIntent = getIntent();
-		
-		/*
-		 * if (Intent.ACTION_SEND.equals(action)) {
-                Uri stream = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
-                if (stream != null) {
-                    addAttachment(stream, type);
-                }
-            } else {
-                ArrayList<Parcelable> list = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-                if (list != null) {
-                    for (Parcelable parcelable : list) {
-                        Uri stream = (Uri) parcelable;
-                        if (stream != null) {
-                            addAttachment(stream, type);
-                        }
+		ArrayList<Uri> theUris = new ArrayList<Uri>();
+				
+		if( Intent.ACTION_SEND_MULTIPLE.equals(dataIntent.getAction()) ){
+			ArrayList<Parcelable> list = dataIntent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+            if (list != null) {
+                for (Parcelable parcelable : list) {
+                    Uri stream = (Uri) parcelable;
+                    if (stream != null) {
+                    	theUris.add(stream);
                     }
                 }
             }
-		 */
-		
-		if (dataIntent == null) {
-			Log.d(Util.myLogName, "no data Intent");
-			return null;
+            return theUris;
 		}
+		
 
+		
 		Bundle extras = dataIntent.getExtras();
-		Set<String> x = extras.keySet();
 		
-		for( String oneString : x   ){
-			Log.d(Util.myLogName , "Bundle: " + oneString +  "  "  +  extras.get(oneString).toString() );			
-		}
-		
-		
-		Uri myUri = (Uri) extras.get(Intent.EXTRA_STREAM);
+		Uri myUri =   (Uri) extras.get(Intent.EXTRA_STREAM);
 
 		if (myUri == null) {
 			myUri = Uri.parse((String) extras.get(Intent.EXTRA_TEXT));
@@ -123,7 +108,9 @@ public class SendFile extends Activity {
 				return null;
 			}
 		}
-		return myUri;
+		
+		theUris.add(myUri);
+		return theUris;
 	}
 
 	void formatHyperlinks() {

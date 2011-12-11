@@ -65,12 +65,8 @@ public class MyHttpServer extends Thread {
 
 	// by design, we only serve one file at a time.
 
-	public static void SetFile(Uri fileUri) {
-		MyHttpServer.fileUri = fileUri;
-	}
-
-	public static void SetFile(String path) {
-		MyHttpServer.fileUri = Uri.parse(path);
+	public static void SetFiles(ArrayList<Uri> fileUris) {
+		MyHttpServer.fileUris = fileUris;
 	}
 
 	// default port is 80
@@ -82,7 +78,7 @@ public class MyHttpServer extends Thread {
 	}
 
 	private static int port;
-	private static Uri fileUri;
+	private static ArrayList<Uri> fileUris;
 
 	private static ServerSocket serversocket = null;
 	private boolean webserverLoop = true;
@@ -117,6 +113,8 @@ public class MyHttpServer extends Thread {
 			for (Enumeration<NetworkInterface> en = NetworkInterface
 					.getNetworkInterfaces(); en.hasMoreElements();) {
 				NetworkInterface intf = en.nextElement();
+				
+				Log.d(Util.myLogName , "Inteface: " + intf.getDisplayName());
 				for (Enumeration<InetAddress> enumIpAddr = intf
 						.getInetAddresses(); enumIpAddr.hasMoreElements();) {
 					InetAddress inetAddress = enumIpAddr.nextElement();
@@ -212,8 +210,7 @@ public class MyHttpServer extends Thread {
 			s("Ready, Waiting for requests...\n");
 			try {
 				Socket connectionsocket = serversocket.accept();
-				HttpServerConnection theHttpConnection = new HttpServerConnection(fileUri,
-						connectionsocket);
+				HttpServerConnection theHttpConnection = new HttpServerConnection(fileUris, connectionsocket);
 				
 				threadPool.submit(theHttpConnection);
 				

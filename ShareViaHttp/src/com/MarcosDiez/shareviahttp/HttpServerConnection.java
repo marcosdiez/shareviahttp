@@ -50,6 +50,7 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import android.net.Uri;
@@ -57,15 +58,15 @@ import android.util.Log;
 
 public class HttpServerConnection implements Runnable {
 
-	public HttpServerConnection(Uri fileUri, Socket connectionsocket) {
-		this.fileUriZ = fileUri;
+	public HttpServerConnection(ArrayList<Uri> fileUris, Socket connectionsocket) {
+		this.fileUriZ = fileUris;
 		this.connectionsocket = connectionsocket;
-		
+
 	}
 
 	private UriInterpretation theUriInterpretation;
 	private Socket connectionsocket;
-	private Uri fileUriZ;
+	private ArrayList<Uri> fileUriZ;
 	private String ipAddress = "";
 
 	public void run() {
@@ -135,7 +136,8 @@ public class HttpServerConnection implements Runnable {
 			return;
 		}
 
-		String fileUriStr = fileUriZ.toString();
+		
+		String fileUriStr = fileUriZ.size() == 1 ? fileUriZ.get(0).toString() : fileUriZ.toString();
 
 		s("Client requested: [" + path + "][" + fileUriStr + "]");
 
@@ -154,7 +156,7 @@ public class HttpServerConnection implements Runnable {
 			redirectToFinalPath(output, fileUriStr);
 			return;
 		}
-		theUriInterpretation = new UriInterpretation(fileUriZ);
+		theUriInterpretation = new UriInterpretation(fileUriZ.get(0));
 		if (path.equals("/")) {
 			shareRootUrl(output);
 			return;
@@ -190,16 +192,18 @@ public class HttpServerConnection implements Runnable {
 
 			// if it was a HEAD request, we don't print any BODY
 			if (!sendOnlyHeader) {
-				// FileZipper zz = new FileZipper(output, z);
-				// zz.run();
 
-				byte[] buffer = new byte[4096];
-				for (int n; (n = requestedfile.read(buffer)) != -1;) {
-					output.write(buffer, 0, n);
+				if (fileUriZ.size() > 1) {
+					FileZipper zz = new FileZipper(output, fileUriZ);
+					zz.run();
+				} else {
+					byte[] buffer = new byte[4096];
+					for (int n; (n = requestedfile.read(buffer)) != -1;) {
+						output.write(buffer, 0, n);
+					}
 				}
 
 			}
-
 			output.close();
 			requestedfile.close();
 		} catch (IOException e) {
@@ -219,7 +223,13 @@ public class HttpServerConnection implements Runnable {
 	}
 
 	private void shareRootUrl(DataOutputStream output) {
-		redirectToFinalPath(output, theUriInterpretation.name);
+		if (fileUriZ.size() == 1) {
+			redirectToFinalPath(output, theUriInterpretation.name);
+		}else{			
+			SimpleDateFormat format = new SimpleDateFormat(
+					"yyyy-MM-dd_HH_mm_ss" );			
+			redirectToFinalPath(output, "ShareViaHttpBundle-" + format.format(new Date()) + ".ZIP"  );
+		}
 	}
 
 	private void shareFavIcon(DataOutputStream output) {
@@ -299,7 +309,7 @@ public class HttpServerConnection implements Runnable {
 		if (theUriInterpretation == null) {
 			return "";
 		}
-		if (theUriInterpretation.size > 0) {
+		if (fileUriZ.size() == 1 && theUriInterpretation.size > 0) {
 			return "Content-Length: "
 					+ Long.toString(theUriInterpretation.size) + "\r\n";
 		}
@@ -336,6 +346,9 @@ public class HttpServerConnection implements Runnable {
 			output.append("Pragma: no-cache\r\n");
 		}
 		if (mime != null) {
+			if (fileUriZ.size() > 1) {
+				mime = "multipart/x-zip";
+			}
 			output.append("Content-Type: " + mime + "\r\n");
 		}
 		output.append("\r\n");
