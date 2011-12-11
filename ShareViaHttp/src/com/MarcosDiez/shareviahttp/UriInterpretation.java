@@ -1,3 +1,8 @@
+/*
+ * Contatins code from https://github.com/k9mail/k-9/blob/master/src/com/fsck/k9/activity/MessageCompose.java
+ * APACHE 2.0 License.
+ * 
+ */
 package com.MarcosDiez.shareviahttp;
 
 import java.io.File;
@@ -9,6 +14,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.util.Log;
+
 
 public class UriInterpretation {
 
@@ -47,6 +53,11 @@ public class UriInterpretation {
 
 		getMime(uri, contentResolver);
 
+		getFileSize(uri);
+
+	}
+
+	private void getFileSize(Uri uri) {
 		if (size <= 0) {
 			String uriString = uri.toString();
 			if (uriString.startsWith("file://")) {
@@ -60,7 +71,6 @@ public class UriInterpretation {
 			Log.v(Util.myLogName, "old file size: " + size);
 		}
 		Log.v(Util.myLogName, "new file size: " + size);
-
 	}
 
 	private void getMime(Uri uri, ContentResolver contentResolver) {
