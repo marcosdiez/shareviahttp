@@ -5,6 +5,7 @@
 	android:versionName="1.06">
 	<uses-sdk android:minSdkVersion="4" />
 	<uses-permission android:name="android.permission.INTERNET" />
+	
 	<!--
 	This would allow us to share contacts as vCards, but I don't want to 
 	scare users by asking for another permission... 

@@ -42,7 +42,6 @@ package com.MarcosDiez.shareviahttp;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,26 +49,23 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import android.content.ContentResolver;
 import android.net.Uri;
-import android.text.TextUtils;
 import android.util.Log;
-import android.webkit.MimeTypeMap;
 
 public class HttpServerConnection extends Thread {
 
 	public HttpServerConnection(Uri fileUri, Socket connectionsocket) {
-		this.fileUri = fileUri;
+		this.fileUriZ = fileUri;
 		this.connectionsocket = connectionsocket;
 		this.start();
 	}
 
+	private UriInterpretation theUriInterpretation;
 	private Socket connectionsocket;
-	private Uri fileUri;
+	private Uri fileUriZ;
 	private String ipAddress = "";
 
 	public void run() {
@@ -134,43 +130,44 @@ public class HttpServerConnection extends Thread {
 			s("path is null!!!");
 			return;
 		}
-		if (fileUri == null) {
+		if (fileUriZ == null) {
 			s("fileUri is null");
 			return;
 		}
 
-		s("Client requested: [" + path + "][" + fileUri.toString() + "]");
+		String fileUriStr = fileUriZ.toString();
+
+		s("Client requested: [" + path + "][" + fileUriStr + "]");
 
 		if (path.equals("/favicon.ico")) { // we have no favicon
 			shareFavIcon(output);
 			return;
 		}
 
-		ContentResolver cr = Util.theContext.getContentResolver();
-		String mime = cr.getType(fileUri);
-		String fileUriStr = fileUri.toString();
-		if(fileUriStr.startsWith("http://") || 
-				fileUriStr.startsWith("https://") || 
-				fileUriStr.startsWith("ftp://") 
-				){
+		if (fileUriStr.startsWith("http://")
+				|| fileUriStr.startsWith("https://")
+				|| fileUriStr.startsWith("ftp://")
+				|| fileUriStr.startsWith("maito:")
+				|| fileUriStr.startsWith("callto:")
+				|| fileUriStr.startsWith("skype:")) {
 			// we will work as a simple URL redirector
-			redirectToFinalPath(output,fileUriStr);
+			redirectToFinalPath(output, fileUriStr);
 			return;
 		}
-		
-		
+		theUriInterpretation = new UriInterpretation(fileUriZ);
 		if (path.equals("/")) {
-			shareRootUrl(output, mime);
+			shareRootUrl(output);
 			return;
 		}
 
+		shareOneFile(output, sendOnlyHeader);
+	}
+
+	private void shareOneFile(DataOutputStream output, Boolean sendOnlyHeader) {
 		InputStream requestedfile = null;
 
 		try {
-
-			// try to open the file,
-			requestedfile = cr.openInputStream(fileUri);
-
+			requestedfile = theUriInterpretation.getInputStream();
 		} catch (FileNotFoundException e) {
 			try {
 				// if you could not open the file send a 404
@@ -180,25 +177,27 @@ public class HttpServerConnection extends Thread {
 			} catch (Exception e2) {
 				s("errorX:" + e2.getMessage());
 			}
-			;
-
 			s("error" + e.getMessage());
 		} // print error to gui
 
 		// happy day scenario
 
 		String outputString = construct_http_header(200,
-				getMimeFromUri(fileUri, mime));
+				theUriInterpretation.mime);
 
 		try {
 			output.writeBytes(outputString);
 
 			// if it was a HEAD request, we don't print any BODY
 			if (!sendOnlyHeader) {
+				// FileZipper zz = new FileZipper(output, z);
+				// zz.run();
+
 				byte[] buffer = new byte[4096];
 				for (int n; (n = requestedfile.read(buffer)) != -1;) {
 					output.write(buffer, 0, n);
 				}
+
 			}
 
 			output.close();
@@ -209,7 +208,6 @@ public class HttpServerConnection extends Thread {
 
 	private void redirectToFinalPath(DataOutputStream output, String thePath) {
 
-
 		String redirectOutput = construct_http_header(302, null, thePath);
 		try {
 			// if you could not open the file send a 404
@@ -219,19 +217,9 @@ public class HttpServerConnection extends Thread {
 		} catch (IOException e2) {
 		}
 	}
-	
-	private void shareRootUrl(DataOutputStream output, String mime) {
-		String thePath = addExtensionToUriIfNecessary(
-				fileUri.getEncodedPath(), mime);
 
-		String redirectOutput = construct_http_header(302, null, thePath);
-		try {
-			// if you could not open the file send a 404
-			output.writeBytes(redirectOutput);
-			// close the stream
-			output.close();
-		} catch (IOException e2) {
-		}
+	private void shareRootUrl(DataOutputStream output) {
+		redirectToFinalPath(output, theUriInterpretation.name);
 	}
 
 	private void shareFavIcon(DataOutputStream output) {
@@ -240,7 +228,7 @@ public class HttpServerConnection extends Thread {
 			output.writeBytes(construct_http_header(404, null));
 			// close the stream
 			output.close();
-		} catch (IOException  e2) {
+		} catch (IOException e2) {
 		}
 	}
 
@@ -278,41 +266,6 @@ public class HttpServerConnection extends Thread {
 		} // and display error
 	}
 
-	// this function adds an extension to URIs without extensions, according to
-	// it's mime type.
-	// this is useful because of the android gallery
-	private static String addExtensionToUriIfNecessary(String encodedPath,
-			String mime) {
-		if (mime == null || encodedPath.indexOf('.') >= 0)
-			return encodedPath;
-
-		if (mime.equals("image/jpeg"))
-			return encodedPath + ".jpg";
-
-		if (mime.equals("image/png"))
-			return encodedPath + ".png";
-
-		if (mime.equals("image/gif"))
-			return encodedPath + ".gif";
-
-		if (mime.equals("video/mp4"))
-			return encodedPath + ".mp4";
-
-		if (mime.equals("application/x-troff-msvideo")
-				|| mime.equals("video/avi") || mime.equals("video/x-msvideo")
-				|| mime.equals("video/msvideo"))
-			return encodedPath + ".avi";
-
-		if (mime.equals("video/quicktime") || mime.equals("video/mov"))
-			return encodedPath + ".mov";
-
-		
-		if (mime.endsWith("text/x-vcard")) 
-			return encodedPath + ".vcf";
-		
-		return encodedPath;
-	}
-
 	private void s(String s2) { // an alias to avoid typing so much!
 		Log.d(Util.myLogName, "[" + ipAddress + "] " + s2);
 	}
@@ -343,60 +296,14 @@ public class HttpServerConnection extends Thread {
 
 	// it is not always possible to get the file size :(
 	private String getFileSizeHeader() {
-		String path = fileUri.toString();
-		int pos = path.indexOf("://");
-		if (pos > -1) {
-			path = path.substring(pos + 3);
-		}
-
-		try {
-			File f = new File(path);
-			long size = f.length();
-			if (size == 0) {
-				String newUrl = URLDecoder.decode(path);
-				f = new File(newUrl);
-				size = f.length();
-				if (size == 0) {
-					size = getFileSizeBruteForceMethod();
-					if (size == 0) {
-						return "";
-					}
-				}
-			}
-			return "Content-Length: " + Long.toString(size) + "\r\n";
-		} catch (Exception e) {
+		if (theUriInterpretation == null) {
 			return "";
 		}
-	}
-
-	private long getFileSizeBruteForceMethod() {
-		long maxSize = 20 * 1024 * 1024; // 20MBs
-		ContentResolver cr = Util.theContext.getContentResolver();
-		InputStream requestedfile = null;
-		try {
-			requestedfile = cr.openInputStream(fileUri);
-		} catch (FileNotFoundException e) {
-			s("FileNotFound getting filesize...");
-			// TODO Auto-generated catch block
-			return 0;
+		if (theUriInterpretation.size > 0) {
+			return "Content-Length: "
+					+ Long.toString(theUriInterpretation.size) + "\r\n";
 		}
-
-		long fileSize = 0;
-		byte[] buffer = new byte[4096];
-		try {
-			for (int n; (n = requestedfile.read(buffer)) != -1;) {
-				fileSize += n;
-				if (fileSize > maxSize) {
-					requestedfile.close();
-					return 0;
-				}
-			}
-			requestedfile.close();
-		} catch (IOException e) {
-			s("IOException getting filesize...");
-			return 0;
-		}
-		return fileSize;
+		return "";
 	}
 
 	// this method makes the HTTP header for the response
@@ -433,29 +340,6 @@ public class HttpServerConnection extends Thread {
 		}
 		output.append("\r\n");
 		return output.toString();
-	}
-
-	String getMimeFromUri(Uri fileUri, String originalMime) {
-		if (originalMime != null && !originalMime.equals("")) {
-			return originalMime;
-		}
-
-		String mPath = fileUri.getPath();
-		MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-		String extension = MimeTypeMap.getFileExtensionFromUrl(mPath);
-		if (TextUtils.isEmpty(extension)) {
-			// getMimeTypeFromExtension() doesn't handle spaces in filenames nor
-			// can it handle
-			// urlEncoded strings. Let's try one last time at finding the
-			// extension.
-			int dotPos = mPath.lastIndexOf('.');
-			if (0 <= dotPos) {
-				extension = mPath.substring(dotPos + 1);
-			}
-		}
-		String mime = mimeTypeMap.getMimeTypeFromExtension(extension);
-		return mime;
-
 	}
 
 }

@@ -24,6 +24,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.MarcosDiez.shareviahttp;
 
+import java.util.Set;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -41,6 +43,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class SendFile extends Activity {
+	private static final boolean String = false;
 	/** Called when the activity is first created. */
 
 	static MyHttpServer theHttpServer = null;
@@ -76,12 +79,39 @@ public class SendFile extends Activity {
 
 	private Uri getFileUri() {
 		Intent dataIntent = getIntent();
+		
+		/*
+		 * if (Intent.ACTION_SEND.equals(action)) {
+                Uri stream = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                if (stream != null) {
+                    addAttachment(stream, type);
+                }
+            } else {
+                ArrayList<Parcelable> list = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+                if (list != null) {
+                    for (Parcelable parcelable : list) {
+                        Uri stream = (Uri) parcelable;
+                        if (stream != null) {
+                            addAttachment(stream, type);
+                        }
+                    }
+                }
+            }
+		 */
+		
 		if (dataIntent == null) {
 			Log.d(Util.myLogName, "no data Intent");
 			return null;
 		}
 
 		Bundle extras = dataIntent.getExtras();
+		Set<String> x = extras.keySet();
+		
+		for( String oneString : x   ){
+			Log.d(Util.myLogName , "Bundle: " + oneString +  "  "  +  extras.get(oneString).toString() );			
+		}
+		
+		
 		Uri myUri = (Uri) extras.get(Intent.EXTRA_STREAM);
 
 		if (myUri == null) {

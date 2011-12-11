@@ -148,7 +148,6 @@ public class MyHttpServer extends Thread {
 	}
 
 	public static String getLocalIpAddress() {
-
 		try {
 			InetAddress localAddress = null;
 			InetAddress ipv6 = null;
@@ -197,6 +196,31 @@ public class MyHttpServer extends Thread {
 		return true;
 	}
 
+
+
+	public void run() {
+		s("Starting " + Util.myLogName + " server v" + Util.getAppVersion());
+		if (!normalBind(port)) {
+			return;
+		}
+
+		// go in a infinite loop, wait for connections, process request, send
+		// response
+		while (webserverLoop) {
+			s("Ready, Waiting for requests...\n");
+			try {
+				Socket connectionsocket = serversocket.accept();
+				new HttpServerConnection(fileUri, connectionsocket);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void s(String s2) { // an alias to avoid typing so much!
+		Log.d(Util.myLogName, s2);
+	}
+	
 	/*
 	 * // TODO.... // ./iptables_armv5 -t nat -A PREROUTING -p tcp -m tcp
 	 * --dport 80 -j REDIRECT --to-ports 9999 // so we could "bind" port 80 on a
@@ -230,27 +254,5 @@ public class MyHttpServer extends Thread {
 	 * 
 	 * return retval; }
 	 */
-
-	public void run() {
-		s("Starting " + Util.myLogName + " server v" + Util.getAppVersion());
-		if (!normalBind(port)) {
-			return;
-		}
-
-		// go in a infinite loop, wait for connections, process request, send
-		// response
-		while (webserverLoop) {
-			s("Ready, Waiting for requests...\n");
-			try {
-				Socket connectionsocket = serversocket.accept();
-				new HttpServerConnection(fileUri, connectionsocket);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	private void s(String s2) { // an alias to avoid typing so much!
-		Log.d(Util.myLogName, s2);
-	}
+	
 }
