@@ -136,8 +136,8 @@ public class HttpServerConnection implements Runnable {
 			return;
 		}
 
-		
-		String fileUriStr = fileUriZ.size() == 1 ? fileUriZ.get(0).toString() : fileUriZ.toString();
+		String fileUriStr = fileUriZ.size() == 1 ? fileUriZ.get(0).toString()
+				: fileUriZ.toString();
 
 		s("Client requested: [" + path + "][" + fileUriStr + "]");
 
@@ -166,22 +166,26 @@ public class HttpServerConnection implements Runnable {
 	}
 
 	private void shareOneFile(DataOutputStream output, Boolean sendOnlyHeader) {
+
 		InputStream requestedfile = null;
 
-		try {
-			requestedfile = theUriInterpretation.getInputStream();
-		} catch (FileNotFoundException e) {
+		if (!theUriInterpretation.isDirectory) {
 			try {
-				// if you could not open the file send a 404
-				output.writeBytes(construct_http_header(404, null));
-				// close the stream
-				output.close();
-			} catch (Exception e2) {
-				s("errorX:" + e2.getMessage());
-			}
-			s("error" + e.getMessage());
-		} // print error to gui
-
+				requestedfile = theUriInterpretation.getInputStream();
+			} catch (FileNotFoundException e) {
+				try {
+					// if you could not open the file send a 404
+					s("Sending HTTP ERROR 404:" + e.getMessage());
+					output.writeBytes(construct_http_header(404, null));
+					// close the stream
+					output.close();
+					return;
+				} catch (Exception e2) {
+					s("errorX:" + e2.getMessage());
+					return;
+				}
+			} // print error to gui
+		}
 		// happy day scenario
 
 		String outputString = construct_http_header(200,
@@ -193,7 +197,7 @@ public class HttpServerConnection implements Runnable {
 			// if it was a HEAD request, we don't print any BODY
 			if (!sendOnlyHeader) {
 
-				if (fileUriZ.size() > 1) {
+				if (theUriInterpretation.isDirectory || fileUriZ.size() > 1) {
 					FileZipper zz = new FileZipper(output, fileUriZ);
 					zz.run();
 				} else {
@@ -223,12 +227,18 @@ public class HttpServerConnection implements Runnable {
 	}
 
 	private void shareRootUrl(DataOutputStream output) {
+		if (theUriInterpretation.isDirectory) {
+			redirectToFinalPath(output, theUriInterpretation.name + ".ZIP");
+			return;
+		}
+
 		if (fileUriZ.size() == 1) {
 			redirectToFinalPath(output, theUriInterpretation.name);
-		}else{			
+		} else {
 			SimpleDateFormat format = new SimpleDateFormat(
-					"yyyy-MM-dd_HH_mm_ss" );			
-			redirectToFinalPath(output, "ShareViaHttpBundle-" + format.format(new Date()) + ".ZIP"  );
+					"yyyy-MM-dd_HH_mm_ss");
+			redirectToFinalPath(output,
+					"ShareViaHttpBundle-" + format.format(new Date()) + ".ZIP");
 		}
 	}
 
