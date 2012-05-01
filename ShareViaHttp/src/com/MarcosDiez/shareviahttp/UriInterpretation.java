@@ -21,6 +21,7 @@ public class UriInterpretation {
 	public long size = -1;
 	public String name = null;
 	public String mime;
+	public boolean isDirectory = false;
 	Uri uri;
 	ContentResolver contentResolver;
 
@@ -64,16 +65,30 @@ public class UriInterpretation {
 				File f = new File(uriString.substring("file://".length()));
 				size = f.length();
 				if (size == 0) {
-					uriString = URLDecoder.decode(uriString).substring("file://".length());					
+					uriString = URLDecoder.decode(uriString).substring(
+							"file://".length());
 					f = new File(uriString);
 					size = f.length();
 				}
 				Log.v(Util.myLogName, "zzz" + size);
 
 			} else {
+				try {
+					File f = new File(uriString);
+					isDirectory = f.isDirectory();
+					if (isDirectory) {
+						Log.v(Util.myLogName,
+								"We are dealing with a directory.");
+					}
+					return;
+				} catch (Exception e) {
+					Log.v(Util.myLogName, "Not a file... " + uriString);
+					e.printStackTrace();
+				}
 				Log.v(Util.myLogName, "Not a file: " + uriString);
+
 			}
-		} 
+		}
 	}
 
 	private void getMime(Uri uri, ContentResolver contentResolver) {
