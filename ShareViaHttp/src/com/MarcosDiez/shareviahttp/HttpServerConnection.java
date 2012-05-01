@@ -95,6 +95,12 @@ public class HttpServerConnection implements Runnable {
 
 		DataOutputStream output = new DataOutputStream(theOuputStream);
 		http_handler(input, output);
+		try {
+			output.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		s("Closing connection.");
 	}
 
@@ -156,7 +162,14 @@ public class HttpServerConnection implements Runnable {
 			redirectToFinalPath(output, fileUriStr);
 			return;
 		}
-		theUriInterpretation = new UriInterpretation(fileUriZ.get(0));
+
+		try {
+			theUriInterpretation = new UriInterpretation(fileUriZ.get(0));
+		} catch (java.lang.SecurityException e) {
+			e.printStackTrace();
+			s("Share Via HTTP has no permition to read such file.");
+			return;
+		}
 		if (path.equals("/")) {
 			shareRootUrl(output);
 			return;
@@ -177,10 +190,8 @@ public class HttpServerConnection implements Runnable {
 					// if you could not open the file send a 404
 					s("Sending HTTP ERROR 404:" + e.getMessage());
 					output.writeBytes(construct_http_header(404, null));
-					// close the stream
-					output.close();
 					return;
-				} catch (Exception e2) {
+				} catch (IOException e2) {
 					s("errorX:" + e2.getMessage());
 					return;
 				}
@@ -208,7 +219,6 @@ public class HttpServerConnection implements Runnable {
 				}
 
 			}
-			output.close();
 			requestedfile.close();
 		} catch (IOException e) {
 		}
@@ -221,7 +231,6 @@ public class HttpServerConnection implements Runnable {
 			// if you could not open the file send a 404
 			output.writeBytes(redirectOutput);
 			// close the stream
-			output.close();
 		} catch (IOException e2) {
 		}
 	}
@@ -246,8 +255,7 @@ public class HttpServerConnection implements Runnable {
 		try {
 			// if you could not open the file send a 404
 			output.writeBytes(construct_http_header(404, null));
-			// close the stream
-			output.close();
+			// close the stream			
 		} catch (IOException e2) {
 		}
 	}
@@ -279,7 +287,6 @@ public class HttpServerConnection implements Runnable {
 	private void dealWithUnsuporthedMethod(DataOutputStream output) {
 		try {
 			output.writeBytes(construct_http_header(501, null));
-			output.close();
 			return;
 		} catch (Exception e3) { // if some error happened catch it
 			s("_error:" + e3.getMessage());

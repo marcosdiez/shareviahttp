@@ -69,6 +69,10 @@ public class MyHttpServer extends Thread {
 		MyHttpServer.fileUris = fileUris;
 	}
 
+	public static ArrayList<Uri> GetFiles(){
+		return MyHttpServer.fileUris;
+	}
+	
 	// default port is 80
 	public MyHttpServer(int listen_port) {
 		port = listen_port;

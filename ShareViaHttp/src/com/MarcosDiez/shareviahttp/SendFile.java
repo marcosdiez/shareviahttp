@@ -24,6 +24,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.MarcosDiez.shareviahttp;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -36,6 +37,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,7 +62,9 @@ public class SendFile extends Activity {
 	@ViewById
 	TextView link_msg;
 
-	
+	@ViewById
+	TextView txtBarCodeScannerInfo;
+
 	@AfterViews
 	void init() {
 		Util.theContext = this.getApplicationContext();
@@ -73,10 +77,13 @@ public class SendFile extends Activity {
 		theHttpServer = new MyHttpServer(9999);
 		listOfServerUris = theHttpServer.ListOfIpAddresses();
 		preferedServerUri = listOfServerUris[0].toString();
+
+		loadUrisToServer(myUris);
+	}
+
+	void loadUrisToServer(ArrayList<Uri> myUris) {
 		MyHttpServer.SetFiles(myUris);
 		generateBarCodeIfPossible(preferedServerUri);
-
-		
 		uriPath.setText("File(s): " + Uri.decode(myUris.toString()));
 		formatHyperlinks();
 	}
@@ -122,6 +129,44 @@ public class SendFile extends Activity {
 
 		theUris.add(myUri);
 		return theUris;
+	}
+
+	@Click
+	void button_share_containing_folder() {
+		ArrayList<Uri> myUris = MyHttpServer.GetFiles();
+		if (myUris == null || myUris.isEmpty()) {
+			Toast.makeText(thisActivity, "Error getting file list.",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
+
+		Uri theUri = myUris.get(0);
+		String path = theUri.getPath();
+		int pos = path.lastIndexOf(File.separator);
+		if (pos <= 0) {
+			Toast.makeText(thisActivity, "Error getting parent directory.",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
+
+		String newPath = path.substring(0, pos);
+		Log.d(Util.myLogName, newPath);
+		File newFile = new File(newPath);
+		if (!newFile.exists()) {
+			Toast.makeText(thisActivity,
+					"Error. New file [" + newPath + "] does not exist.", Toast.LENGTH_LONG)
+					.show();
+
+			return;
+		}
+
+		Uri theNewUri = Uri.parse(newPath);
+		ArrayList<Uri> newUriArray = new ArrayList<Uri>();
+		newUriArray.add(theNewUri);
+
+		Toast.makeText(thisActivity, "We are now sharing [" + newPath + "]",
+				Toast.LENGTH_LONG).show();
+		loadUrisToServer(newUriArray);
 	}
 
 	void serverUriChanged() {
@@ -193,8 +238,8 @@ public class SendFile extends Activity {
 	}
 
 	void formatBarcodeLink() {
-		TextView t2 = (TextView) findViewById(R.id.txtBarCodeScannerInfo);
-		t2.setVisibility(View.VISIBLE);
-		t2.setMovementMethod(LinkMovementMethod.getInstance());
+		txtBarCodeScannerInfo.setVisibility(View.VISIBLE);
+		txtBarCodeScannerInfo.setMovementMethod(LinkMovementMethod
+				.getInstance());
 	}
 }
