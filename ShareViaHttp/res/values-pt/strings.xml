@@ -2,16 +2,20 @@
 <resources>
     <string name="app_name">Mandar por HTTP</string>
 
-    <string name="header_msg">Seu despositivo está compartilhando o arquivo escolhido. Para abri-lo em em qualquer lugar, apenas digite</string>
+    <string name="header_msg">Arquivos(s) compartilhado(s) no endereço abaixo:</string>
     <string name="standar_url">http://127.0.0.1/</string>    
-    <string name="header_msg2">em qualquer navegador !</string>
+
 
 
 	<string name="technical_info">Restrições Técnicas: No 3G, todos terão acesso ao seu arquivo porém a velocidade será lenta. No WiFi, a velocidade será rápida porém apenas as pessoas na mesma rede poderão baixar o arquivo.</string>
-    <string name="botton_msg">Apropósito, se você instalar o <a href="http://market.android.com/details?id=com.google.zxing.client.android">Leitor de Código de Barras</a>, esta URL pode ser enviada como um código de barras também.</string>
+    <string name="barcode_scanner_msg">Apropósito, se você instalar o <a href="http://market.android.com/details?id=com.google.zxing.client.android">Leitor de Código de Barras</a>, esta URL pode ser enviada como um código de barras também.</string>
         
     <string name="button_rate">Dar uma nota para este App</string>
+    <string name="change_ip">Escolher IP</string>
+    <string name="share_containing_folder">Compartilhar Pasta Que Contém Este Arquivo</string> 
     <string name="stop_server">Desligar Compartilhamento</string>
+    
+    
     <string name="now_sharing_anymore">O arquivo não está mais sendo compartilhado.</string>
         
 </resources>

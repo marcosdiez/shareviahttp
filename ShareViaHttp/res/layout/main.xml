@@ -1,71 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="wrap_content"
-	>
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
 
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
 
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		android:orientation="vertical" android:layout_width="fill_parent"
-		android:layout_height="fill_parent">
+        <TextView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/header_msg"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="all"
+            android:text="@string/header_msg" />
 
-		<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:text="@string/header_msg" android:id="@+id/header_msg"
-			android:autoLink="all" />
+        <TextView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/link_msg"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="all"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center_horizontal"
+            android:text="@string/standar_url"
+            android:textSize="40px" />
 
-		<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:text="@string/standar_url" android:id="@+id/link_msg"
-			android:autoLink="all" android:cursorVisible="true"
-			android:focusable="true" android:focusableInTouchMode="true"
-			android:gravity="center_horizontal" android:textSize="40px" />
+        <TextView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/placeholder1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="all"
+            android:text=" " />
 
-		<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:text="@string/header_msg2" android:id="@+id/header_msg2"
-			android:autoLink="all" />
+        <TextView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/uriPath"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="all"
+            android:text=" " />
 
-		<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:text=" " android:id="@+id/placeholder1" android:autoLink="all" />
+        <TextView
+            android:id="@+id/txtBarCodeScannerInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/barcode_scanner_msg"
+            android:visibility="gone" />
 
+        <TextView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/placeholder3"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="all"
+            android:text=" " />
 
-		<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:text=" " android:id="@+id/uriPath" android:autoLink="all" />
+        <TextView
+            android:id="@+id/technical_info"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="all"
+            android:text="@string/technical_info" />
 
+        <TextView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/placeholder4"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="all"
+            android:text=" " />
 
-		<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:text=" " android:id="@+id/placeholder5" android:autoLink="all" />
+        <Button
+            android:id="@+id/button_rate"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_rate" />
 
-		<TextView android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:text="@string/botton_msg"
-			android:id="@+id/infoTxtCredits" android:layout_centerInParent="true"
-			android:layout_marginTop="20dp" />
+        <Button
+            android:id="@+id/change_ip"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/change_ip" />
 
-		<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:text=" " android:id="@+id/placeholder3" android:autoLink="all" />
+        <Button
+            android:id="@+id/button_share_containing_folder"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/share_containing_folder" />
 
-		<TextView android:layout_height="wrap_content" android:text="@string/technical_info"
-			android:id="@+id/technical_info" android:layout_width="fill_parent"
-			android:autoLink="all" />
+        <Button
+            android:id="@+id/stop_server"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/stop_server" />
+    </LinearLayout>
 
-		<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:text=" " android:id="@+id/placeholder4" android:autoLink="all" />
-
-		<Button android:layout_height="wrap_content" android:text="@string/button_rate"
-			android:id="@+id/button_rate" android:layout_width="fill_parent" />
-
-		<Button android:layout_height="wrap_content" android:text="@string/stop_server"
-			android:id="@+id/stop_server" android:layout_width="fill_parent" />
-		
-		<Button android:layout_height="wrap_content" android:text="@string/change_ip"
-			android:id="@+id/change_ip" android:layout_width="fill_parent" />
-
-	</LinearLayout>
 </ScrollView>
