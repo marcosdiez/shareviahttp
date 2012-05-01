@@ -55,8 +55,11 @@ public class SendFile extends Activity {
 
 		Util.theContext = this.getApplicationContext();
 		ArrayList<Uri> myUris = getFileUris();
-		if (myUris.size() == 0)
+		if (myUris == null || myUris.size() == 0){
+			finish();
 			return;
+		}
+			
 
 		theHttpServer = new MyHttpServer(9999);
 		listOfServerUris = theHttpServer.ListOfIpAddresses();
@@ -79,28 +82,34 @@ public class SendFile extends Activity {
 	private ArrayList<Uri> getFileUris() {
 		Intent dataIntent = getIntent();
 		ArrayList<Uri> theUris = new ArrayList<Uri>();
-				
-		if( Intent.ACTION_SEND_MULTIPLE.equals(dataIntent.getAction()) ){
-			ArrayList<Parcelable> list = dataIntent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-            if (list != null) {
-                for (Parcelable parcelable : list) {
-                    Uri stream = (Uri) parcelable;
-                    if (stream != null) {
-                    	theUris.add(stream);
-                    }
-                }
-            }
-            return theUris;
-		}
-		
 
-		
+		if (Intent.ACTION_SEND_MULTIPLE.equals(dataIntent.getAction())) {
+			ArrayList<Parcelable> list = dataIntent
+					.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+			if (list != null) {
+				for (Parcelable parcelable : list) {
+					Uri stream = (Uri) parcelable;
+					if (stream != null) {
+						theUris.add(stream);
+					}
+				}
+			}
+			return theUris;
+		}
+
 		Bundle extras = dataIntent.getExtras();
-		
-		Uri myUri =   (Uri) extras.get(Intent.EXTRA_STREAM);
+
+		Uri myUri = (Uri) extras.get(Intent.EXTRA_STREAM);
 
 		if (myUri == null) {
-			myUri = Uri.parse((String) extras.get(Intent.EXTRA_TEXT));
+			String tempString = (String) extras.get(Intent.EXTRA_TEXT);
+			if (tempString == null) {
+				Toast.makeText(this, "Error obtaining the file path",
+						Toast.LENGTH_LONG).show();
+				return null;
+			}
+			
+			myUri = Uri.parse(tempString);
 
 			if (myUri == null) {
 				Toast.makeText(this, "Error obtaining the file path",
@@ -108,7 +117,7 @@ public class SendFile extends Activity {
 				return null;
 			}
 		}
-		
+
 		theUris.add(myUri);
 		return theUris;
 	}
@@ -173,7 +182,8 @@ public class SendFile extends Activity {
 		b.setSingleChoiceItems(listOfServerUris, 0,
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
-						preferedServerUri = listOfServerUris[whichButton].toString();
+						preferedServerUri = listOfServerUris[whichButton]
+								.toString();
 						serverUriChanged();
 						dialog.dismiss();
 					}
