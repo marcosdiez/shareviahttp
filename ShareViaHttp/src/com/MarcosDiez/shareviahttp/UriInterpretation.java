@@ -63,6 +63,12 @@ public class UriInterpretation {
 			String uriString = uri.toString();
 			if (uriString.startsWith("file://")) {
 				File f = new File(uriString.substring("file://".length()));
+				isDirectory = f.isDirectory();
+				if (isDirectory) {
+					// Log.v(Util.myLogName, "We are dealing with a directory.");
+					size = 0;
+					return;
+				}
 				size = f.length();
 				if (size == 0) {
 					uriString = URLDecoder.decode(uriString).substring(
@@ -76,10 +82,6 @@ public class UriInterpretation {
 				try {
 					File f = new File(uriString);
 					isDirectory = f.isDirectory();
-					if (isDirectory) {
-						Log.v(Util.myLogName,
-								"We are dealing with a directory.");
-					}
 					return;
 				} catch (Exception e) {
 					Log.v(Util.myLogName, "Not a file... " + uriString);
