@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.MarcosDiez.shareviahttp"
-    android:versionCode="9"
-    android:versionName="1.08" >
+    android:versionCode="10"
+    android:versionName="1.09" >
 
-    <uses-sdk android:minSdkVersion="4" />
+    <uses-sdk
+        android:minSdkVersion="4"
+        android:targetSdkVersion="15" />
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -25,17 +27,8 @@
         android:label="@string/app_name" >
 
         <!--
-		<activity android:name="AaaHttpServerActivity"
-			android:label="@string/app_name">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
-		</activity>
-        -->
-
         <activity
-            android:name=".filemanagerActivity"
+            android:name=".DebugActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,6 +36,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        -->
         <activity
             android:name=".SendFile_"
             android:label="@string/app_name" >
