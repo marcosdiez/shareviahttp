@@ -37,29 +37,38 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.Click;
+import com.googlecode.androidannotations.annotations.EActivity;
+import com.googlecode.androidannotations.annotations.ViewById;
+
+@EActivity(R.layout.main)
 public class SendFile extends Activity {
 	/** Called when the activity is first created. */
 
 	static MyHttpServer theHttpServer = null;
 	String preferedServerUri;
 	CharSequence[] listOfServerUris;
+	final Activity thisActivity = this;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	@ViewById
+	TextView uriPath;
 
+	@ViewById
+	TextView link_msg;
+
+	
+	@AfterViews
+	void init() {
 		Util.theContext = this.getApplicationContext();
 		ArrayList<Uri> myUris = getFileUris();
-		if (myUris == null || myUris.size() == 0){
+		if (myUris == null || myUris.size() == 0) {
 			finish();
 			return;
 		}
-			
 
 		theHttpServer = new MyHttpServer(9999);
 		listOfServerUris = theHttpServer.ListOfIpAddresses();
@@ -67,16 +76,9 @@ public class SendFile extends Activity {
 		MyHttpServer.SetFiles(myUris);
 		generateBarCodeIfPossible(preferedServerUri);
 
-		setContentView(R.layout.main);
-
-		((TextView) findViewById(R.id.uriPath)).setText("File(s): "
-				+ Uri.decode(myUris.toString()));
-
+		
+		uriPath.setText("File(s): " + Uri.decode(myUris.toString()));
 		formatHyperlinks();
-		formatBarcodeLink();
-		prepareBarcodeLinkButton();
-		prepareServerStopButton();
-		prepareChooseIpAddressButton();
 	}
 
 	private ArrayList<Uri> getFileUris() {
@@ -104,11 +106,11 @@ public class SendFile extends Activity {
 		if (myUri == null) {
 			String tempString = (String) extras.get(Intent.EXTRA_TEXT);
 			if (tempString == null) {
-				Toast.makeText(this, "Error obtaining the file path",
+				Toast.makeText(this, "Error obtaining the file path...",
 						Toast.LENGTH_LONG).show();
 				return null;
 			}
-			
+
 			myUri = Uri.parse(tempString);
 
 			if (myUri == null) {
@@ -122,57 +124,37 @@ public class SendFile extends Activity {
 		return theUris;
 	}
 
-	void formatHyperlinks() {
-		((TextView) findViewById(R.id.link_msg)).setText(preferedServerUri);
-	}
-
-	private void serverUriChanged() {
+	void serverUriChanged() {
 		formatHyperlinks();
 		generateBarCodeIfPossible(preferedServerUri);
 	}
 
-	private void prepareBarcodeLinkButton() {
-		Button b = (Button) findViewById(R.id.button_rate);
-		b.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				String theUrl = "https://market.android.com/details?id="
-						+ Util.getPackageName();
-				Intent browse = new Intent(Intent.ACTION_VIEW, Uri
-						.parse(theUrl));
-				startActivity(browse);
-			}
-		});
+	void formatHyperlinks() {
+		link_msg.setText(preferedServerUri);
 	}
 
-	private void prepareServerStopButton() {
-		final Activity thisActivity = this;
-
-		Button c = (Button) findViewById(R.id.stop_server);
-		c.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				MyHttpServer p = theHttpServer;
-				theHttpServer = null;
-				if (p != null) {
-					p.stopServer();
-				}
-				Toast.makeText(thisActivity, R.string.now_sharing_anymore,
-						Toast.LENGTH_SHORT).show();
-			}
-		});
+	@Click
+	void button_rate() {
+		String theUrl = "https://market.android.com/details?id="
+				+ Util.getPackageName();
+		Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse(theUrl));
+		startActivity(browse);
 	}
 
-	private void prepareChooseIpAddressButton() {
-		Button d = (Button) findViewById(R.id.change_ip);
-		d.setOnClickListener(new OnClickListener() {
+	@Click
+	void stop_server() {
+		MyHttpServer p = theHttpServer;
+		theHttpServer = null;
+		if (p != null) {
+			p.stopServer();
+		}
+		Toast.makeText(thisActivity, R.string.now_sharing_anymore,
+				Toast.LENGTH_SHORT).show();
+	}
 
-			@Override
-			public void onClick(View v) {
-				showDialog(42);
-
-			}
-		});
+	@Click
+	void change_ip() {
+		showDialog(42);
 	}
 
 	@Override
@@ -193,11 +175,6 @@ public class SendFile extends Activity {
 		return theAlertDialog;
 	}
 
-	void formatBarcodeLink() {
-		TextView t2 = (TextView) findViewById(R.id.infoTxtCredits);
-		t2.setMovementMethod(LinkMovementMethod.getInstance());
-	}
-
 	public void generateBarCodeIfPossible(String message) {
 		Intent intent = new Intent("com.google.zxing.client.android.ENCODE");
 		intent.putExtra("ENCODE_TYPE", "TEXT_TYPE");
@@ -205,6 +182,7 @@ public class SendFile extends Activity {
 		try {
 			startActivity(intent);
 		} catch (ActivityNotFoundException e) { // the person has no barcode
+			formatBarcodeLink();
 			// scanner
 			return;
 		}
@@ -214,4 +192,9 @@ public class SendFile extends Activity {
 						+ message, Toast.LENGTH_SHORT).show();
 	}
 
+	void formatBarcodeLink() {
+		TextView t2 = (TextView) findViewById(R.id.txtBarCodeScannerInfo);
+		t2.setVisibility(View.VISIBLE);
+		t2.setMovementMethod(LinkMovementMethod.getInstance());
+	}
 }

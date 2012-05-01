@@ -1,22 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="com.MarcosDiez.shareviahttp" 
-	android:versionCode="9"
-	android:versionName="1.08">
-	<uses-sdk android:minSdkVersion="4" />
-	<uses-permission android:name="android.permission.INTERNET" />
-	
-	<!--
+    package="com.MarcosDiez.shareviahttp"
+    android:versionCode="9"
+    android:versionName="1.08" >
+
+    <uses-sdk android:minSdkVersion="4" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!--
 	This would allow us to share contacts as vCards, but I don't want to 
 	scare users by asking for another permission... 
 	<uses-permission android:name="android.permission.READ_CONTACTS" />	
-	 -->
-	<uses-feature android:name="android.hardware.touchscreen" android:required="false" />
-	<uses-feature android:name="android.hardware.faketouch" android:required="false" />
-	<application android:icon="@drawable/icon" android:label="@string/app_name"
-		android:debuggable="false">
-		
-		<!-- 
+    -->
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.faketouch"
+        android:required="false" />
+
+    <application
+        android:icon="@drawable/icon"
+        android:label="@string/app_name" >
+
+        <!--
 		<activity android:name="AaaHttpServerActivity"
 			android:label="@string/app_name">
 			<intent-filter>
@@ -24,26 +32,39 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		 -->
+        -->
 
-		<activity android:label="@string/app_name" android:name=".SendFile">
-			<intent-filter>
-				<action android:name="android.intent.action.SEND">
-				</action>
-				<category android:name="android.intent.category.DEFAULT">
-				</category>
-				<data android:mimeType="*/*">
-				</data>
-			</intent-filter>
-			
-			    
-			<intent-filter>
+        <activity
+            android:name=".filemanagerActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".SendFile_"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" >
+                </action>
+
+                <category android:name="android.intent.category.DEFAULT" >
+                </category>
+
+                <data android:mimeType="*/*" >
+                </data>
+            </intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.SEND_MULTIPLE" />
+
                 <data android:mimeType="*/*" />
+
                 <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>			    
-			    
-			<!-- 
+            </intent-filter>
+
+            <!--
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW">
 				</action>
@@ -56,7 +77,8 @@
 				<data android:scheme="file">
 				</data>
 			</intent-filter>
-			 -->
-		</activity>	
-	</application>
+            -->
+        </activity>
+    </application>
+
 </manifest>

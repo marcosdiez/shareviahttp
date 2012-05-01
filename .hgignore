@@ -2,3 +2,4 @@ syntax: glob
 ShareViaHttp/gen/
 ShareViaHttp/bin/
 ShareViaWifi/
+ShareViaHttp/.apt_generated/
