@@ -28,19 +28,16 @@ import java.io.File;
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.text.ClipboardManager;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
@@ -186,12 +183,12 @@ public class SendFile extends Activity {
 		if (SdkVersionHelper.getSdkInt() >= 11) {
 			android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 			clipboard.setPrimaryClip(ClipData.newPlainText(url, url));
-		}else{
+		} else {
 			android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-			clipboard.setText(url);		 			 	
+			clipboard.setText(url);
 		}
 		Toast.makeText(this, "URL has been copied to the clipboard.",
-				Toast.LENGTH_SHORT).show();			
+				Toast.LENGTH_SHORT).show();
 	}
 
 	void formatHyperlinks() {
@@ -215,6 +212,14 @@ public class SendFile extends Activity {
 		}
 		Toast.makeText(thisActivity, R.string.now_sharing_anymore,
 				Toast.LENGTH_SHORT).show();
+	}
+
+	@Click
+	void button_share_url() {
+		Intent i = new Intent(Intent.ACTION_SEND);
+		i.setType("text/plain");
+		i.putExtra(Intent.EXTRA_TEXT, preferedServerUri);
+		startActivity(Intent.createChooser(i, this.getString(R.string.share_url)));
 	}
 
 	@Click

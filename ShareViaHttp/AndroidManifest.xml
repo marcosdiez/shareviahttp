@@ -9,10 +9,10 @@
         android:targetSdkVersion="16" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- required by JellyBeam -->
+    <!--  
+     // required by JellyBeam 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <!-- so we don't sleep during a download anymore -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    -->
 
     <!--
 	This would allow us to share contacts as vCards, but I don't want to 

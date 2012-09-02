@@ -12,7 +12,8 @@
         
     <string name="button_rate">Rate this App</string>
     <string name="change_ip">Choose the IP Address</string>
-    <string name="share_containing_folder">Share Containing Folder</string>   
+    <string name="share_containing_folder">Share Containing Folder</string>
+    <string name="share_url">Share URL</string>
     <string name="stop_server">Stop Server</string>    
        
     

@@ -99,6 +99,11 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/stop_server" />
+        <Button
+            android:id="@+id/button_share_url"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/share_url" />
     </LinearLayout>
 
 </ScrollView>

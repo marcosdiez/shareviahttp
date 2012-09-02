@@ -14,7 +14,7 @@
     <string name="change_ip">Escolher IP</string>
     <string name="share_containing_folder">Compartilhar Pasta Que Contém Este Arquivo</string> 
     <string name="stop_server">Desligar Compartilhamento</string>
-    
+    <string name="share_url">Compartilhar URL</string>
     
     <string name="now_sharing_anymore">O arquivo não está mais sendo compartilhado.</string>
         
