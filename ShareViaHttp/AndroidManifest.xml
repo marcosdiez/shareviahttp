@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.MarcosDiez.shareviahttp"
-    android:versionCode="10"
-    android:versionName="1.09" >
+    android:versionCode="11"
+    android:versionName="1.10" >
 
     <uses-sdk
         android:minSdkVersion="4"
-        android:targetSdkVersion="15" />
+        android:targetSdkVersion="16" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- required by JellyBeam -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- so we don't sleep during a download anymore -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <!--
 	This would allow us to share contacts as vCards, but I don't want to 
@@ -41,21 +45,14 @@
             android:name=".SendFile_"
             android:label="@string/app_name" >
             <intent-filter>
-                <action android:name="android.intent.action.SEND" >
-                </action>
-
-                <category android:name="android.intent.category.DEFAULT" >
-                </category>
-
-                <data android:mimeType="*/*" >
-                </data>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND_MULTIPLE" />
-
-                <data android:mimeType="*/*" />
-
                 <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
             </intent-filter>
 
             <!--

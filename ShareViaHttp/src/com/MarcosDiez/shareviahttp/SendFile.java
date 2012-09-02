@@ -27,15 +27,20 @@ package com.MarcosDiez.shareviahttp;
 import java.io.File;
 import java.util.ArrayList;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.ClipboardManager;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
@@ -46,6 +51,7 @@ import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.Click;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.ViewById;
+import com.googlecode.androidannotations.api.SdkVersionHelper;
 
 @EActivity(R.layout.main)
 public class SendFile extends Activity {
@@ -83,9 +89,8 @@ public class SendFile extends Activity {
 
 	void loadUrisToServer(ArrayList<Uri> myUris) {
 		MyHttpServer.SetFiles(myUris);
-		generateBarCodeIfPossible(preferedServerUri);
+		serverUriChanged();
 		uriPath.setText("File(s): " + Uri.decode(myUris.toString()));
-		formatHyperlinks();
 	}
 
 	private ArrayList<Uri> getFileUris() {
@@ -154,8 +159,8 @@ public class SendFile extends Activity {
 		File newFile = new File(newPath);
 		if (!newFile.exists()) {
 			Toast.makeText(thisActivity,
-					"Error. New file [" + newPath + "] does not exist.", Toast.LENGTH_LONG)
-					.show();
+					"Error. New file [" + newPath + "] does not exist.",
+					Toast.LENGTH_LONG).show();
 
 			return;
 		}
@@ -170,8 +175,23 @@ public class SendFile extends Activity {
 	}
 
 	void serverUriChanged() {
-		formatHyperlinks();
+		sendLinkToClipBoard(preferedServerUri);
 		generateBarCodeIfPossible(preferedServerUri);
+		formatHyperlinks();
+	}
+
+	@SuppressLint("NewApi")
+	@SuppressWarnings("deprecation")
+	private void sendLinkToClipBoard(String url) {
+		if (SdkVersionHelper.getSdkInt() >= 11) {
+			android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+			clipboard.setPrimaryClip(ClipData.newPlainText(url, url));
+		}else{
+			android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+			clipboard.setText(url);		 			 	
+		}
+		Toast.makeText(this, "URL has been copied to the clipboard.",
+				Toast.LENGTH_SHORT).show();			
 	}
 
 	void formatHyperlinks() {
