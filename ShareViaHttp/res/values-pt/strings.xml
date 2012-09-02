@@ -18,4 +18,6 @@
     
     <string name="now_sharing_anymore">O arquivo não está mais sendo compartilhado.</string>
         
+    <string name="alert_dialog_ok">OK</string>
+    <string name="alert_dialog_cancel">Cancelar</string>
 </resources>
