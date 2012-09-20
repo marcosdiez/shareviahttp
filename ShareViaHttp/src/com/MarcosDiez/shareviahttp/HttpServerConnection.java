@@ -174,11 +174,10 @@ public class HttpServerConnection implements Runnable {
 			shareRootUrl(output);
 			return;
 		}
-
-		shareOneFile(output, sendOnlyHeader);
+		shareOneFile(output, sendOnlyHeader , fileUriStr);
 	}
 
-	private void shareOneFile(DataOutputStream output, Boolean sendOnlyHeader) {
+	private void shareOneFile(DataOutputStream output, Boolean sendOnlyHeader, String fileUriStr ) {
 
 		InputStream requestedfile = null;
 
@@ -187,9 +186,15 @@ public class HttpServerConnection implements Runnable {
 				requestedfile = theUriInterpretation.getInputStream();
 			} catch (FileNotFoundException e) {
 				try {
+					s("Couldn't locate file. Sending input as text/plain");
+					// instead of sending a 404, we will send the contact as text/plain 
+					output.writeBytes(construct_http_header(200, "text/plain"));
+					output.writeBytes(fileUriStr);
+					
+					
 					// if you could not open the file send a 404
-					s("Sending HTTP ERROR 404:" + e.getMessage());
-					output.writeBytes(construct_http_header(404, null));
+					//s("Sending HTTP ERROR 404:" + e.getMessage());
+					//output.writeBytes(construct_http_header(404, null));
 					return;
 				} catch (IOException e2) {
 					s("errorX:" + e2.getMessage());
@@ -255,7 +260,7 @@ public class HttpServerConnection implements Runnable {
 		try {
 			// if you could not open the file send a 404
 			output.writeBytes(construct_http_header(404, null));
-			// close the stream			
+			// close the stream
 		} catch (IOException e2) {
 		}
 	}
