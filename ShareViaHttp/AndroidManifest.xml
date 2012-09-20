@@ -1,24 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.MarcosDiez.shareviahttp"
-    android:versionCode="11"
-    android:versionName="1.10" >
+    android:versionCode="12"
+    android:versionName="1.11" >
 
     <uses-sdk
         android:minSdkVersion="4"
         android:targetSdkVersion="16" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <!--  
-     // required by JellyBeam 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    -->
-
-    <!--
-	This would allow us to share contacts as vCards, but I don't want to 
-	scare users by asking for another permission... 
-	<uses-permission android:name="android.permission.READ_CONTACTS" />	
-    -->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
