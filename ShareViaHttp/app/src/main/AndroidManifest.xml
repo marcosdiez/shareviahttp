@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.MarcosDiez.shareviahttp"
-    android:versionCode="12"
-    android:versionName="1.11" >
+    android:versionCode="13"
+    android:versionName="1.12" >
 
     <uses-sdk
-        android:minSdkVersion="4"
+        android:minSdkVersion="7"
         android:targetSdkVersion="16" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    
+
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />

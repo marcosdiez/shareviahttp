@@ -1,5 +1,13 @@
 syntax: glob
 ShareViaHttp/gen/
+ShareViaHttp/build/
 ShareViaHttp/bin/
-ShareViaWifi/
 ShareViaHttp/.apt_generated/
+old/
+.gradle
+local.properties
+.idea/workspace.xml
+.idea/libraries
+ShareViaHttp/.idea/workspace.xml
+ShareViaHttp/.idea/libraries
+ShareViaHttp/build

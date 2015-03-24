@@ -5,7 +5,7 @@ All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.   
+      notice, this list of conditions and the following disclaimer.
  * Neither the name of  Marcos Diez nor the
       names of its contributors may be used to endorse or promote products
       derived from this software without specific prior written permission.
@@ -44,11 +44,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.googlecode.androidannotations.annotations.AfterViews;
-import com.googlecode.androidannotations.annotations.Click;
-import com.googlecode.androidannotations.annotations.EActivity;
-import com.googlecode.androidannotations.annotations.ViewById;
-import com.googlecode.androidannotations.api.SdkVersionHelper;
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
+import org.androidannotations.api.SdkVersionHelper;
 
 @EActivity(R.layout.main)
 public class SendFile extends Activity {
