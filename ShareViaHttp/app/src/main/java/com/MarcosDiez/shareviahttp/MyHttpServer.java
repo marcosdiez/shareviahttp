@@ -5,7 +5,7 @@ All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.   
+      notice, this list of conditions and the following disclaimer.
  * Neither the name of  Marcos Diez nor the
       names of its contributors may be used to endorse or promote products
       derived from this software without specific prior written permission.
@@ -41,7 +41,7 @@ import android.net.Uri;
 import android.util.Log;
 
 /**
- * 
+ *
  * Title: A simple Webserver Tutorial NO warranty, NO guarantee, MAY DO damage
  * to FILES, SOFTWARE, HARDWARE!! Description: This is a simple tutorial on
  * making a webserver posted on http://turtlemeat.com . Go there to read the
@@ -49,9 +49,9 @@ import android.util.Log;
  * modify it as you like, but you should give credit and maybe a link to
  * turtlemeat.com, you know R-E-S-P-E-C-T. You gotta respect the work that has
  * been put down.
- * 
+ *
  * Copyright: Copyright (c) 2002 Company: TurtleMeat
- * 
+ *
  * @author: Jon Berg <jon.berg[on_server]turtlemeat.com
  * @version 1.0
  */
@@ -72,7 +72,7 @@ public class MyHttpServer extends Thread {
 	public static ArrayList<Uri> GetFiles(){
 		return MyHttpServer.fileUris;
 	}
-	
+
 	// default port is 80
 	public MyHttpServer(int listen_port) {
 		port = listen_port;
@@ -91,6 +91,15 @@ public class MyHttpServer extends Thread {
 		if (port == 80) {
 			return "http://" + ipAddress + "/";
 		}
+        if( ipAddress.indexOf(":") >= 0 ){
+            // IPv6
+            int pos = ipAddress.indexOf("%");
+            // java insists in adding %wlan and %p2p0 to everything
+            if( pos > 0 ){
+                ipAddress = ipAddress.substring(0, pos);
+            }
+            return "http://[" + ipAddress + "]:" + port + "/";
+        }
 		return "http://" + ipAddress + ":" + port + "/";
 	}
 
@@ -110,38 +119,37 @@ public class MyHttpServer extends Thread {
 
 	public CharSequence[] ListOfIpAddresses() {
 		ArrayList<String> arrayOfIps = new ArrayList<String>();
-		String firstIp = "0.0.0.0";
-		arrayOfIps.add(firstIp);
+
 
 		try {
 			for (Enumeration<NetworkInterface> en = NetworkInterface
 					.getNetworkInterfaces(); en.hasMoreElements();) {
 				NetworkInterface intf = en.nextElement();
-				
+
 				Log.d(Util.myLogName , "Inteface: " + intf.getDisplayName());
 				for (Enumeration<InetAddress> enumIpAddr = intf
 						.getInetAddresses(); enumIpAddr.hasMoreElements();) {
 					InetAddress inetAddress = enumIpAddr.nextElement();
 
-					String theIp = inetAddress.getHostAddress().toString();
-					theIp = getServerUrl(theIp);
+					String theIpTemp = inetAddress.getHostAddress();
+					String theIp = getServerUrl(theIpTemp);
 
 					if (inetAddress instanceof Inet6Address
 							|| inetAddress.isLoopbackAddress()) {
-						arrayOfIps.add(theIp);
+
+                        arrayOfIps.add(theIp);
 						continue;
 					}
 
-					if (arrayOfIps.get(0) == firstIp) { // the first non local
-														// IPv4 is the prefered
-														// one...
-						arrayOfIps.remove(0);
-						arrayOfIps.add(0, theIp);
-					} else {
-						arrayOfIps.add(theIp);
-					}
+                    arrayOfIps.add(0, theIp); // we prefer non local IPv4
 				}
 			}
+
+            if(arrayOfIps.size() == 0){
+                String firstIp = getServerUrl("0.0.0.0");
+                arrayOfIps.add(firstIp);
+            }
+
 		} catch (SocketException ex) {
 			Log.e("httpServer", ex.toString());
 		}
@@ -215,9 +223,9 @@ public class MyHttpServer extends Thread {
 			try {
 				Socket connectionsocket = serversocket.accept();
 				HttpServerConnection theHttpConnection = new HttpServerConnection(fileUris, connectionsocket);
-				
+
 				threadPool.submit(theHttpConnection);
-				
+
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -232,17 +240,17 @@ public class MyHttpServer extends Thread {
 	 * // TODO.... // ./iptables_armv5 -t nat -A PREROUTING -p tcp -m tcp
 	 * --dport 80 -j REDIRECT --to-ports 9999 // so we could "bind" port 80 on a
 	 * rooted android device...
-	 * 
+	 *
 	 * public boolean rootBind() { boolean retval = false; Process suProcess;
-	 * 
+	 *
 	 * try { suProcess = Runtime.getRuntime().exec("su");
-	 * 
+	 *
 	 * DataOutputStream os = new DataOutputStream(suProcess.getOutputStream());
 	 * DataInputStream osRes = new DataInputStream(suProcess.getInputStream());
-	 * 
+	 *
 	 * if (null != os && null != osRes) { // Getting the id of the current user
 	 * to check if this is root os.writeBytes("id\n"); os.flush();
-	 * 
+	 *
 	 * String currUid = osRes.readLine(); boolean exitSu = false; if (null ==
 	 * currUid) { retval = false; exitSu = false; Log.d("ROOT",
 	 * "Can't get root access or denied by user"); } else if (true ==
@@ -250,15 +258,15 @@ public class MyHttpServer extends Thread {
 	 * Log.d("ROOT", "Root access granted"); retval = normalBind(80); } else {
 	 * retval = false; exitSu = true; Log.d("ROOT", "Root access rejected: " +
 	 * currUid); }
-	 * 
+	 *
 	 * if (exitSu) { os.writeBytes("exit\n"); os.flush(); } } } catch (Exception
 	 * e) { // Can't get root ! // Probably broken pipe exception on trying to
 	 * write to output // stream after su failed, meaning that the device is not
 	 * rooted
-	 * 
+	 *
 	 * retval = false; Log.d("ROOT", "Root access rejected [" +
 	 * e.getClass().getName() + "] : " + e.getMessage()); }
-	 * 
+	 *
 	 * return retval; }
 	 */
 

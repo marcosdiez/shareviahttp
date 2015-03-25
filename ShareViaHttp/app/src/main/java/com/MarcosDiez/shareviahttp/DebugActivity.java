@@ -20,11 +20,10 @@ public class DebugActivity extends Activity {
 				botao();
 			}
 		});
-
 	}
 
 	void botao() {
-		String path = "/mnt/sdcard/.mixzing";
+		String path = "/mnt/sdcard/.mixzing/bbb.txt";
 
 		Intent intent = new Intent(this, SendFile_.class);
 		intent.addCategory("android.intent.category.DEFAULT");
