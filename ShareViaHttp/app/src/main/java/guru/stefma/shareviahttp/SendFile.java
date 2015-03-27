@@ -24,15 +24,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package guru.stefma.shareviahttp;
 
-import java.io.File;
-import java.util.ArrayList;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -41,230 +39,248 @@ import android.os.Parcelable;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
-import org.androidannotations.api.SdkVersionHelper;
+import java.io.File;
+import java.util.ArrayList;
 
-@EActivity(R.layout.main)
 public class SendFile extends Activity {
-	/** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
 
-	static MyHttpServer theHttpServer = null;
-	String preferedServerUri;
-	CharSequence[] listOfServerUris;
-	final Activity thisActivity = this;
+    static MyHttpServer theHttpServer = null;
+    String preferedServerUri;
+    CharSequence[] listOfServerUris;
+    final Activity thisActivity = this;
 
-	@ViewById
-	TextView uriPath;
+    TextView uriPath;
 
-	@ViewById
-	TextView link_msg;
+    TextView link_msg;
 
-	@ViewById
-	TextView txtBarCodeScannerInfo;
+    TextView txtBarCodeScannerInfo;
 
-	@AfterViews
-	void init() {
-		Util.theContext = this.getApplicationContext();
-		ArrayList<Uri> myUris = getFileUris();
-		if (myUris == null || myUris.size() == 0) {
-			finish();
-			return;
-		}
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
 
-		theHttpServer = new MyHttpServer(9999);
-		listOfServerUris = theHttpServer.ListOfIpAddresses();
-		preferedServerUri = listOfServerUris[0].toString();
+        uriPath = (TextView) findViewById(R.id.uriPath);
+        link_msg = (TextView) findViewById(R.id.link_msg);
+        txtBarCodeScannerInfo = (TextView) findViewById(R.id.txtBarCodeScannerInfo);
 
-		loadUrisToServer(myUris);
-	}
+        Button bttnRate = (Button) findViewById(R.id.button_rate);
+        bttnRate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String theUrl = "https://market.android.com/details?id="
+                        + Util.getPackageName();
+                Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse(theUrl));
+                startActivity(browse);
+            }
+        });
 
-	void loadUrisToServer(ArrayList<Uri> myUris) {
-		MyHttpServer.SetFiles(myUris);
-		serverUriChanged();
-		uriPath.setText("File(s): " + Uri.decode(myUris.toString()));
-	}
+        Button shareContainerFolder = (Button) findViewById(R.id.button_share_containing_folder);
+        shareContainerFolder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ArrayList<Uri> myUris = MyHttpServer.GetFiles();
+                if (myUris == null || myUris.isEmpty()) {
+                    Toast.makeText(thisActivity, "Error getting file list.",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-	private ArrayList<Uri> getFileUris() {
-		Intent dataIntent = getIntent();
-		ArrayList<Uri> theUris = new ArrayList<Uri>();
+                Uri theUri = myUris.get(0);
+                String path = theUri.getPath();
+                int pos = path.lastIndexOf(File.separator);
+                if (pos <= 0) {
+                    Toast.makeText(thisActivity, "Error getting parent directory.",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-		if (Intent.ACTION_SEND_MULTIPLE.equals(dataIntent.getAction())) {
-			ArrayList<Parcelable> list = dataIntent
-					.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-			if (list != null) {
-				for (Parcelable parcelable : list) {
-					Uri stream = (Uri) parcelable;
-					if (stream != null) {
-						theUris.add(stream);
-					}
-				}
-			}
-			return theUris;
-		}
+                String newPath = path.substring(0, pos);
+                Log.d(Util.myLogName, newPath);
+                File newFile = new File(newPath);
+                if (!newFile.exists()) {
+                    Toast.makeText(thisActivity,
+                            "Error. New file [" + newPath + "] does not exist.",
+                            Toast.LENGTH_LONG).show();
 
-		Bundle extras = dataIntent.getExtras();
+                    return;
+                }
 
-		Uri myUri = (Uri) extras.get(Intent.EXTRA_STREAM);
+                Uri theNewUri = Uri.parse(newPath);
+                ArrayList<Uri> newUriArray = new ArrayList<Uri>();
+                newUriArray.add(theNewUri);
 
-		if (myUri == null) {
-			String tempString = (String) extras.get(Intent.EXTRA_TEXT);
-			if (tempString == null) {
-				Toast.makeText(this, "Error obtaining the file path...",
-						Toast.LENGTH_LONG).show();
-				return null;
-			}
+                Toast.makeText(thisActivity, "We are now sharing [" + newPath + "]",
+                        Toast.LENGTH_LONG).show();
+                loadUrisToServer(newUriArray);
+            }
+        });
 
-			myUri = Uri.parse(tempString);
+        Button stopServer = (Button) findViewById(R.id.stop_server);
+        stopServer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MyHttpServer p = theHttpServer;
+                theHttpServer = null;
+                if (p != null) {
+                    p.stopServer();
+                }
+                Toast.makeText(thisActivity, R.string.now_sharing_anymore,
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
 
-			if (myUri == null) {
-				Toast.makeText(this, "Error obtaining the file path",
-						Toast.LENGTH_LONG).show();
-				return null;
-			}
-		}
+        Button bttnShare = (Button) findViewById(R.id.button_share_url);
+        bttnShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setType("text/plain");
+                i.putExtra(Intent.EXTRA_TEXT, preferedServerUri);
+                startActivity(Intent.createChooser(i, SendFile.this.getString(R.string.share_url)));
+            }
+        });
 
-		theUris.add(myUri);
-		return theUris;
-	}
+        Button changeIp = (Button) findViewById(R.id.change_ip);
+        changeIp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialog(42);
+            }
+        });
 
-	@Click
-	void button_share_containing_folder() {
-		ArrayList<Uri> myUris = MyHttpServer.GetFiles();
-		if (myUris == null || myUris.isEmpty()) {
-			Toast.makeText(thisActivity, "Error getting file list.",
-					Toast.LENGTH_SHORT).show();
-			return;
-		}
+        init();
+    }
 
-		Uri theUri = myUris.get(0);
-		String path = theUri.getPath();
-		int pos = path.lastIndexOf(File.separator);
-		if (pos <= 0) {
-			Toast.makeText(thisActivity, "Error getting parent directory.",
-					Toast.LENGTH_SHORT).show();
-			return;
-		}
+    void init() {
+        Util.theContext = this.getApplicationContext();
+        ArrayList<Uri> myUris = getFileUris();
+        if (myUris == null || myUris.size() == 0) {
+            finish();
+            return;
+        }
 
-		String newPath = path.substring(0, pos);
-		Log.d(Util.myLogName, newPath);
-		File newFile = new File(newPath);
-		if (!newFile.exists()) {
-			Toast.makeText(thisActivity,
-					"Error. New file [" + newPath + "] does not exist.",
-					Toast.LENGTH_LONG).show();
+        theHttpServer = new MyHttpServer(9999);
+        listOfServerUris = theHttpServer.ListOfIpAddresses();
+        preferedServerUri = listOfServerUris[0].toString();
 
-			return;
-		}
+        loadUrisToServer(myUris);
+    }
 
-		Uri theNewUri = Uri.parse(newPath);
-		ArrayList<Uri> newUriArray = new ArrayList<Uri>();
-		newUriArray.add(theNewUri);
+    void loadUrisToServer(ArrayList<Uri> myUris) {
+        MyHttpServer.SetFiles(myUris);
+        serverUriChanged();
+        uriPath.setText("File(s): " + Uri.decode(myUris.toString()));
+    }
 
-		Toast.makeText(thisActivity, "We are now sharing [" + newPath + "]",
-				Toast.LENGTH_LONG).show();
-		loadUrisToServer(newUriArray);
-	}
+    private ArrayList<Uri> getFileUris() {
+        Intent dataIntent = getIntent();
+        ArrayList<Uri> theUris = new ArrayList<Uri>();
 
-	void serverUriChanged() {
-		sendLinkToClipBoard(preferedServerUri);
-		generateBarCodeIfPossible(preferedServerUri);
-		formatHyperlinks();
-	}
+        if (Intent.ACTION_SEND_MULTIPLE.equals(dataIntent.getAction())) {
+            ArrayList<Parcelable> list = dataIntent
+                    .getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+            if (list != null) {
+                for (Parcelable parcelable : list) {
+                    Uri stream = (Uri) parcelable;
+                    if (stream != null) {
+                        theUris.add(stream);
+                    }
+                }
+            }
+            return theUris;
+        }
 
-	@SuppressLint("NewApi")
-	@SuppressWarnings("deprecation")
-	private void sendLinkToClipBoard(String url) {
-		if (SdkVersionHelper.getSdkInt() >= 11) {
-			android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-			clipboard.setPrimaryClip(ClipData.newPlainText(url, url));
-		} else {
-			android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-			clipboard.setText(url);
-		}
-		Toast.makeText(this, "URL has been copied to the clipboard.",
-				Toast.LENGTH_SHORT).show();
-	}
+        Bundle extras = dataIntent.getExtras();
 
-	void formatHyperlinks() {
-		link_msg.setText(preferedServerUri);
-	}
+        Uri myUri = (Uri) extras.get(Intent.EXTRA_STREAM);
 
-	@Click
-	void button_rate() {
-		String theUrl = "https://market.android.com/details?id="
-				+ Util.getPackageName();
-		Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse(theUrl));
-		startActivity(browse);
-	}
+        if (myUri == null) {
+            String tempString = (String) extras.get(Intent.EXTRA_TEXT);
+            if (tempString == null) {
+                Toast.makeText(this, "Error obtaining the file path...",
+                        Toast.LENGTH_LONG).show();
+                return null;
+            }
 
-	@Click
-	void stop_server() {
-		MyHttpServer p = theHttpServer;
-		theHttpServer = null;
-		if (p != null) {
-			p.stopServer();
-		}
-		Toast.makeText(thisActivity, R.string.now_sharing_anymore,
-				Toast.LENGTH_SHORT).show();
-	}
+            myUri = Uri.parse(tempString);
 
-	@Click
-	void button_share_url() {
-		Intent i = new Intent(Intent.ACTION_SEND);
-		i.setType("text/plain");
-		i.putExtra(Intent.EXTRA_TEXT, preferedServerUri);
-		startActivity(Intent.createChooser(i, this.getString(R.string.share_url)));
-	}
+            if (myUri == null) {
+                Toast.makeText(this, "Error obtaining the file path",
+                        Toast.LENGTH_LONG).show();
+                return null;
+            }
+        }
 
-	@Click
-	void change_ip() {
-		showDialog(42);
-	}
+        theUris.add(myUri);
+        return theUris;
+    }
 
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		AlertDialog.Builder b = new AlertDialog.Builder(this);
-		b.setTitle(R.string.change_ip);
-		b.setSingleChoiceItems(listOfServerUris, 0,
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
-						preferedServerUri = listOfServerUris[whichButton]
-								.toString();
-						serverUriChanged();
-						dialog.dismiss();
-					}
-				});
-		AlertDialog theAlertDialog = b.create();
+    void serverUriChanged() {
+        sendLinkToClipBoard(preferedServerUri);
+        generateBarCodeIfPossible(preferedServerUri);
+        formatHyperlinks();
+    }
 
-		return theAlertDialog;
-	}
+    @SuppressLint("NewApi")
+    @SuppressWarnings("deprecation")
+    private void sendLinkToClipBoard(String url) {
+        ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+        clipboard.setPrimaryClip(ClipData.newPlainText(url, url));
 
-	public void generateBarCodeIfPossible(String message) {
-		Intent intent = new Intent("com.google.zxing.client.android.ENCODE");
-		intent.putExtra("ENCODE_TYPE", "TEXT_TYPE");
-		intent.putExtra("ENCODE_DATA", message);
-		try {
-			startActivity(intent);
-		} catch (ActivityNotFoundException e) { // the person has no barcode
-			formatBarcodeLink();
-			// scanner
-			return;
-		}
-		Toast.makeText(
-				this,
-				"Please open the following address on the target computer: "
-						+ message, Toast.LENGTH_SHORT).show();
-	}
+        Toast.makeText(this, "URL has been copied to the clipboard.",
+                Toast.LENGTH_SHORT).show();
+    }
 
-	void formatBarcodeLink() {
-		txtBarCodeScannerInfo.setVisibility(View.VISIBLE);
-		txtBarCodeScannerInfo.setMovementMethod(LinkMovementMethod
-				.getInstance());
-	}
+    void formatHyperlinks() {
+        link_msg.setText(preferedServerUri);
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        AlertDialog.Builder b = new AlertDialog.Builder(this);
+        b.setTitle(R.string.change_ip);
+        b.setSingleChoiceItems(listOfServerUris, 0,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        preferedServerUri = listOfServerUris[whichButton]
+                                .toString();
+                        serverUriChanged();
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog theAlertDialog = b.create();
+
+        return theAlertDialog;
+    }
+
+    public void generateBarCodeIfPossible(String message) {
+        Intent intent = new Intent("com.google.zxing.client.android.ENCODE");
+        intent.putExtra("ENCODE_TYPE", "TEXT_TYPE");
+        intent.putExtra("ENCODE_DATA", message);
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) { // the person has no barcode
+            formatBarcodeLink();
+            // scanner
+            return;
+        }
+        Toast.makeText(
+                this,
+                "Please open the following address on the target computer: "
+                        + message, Toast.LENGTH_SHORT).show();
+    }
+
+    void formatBarcodeLink() {
+        txtBarCodeScannerInfo.setVisibility(View.VISIBLE);
+        txtBarCodeScannerInfo.setMovementMethod(LinkMovementMethod
+                .getInstance());
+    }
 }
