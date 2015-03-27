@@ -22,7 +22,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package guru.stefma.shareviahttp;
+package guru.stefma.shareviahttp.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -46,32 +46,48 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 
-public class SendFile extends Activity {
-    /**
-     * Called when the activity is first created.
-     */
+import guru.stefma.shareviahttp.MyHttpServer;
+import guru.stefma.shareviahttp.R;
+import guru.stefma.shareviahttp.Util;
+
+public class SendFileActivity extends Activity {
 
     static MyHttpServer theHttpServer = null;
     String preferedServerUri;
     CharSequence[] listOfServerUris;
     final Activity thisActivity = this;
 
-    TextView uriPath;
-
-    TextView link_msg;
-
-    TextView txtBarCodeScannerInfo;
+    private TextView uriPath;
+    private TextView link_msg;
+    private TextView txtBarCodeScannerInfo;
+    private Button bttnRate;
+    private Button shareContainerFolder;
+    private Button stopServer;
+    private Button share;
+    private Button changeIp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        setupViews();
+        createViewClickListener();
+        init();
+    }
+
+    private void setupViews() {
         uriPath = (TextView) findViewById(R.id.uriPath);
         link_msg = (TextView) findViewById(R.id.link_msg);
         txtBarCodeScannerInfo = (TextView) findViewById(R.id.txtBarCodeScannerInfo);
+        bttnRate = (Button) findViewById(R.id.button_rate);
+        shareContainerFolder = (Button) findViewById(R.id.button_share_containing_folder);
+        stopServer = (Button) findViewById(R.id.stop_server);
+        share = (Button) findViewById(R.id.button_share_url);
+        changeIp = (Button) findViewById(R.id.change_ip);
+    }
 
-        Button bttnRate = (Button) findViewById(R.id.button_rate);
+    private void createViewClickListener() {
         bttnRate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,7 +98,7 @@ public class SendFile extends Activity {
             }
         });
 
-        Button shareContainerFolder = (Button) findViewById(R.id.button_share_containing_folder);
+
         shareContainerFolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -123,7 +139,7 @@ public class SendFile extends Activity {
             }
         });
 
-        Button stopServer = (Button) findViewById(R.id.stop_server);
+
         stopServer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -137,26 +153,23 @@ public class SendFile extends Activity {
             }
         });
 
-        Button bttnShare = (Button) findViewById(R.id.button_share_url);
-        bttnShare.setOnClickListener(new View.OnClickListener() {
+
+        share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("text/plain");
                 i.putExtra(Intent.EXTRA_TEXT, preferedServerUri);
-                startActivity(Intent.createChooser(i, SendFile.this.getString(R.string.share_url)));
+                startActivity(Intent.createChooser(i, SendFileActivity.this.getString(R.string.share_url)));
             }
         });
 
-        Button changeIp = (Button) findViewById(R.id.change_ip);
         changeIp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showDialog(42);
             }
         });
-
-        init();
     }
 
     void init() {

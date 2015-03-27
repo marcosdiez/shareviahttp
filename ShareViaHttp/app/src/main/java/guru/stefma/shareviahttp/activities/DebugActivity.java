@@ -1,10 +1,12 @@
-package guru.stefma.shareviahttp;
+package guru.stefma.shareviahttp.activities;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
+import guru.stefma.shareviahttp.R;
 
 public class DebugActivity extends Activity {
     /**
@@ -27,7 +29,7 @@ public class DebugActivity extends Activity {
     void botao() {
         String path = "/mnt/sdcard/.mixzing/bbb.txt";
 
-        Intent intent = new Intent(this, SendFile.class);
+        Intent intent = new Intent(this, SendFileActivity.class);
         intent.addCategory("android.intent.category.DEFAULT");
         intent.putExtra(Intent.EXTRA_TEXT, path);
         intent.setType("inode/directory");

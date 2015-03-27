@@ -29,7 +29,7 @@
 
 
         <activity
-            android:name="guru.stefma.shareviahttp.SendFile"
+            android:name=".activities.SendFileActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
