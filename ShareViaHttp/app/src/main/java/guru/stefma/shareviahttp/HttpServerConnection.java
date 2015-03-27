@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @version 1.0
  */
 
-package com.MarcosDiez.shareviahttp;
+package guru.stefma.shareviahttp;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;

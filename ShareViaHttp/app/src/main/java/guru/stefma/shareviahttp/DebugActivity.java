@@ -1,4 +1,4 @@
-package com.MarcosDiez.shareviahttp;
+package guru.stefma.shareviahttp;
 
 import android.app.Activity;
 import android.content.Intent;

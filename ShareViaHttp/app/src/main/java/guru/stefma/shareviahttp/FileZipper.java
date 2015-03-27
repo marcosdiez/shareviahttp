@@ -1,4 +1,4 @@
-package com.MarcosDiez.shareviahttp;
+package guru.stefma.shareviahttp;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
