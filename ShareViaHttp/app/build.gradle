@@ -23,6 +23,8 @@ android {
         applicationId "ws.stefma.shareviahttp"
         minSdkVersion 7
         targetSdkVersion 21
+        versionCode 1
+        versionName "2.0"
     }
 
     buildTypes {
