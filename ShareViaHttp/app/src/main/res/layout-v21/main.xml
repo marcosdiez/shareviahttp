@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/dark_blue"
+        android:elevation="4dp"
         android:minHeight="?attr/actionBarSize"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -21,7 +22,8 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_below="@id/toolbar"
-        android:background="@color/dark_blue">
+        android:background="@color/dark_blue"
+        android:elevation="4dp">
 
         <TextView
             android:id="@+id/link_msg"

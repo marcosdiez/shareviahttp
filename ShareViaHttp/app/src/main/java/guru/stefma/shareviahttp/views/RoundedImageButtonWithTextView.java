@@ -26,10 +26,17 @@ public class RoundedImageButtonWithTextView extends RelativeLayout {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.rounded_image_button_with_text_view, this, true);
 
-        ImageButton imageButton = (ImageButton) getChildAt(0);
-        imageButton.setImageDrawable(drawable);
+        setupImageButton(drawable);
+        setupTextView(text);
+    }
 
+    private void setupTextView(String text) {
         TextView textView = (TextView) getChildAt(1);
         textView.setText(text);
+    }
+
+    private void setupImageButton(Drawable drawable) {
+        ImageButton imageButton = (ImageButton) getChildAt(0);
+        imageButton.setImageDrawable(drawable);
     }
 }
