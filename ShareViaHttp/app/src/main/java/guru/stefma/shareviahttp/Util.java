@@ -31,7 +31,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 
 public class Util {	
 	public static String myLogName = "ShareViaHttp"; 
-	public static Context theContext = null;
+	public static Context context = null;
 
 	private static String appVersion = null;
 	private static String packageName=null; 	
@@ -39,8 +39,8 @@ public class Util {
 	static void loadData(){
 		PackageInfo packageInfo;
 		try {
-			packageInfo = theContext.getPackageManager()
-					.getPackageInfo(theContext.getPackageName(), 0);
+			packageInfo = context.getPackageManager()
+					.getPackageInfo(context.getPackageName(), 0);
 		} catch (NameNotFoundException e) {
 			appVersion="BETA";
 			packageName="unknown";

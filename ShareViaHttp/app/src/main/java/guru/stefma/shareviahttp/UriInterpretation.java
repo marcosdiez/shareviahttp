@@ -32,7 +32,7 @@ public class UriInterpretation {
 	public UriInterpretation(Uri uri) {
 		this.uri = uri;
 
-		contentResolver = Util.theContext.getContentResolver();
+		contentResolver = Util.context.getContentResolver();
 		Cursor metadataCursor = contentResolver.query(uri, new String[] {
 				OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE }, null,
 				null, null);

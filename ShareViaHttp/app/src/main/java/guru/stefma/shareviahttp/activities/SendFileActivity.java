@@ -52,7 +52,7 @@ import guru.stefma.shareviahttp.Util;
 
 public class SendFileActivity extends Activity {
 
-    static MyHttpServer theHttpServer = null;
+    static MyHttpServer httpServer = null;
     String preferedServerUri;
     CharSequence[] listOfServerUris;
     final Activity thisActivity = this;
@@ -98,7 +98,6 @@ public class SendFileActivity extends Activity {
             }
         });
 
-
         shareContainerFolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -139,12 +138,11 @@ public class SendFileActivity extends Activity {
             }
         });
 
-
         stopServer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MyHttpServer p = theHttpServer;
-                theHttpServer = null;
+                MyHttpServer p = httpServer;
+                httpServer = null;
                 if (p != null) {
                     p.stopServer();
                 }
@@ -152,7 +150,6 @@ public class SendFileActivity extends Activity {
                         Toast.LENGTH_SHORT).show();
             }
         });
-
 
         share.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,30 +164,24 @@ public class SendFileActivity extends Activity {
         changeIp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDialog(42);
+                createChangeIpDialog();
             }
         });
     }
 
     void init() {
-        Util.theContext = this.getApplicationContext();
+        Util.context = this.getApplicationContext();
         ArrayList<Uri> myUris = getFileUris();
         if (myUris == null || myUris.size() == 0) {
             finish();
             return;
         }
 
-        theHttpServer = new MyHttpServer(9999);
-        listOfServerUris = theHttpServer.ListOfIpAddresses();
+        httpServer = new MyHttpServer(9999);
+        listOfServerUris = httpServer.ListOfIpAddresses();
         preferedServerUri = listOfServerUris[0].toString();
 
         loadUrisToServer(myUris);
-    }
-
-    void loadUrisToServer(ArrayList<Uri> myUris) {
-        MyHttpServer.SetFiles(myUris);
-        serverUriChanged();
-        uriPath.setText("File(s): " + Uri.decode(myUris.toString()));
     }
 
     private ArrayList<Uri> getFileUris() {
@@ -236,14 +227,18 @@ public class SendFileActivity extends Activity {
         return theUris;
     }
 
+    void loadUrisToServer(ArrayList<Uri> myUris) {
+        MyHttpServer.SetFiles(myUris);
+        serverUriChanged();
+        uriPath.setText("File(s): " + Uri.decode(myUris.toString()));
+    }
+
     void serverUriChanged() {
         sendLinkToClipBoard(preferedServerUri);
         generateBarCodeIfPossible(preferedServerUri);
         formatHyperlinks();
     }
 
-    @SuppressLint("NewApi")
-    @SuppressWarnings("deprecation")
     private void sendLinkToClipBoard(String url) {
         ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         clipboard.setPrimaryClip(ClipData.newPlainText(url, url));
@@ -256,8 +251,7 @@ public class SendFileActivity extends Activity {
         link_msg.setText(preferedServerUri);
     }
 
-    @Override
-    protected Dialog onCreateDialog(int id) {
+    void createChangeIpDialog() {
         AlertDialog.Builder b = new AlertDialog.Builder(this);
         b.setTitle(R.string.change_ip);
         b.setSingleChoiceItems(listOfServerUris, 0,
@@ -269,9 +263,7 @@ public class SendFileActivity extends Activity {
                         dialog.dismiss();
                     }
                 });
-        AlertDialog theAlertDialog = b.create();
-
-        return theAlertDialog;
+        b.create().show();
     }
 
     public void generateBarCodeIfPossible(String message) {
