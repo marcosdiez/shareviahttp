@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageButton
+        android:id="@+id/rounded_image_button_with_text_view_image"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/rounded_button"
+        android:clickable="false" />
+
+    <TextView
+        android:id="@+id/rounded_image_button_with_text_view_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rounded_image_button_with_text_view_image"
+        android:layout_centerInParent="true"
+        tools:text="ExampelText" />
+
+</merge>
