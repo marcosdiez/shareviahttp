@@ -39,7 +39,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,11 +59,10 @@ public class SendFileActivity extends ActionBarActivity {
     private TextView uriPath;
     private TextView link_msg;
     private TextView txtBarCodeScannerInfo;
-    private Button bttnRate;
-    private Button shareContainerFolder;
-    private Button stopServer;
-    private Button share;
-    private Button changeIp;
+    private View bttnRate;
+    private View stopServer;
+    private View share;
+    private View changeIp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,11 +86,10 @@ public class SendFileActivity extends ActionBarActivity {
         uriPath = (TextView) findViewById(R.id.uriPath);
         link_msg = (TextView) findViewById(R.id.link_msg);
         txtBarCodeScannerInfo = (TextView) findViewById(R.id.txtBarCodeScannerInfo);
-        bttnRate = (Button) findViewById(R.id.button_rate);
-        shareContainerFolder = (Button) findViewById(R.id.button_share_containing_folder);
-        stopServer = (Button) findViewById(R.id.stop_server);
-        share = (Button) findViewById(R.id.button_share_url);
-        changeIp = (Button) findViewById(R.id.change_ip);
+        bttnRate = findViewById(R.id.button_rate);
+        stopServer = findViewById(R.id.stop_server);
+        share = findViewById(R.id.button_share_url);
+        changeIp = findViewById(R.id.change_ip);
     }
 
     private void createViewClickListener() {
@@ -103,46 +100,6 @@ public class SendFileActivity extends ActionBarActivity {
                         + Util.getPackageName();
                 Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse(theUrl));
                 startActivity(browse);
-            }
-        });
-
-        shareContainerFolder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ArrayList<Uri> myUris = MyHttpServer.GetFiles();
-                if (myUris == null || myUris.isEmpty()) {
-                    Toast.makeText(thisActivity, "Error getting file list.",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                Uri theUri = myUris.get(0);
-                String path = theUri.getPath();
-                int pos = path.lastIndexOf(File.separator);
-                if (pos <= 0) {
-                    Toast.makeText(thisActivity, "Error getting parent directory.",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                String newPath = path.substring(0, pos);
-                Log.d(Util.myLogName, newPath);
-                File newFile = new File(newPath);
-                if (!newFile.exists()) {
-                    Toast.makeText(thisActivity,
-                            "Error. New file [" + newPath + "] does not exist.",
-                            Toast.LENGTH_LONG).show();
-
-                    return;
-                }
-
-                Uri theNewUri = Uri.parse(newPath);
-                ArrayList<Uri> newUriArray = new ArrayList<Uri>();
-                newUriArray.add(theNewUri);
-
-                Toast.makeText(thisActivity, "We are now sharing [" + newPath + "]",
-                        Toast.LENGTH_LONG).show();
-                loadUrisToServer(newUriArray);
             }
         });
 

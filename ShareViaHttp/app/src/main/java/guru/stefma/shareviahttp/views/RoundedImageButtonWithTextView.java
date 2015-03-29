@@ -2,6 +2,7 @@ package guru.stefma.shareviahttp.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.ImageButton;
@@ -17,7 +18,7 @@ public class RoundedImageButtonWithTextView extends RelativeLayout {
 
         TypedArray typedArray = context.obtainStyledAttributes(attrs,
                 R.styleable.RoundedImageButtonWithTextView, 0, 0);
-        int imageRessource = typedArray.getInteger(R.styleable.RoundedImageButtonWithTextView_imageSrc, 0);
+        Drawable drawable = typedArray.getDrawable(R.styleable.RoundedImageButtonWithTextView_imageSrc);
         String text = typedArray.getString(R.styleable.RoundedImageButtonWithTextView_text);
         typedArray.recycle();
 
@@ -26,7 +27,7 @@ public class RoundedImageButtonWithTextView extends RelativeLayout {
         inflater.inflate(R.layout.rounded_image_button_with_text_view, this, true);
 
         ImageButton imageButton = (ImageButton) getChildAt(0);
-        imageButton.setImageResource(imageRessource);
+        imageButton.setImageDrawable(drawable);
 
         TextView textView = (TextView) getChildAt(1);
         textView.setText(text);
