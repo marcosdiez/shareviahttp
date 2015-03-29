@@ -37,12 +37,10 @@ import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import guru.stefma.shareviahttp.MyHttpServer;
@@ -237,9 +235,8 @@ public class SendFileActivity extends ActionBarActivity {
         intent.putExtra("ENCODE_DATA", message);
         try {
             startActivity(intent);
-        } catch (ActivityNotFoundException e) { // the person has no barcode
+        } catch (ActivityNotFoundException e) {
             formatBarcodeLink();
-            // scanner
             return;
         }
         Toast.makeText(

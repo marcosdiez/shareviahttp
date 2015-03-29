@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_blue">
@@ -44,36 +45,27 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/placeholder1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autoLink="all"
-                android:text=" " />
 
             <TextView
                 android:id="@+id/uriPath"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:autoLink="all"
-                android:text=" " />
+                tools:text="Hallo" />
 
             <TextView
                 android:id="@+id/txtBarCodeScannerInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
                 android:layout_marginTop="20dp"
                 android:text="@string/barcode_scanner_msg"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/placeholder3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autoLink="all"
-                android:text=" " />
+                android:visibility="gone"
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/technical_info"
@@ -81,13 +73,6 @@
                 android:layout_height="wrap_content"
                 android:autoLink="all"
                 android:text="@string/technical_info" />
-
-            <TextView
-                android:id="@+id/placeholder4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autoLink="all"
-                android:text=" " />
         </LinearLayout>
 
     </ScrollView>
@@ -104,14 +89,14 @@
             android:id="@+id/button_rate"
             android:layout_width="90dp"
             android:layout_height="90dp"
-            app:imageSrc="@drawable/ic_share"
+            app:imageSrc="@drawable/ic_rate_app"
             app:text="@string/button_rate" />
 
         <guru.stefma.shareviahttp.views.RoundedImageButtonWithTextView
             android:id="@+id/change_ip"
             android:layout_width="90dp"
             android:layout_height="90dp"
-            app:imageSrc="@drawable/ic_share"
+            app:imageSrc="@drawable/ic_ip"
             app:text="@string/change_ip" />
 
 
@@ -119,7 +104,7 @@
             android:id="@+id/stop_server"
             android:layout_width="90dp"
             android:layout_height="90dp"
-            app:imageSrc="@drawable/ic_share"
+            app:imageSrc="@drawable/ic_stop"
             app:text="@string/stop_server" />
 
         <guru.stefma.shareviahttp.views.RoundedImageButtonWithTextView
