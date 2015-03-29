@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">Mandar por HTTP</string>
 
-    <string name="header_msg">Arquivos(s) compartilhado(s) no endereço abaixo:</string>
     <string name="standar_url">http://127.0.0.1/</string>    
 
 

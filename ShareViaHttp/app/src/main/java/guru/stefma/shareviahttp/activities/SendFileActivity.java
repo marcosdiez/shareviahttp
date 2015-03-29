@@ -79,6 +79,7 @@ public class SendFileActivity extends ActionBarActivity {
 
     private void setupToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
         toolbar.setTitleTextColor(getResources().getColor(R.color.light_blue));
         setSupportActionBar(toolbar);
     }
