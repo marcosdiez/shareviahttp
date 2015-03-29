@@ -9,9 +9,6 @@ import android.widget.Button;
 import guru.stefma.shareviahttp.R;
 
 public class DebugActivity extends Activity {
-    /**
-     * Called when the activity is first created.
-     */
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -24,10 +24,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package guru.stefma.shareviahttp.activities;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -36,6 +34,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
@@ -50,7 +50,7 @@ import guru.stefma.shareviahttp.MyHttpServer;
 import guru.stefma.shareviahttp.R;
 import guru.stefma.shareviahttp.Util;
 
-public class SendFileActivity extends Activity {
+public class SendFileActivity extends ActionBarActivity {
 
     static MyHttpServer httpServer = null;
     String preferedServerUri;
@@ -71,9 +71,16 @@ public class SendFileActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        setupToolbar();
         setupViews();
         createViewClickListener();
         init();
+    }
+
+    private void setupToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.light_blue));
+        setSupportActionBar(toolbar);
     }
 
     private void setupViews() {
