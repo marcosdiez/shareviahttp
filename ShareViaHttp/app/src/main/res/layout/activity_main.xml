@@ -5,15 +5,9 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/pre_kitkat"
+        android:id="@+id/pick_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Pre KitKat" />
-
-    <Button
-        android:id="@+id/kitkat_and_higher"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="KitKat and Higher" />
+        android:text="Pick Item" />
 
 </LinearLayout>

@@ -2,10 +2,8 @@ package guru.stefma.shareviahttp.activities;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -22,8 +20,7 @@ import guru.stefma.shareviahttp.Util;
 
 public class MainActivity extends ActionBarActivity {
 
-    public static final int PICK_FILE_PRE_KITKAT = 1024;
-    public static final int PICK_FILE_KITKAT_AND_HIGHER = 2048;
+    public static final int REQUEST_CODE = 1024;
 
     static MyHttpServer httpServer = null;
     String preferedServerUri;
@@ -35,35 +32,28 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        findViewById(R.id.pre_kitkat).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.pick_item).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("*/*");
-                startActivityForResult(intent, PICK_FILE_PRE_KITKAT);
-            }
-        });
-
-        findViewById(R.id.kitkat_and_higher).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                intent.setType("*/*");
-                startActivityForResult(intent, PICK_FILE_KITKAT_AND_HIGHER);
+                boolean isKitKatOrHigher = getResources().getBoolean(R.bool.isKitKatOrHigher);
+                if (isKitKatOrHigher) {
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                    intent.setType("*/*");
+                    startActivityForResult(intent, REQUEST_CODE);
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("*/*");
+                    startActivityForResult(intent, REQUEST_CODE);
+                }
             }
         });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PICK_FILE_PRE_KITKAT && resultCode == Activity.RESULT_OK) {
-            ArrayList<Uri> uriList = getFileUris(data);
-            init(uriList);
-        }
-
-        if (requestCode == PICK_FILE_KITKAT_AND_HIGHER && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             ArrayList<Uri> uriList = getFileUris(data);
             init(uriList);
         }
