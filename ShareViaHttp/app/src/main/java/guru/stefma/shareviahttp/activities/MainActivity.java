@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
@@ -32,6 +33,18 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setupToolbar();
+        setupShareButton();
+    }
+
+    private void setupToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        toolbar.setTitleTextColor(getResources().getColor(R.color.light_blue));
+        setSupportActionBar(toolbar);
+    }
+
+    private void setupShareButton() {
         findViewById(R.id.pick_item).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
