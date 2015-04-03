@@ -30,7 +30,8 @@
 
         <activity
             android:name=".activities.SendFileActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
