@@ -24,9 +24,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package guru.stefma.shareviahttp.activities;
 
-import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,19 +37,12 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import guru.stefma.shareviahttp.MyHttpServer;
 import guru.stefma.shareviahttp.R;
-import guru.stefma.shareviahttp.Util;
 
 public class SendFileActivity extends BaseActivity {
 
     private TextView uriPath;
-    private TextView link_msg;
     private TextView txtBarCodeScannerInfo;
-    private View bttnRate;
-    private View stopServer;
-    private View share;
-    private View changeIp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,15 +50,17 @@ public class SendFileActivity extends BaseActivity {
         setContentView(R.layout.activity_send_file);
 
         setupToolbar();
-        setupViews();
+        setupLinkMsgView();
+        setupNavigationViews();
         createViewClickListener();
+        setupOwnViews();
 
         ArrayList<Uri> uriList = getFileUris();
         uriPath.setText("File(s): " + Uri.decode(uriList.toString()));
         initHttpServer(uriList);
         saveServerUrlToClipboard();
         generateBarCodeIfPossible(preferedServerUrl);
-        setLinkMessageText();
+        setLinkMessageToView();
     }
 
     private void setupToolbar() {
@@ -77,56 +70,9 @@ public class SendFileActivity extends BaseActivity {
         setSupportActionBar(toolbar);
     }
 
-    private void setupViews() {
+    private void setupOwnViews() {
         uriPath = (TextView) findViewById(R.id.uriPath);
-        link_msg = (TextView) findViewById(R.id.link_msg);
         txtBarCodeScannerInfo = (TextView) findViewById(R.id.txtBarCodeScannerInfo);
-        bttnRate = findViewById(R.id.button_rate);
-        stopServer = findViewById(R.id.stop_server);
-        share = findViewById(R.id.button_share_url);
-        changeIp = findViewById(R.id.change_ip);
-    }
-
-    private void createViewClickListener() {
-        bttnRate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String theUrl = "https://market.android.com/details?id="
-                        + Util.getPackageName();
-                Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse(theUrl));
-                startActivity(browse);
-            }
-        });
-
-        stopServer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MyHttpServer p = httpServer;
-                httpServer = null;
-                if (p != null) {
-                    p.stopServer();
-                }
-                Toast.makeText(thisActivity, R.string.now_sharing_anymore,
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(Intent.ACTION_SEND);
-                i.setType("text/plain");
-                i.putExtra(Intent.EXTRA_TEXT, preferedServerUrl);
-                startActivity(Intent.createChooser(i, SendFileActivity.this.getString(R.string.share_url)));
-            }
-        });
-
-        changeIp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createChangeIpDialog();
-            }
-        });
     }
 
     private ArrayList<Uri> getFileUris() {
@@ -170,27 +116,6 @@ public class SendFileActivity extends BaseActivity {
 
         theUris.add(myUri);
         return theUris;
-    }
-
-    void setLinkMessageText() {
-        link_msg.setText(preferedServerUrl);
-    }
-
-    void createChangeIpDialog() {
-        AlertDialog.Builder b = new AlertDialog.Builder(this);
-        b.setTitle(R.string.change_ip);
-        b.setSingleChoiceItems(listOfServerUris, 0,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        preferedServerUrl = listOfServerUris[whichButton]
-                                .toString();
-                        saveServerUrlToClipboard();
-                        generateBarCodeIfPossible(preferedServerUrl);
-                        setLinkMessageText();
-                        dialog.dismiss();
-                    }
-                });
-        b.create().show();
     }
 
     public void generateBarCodeIfPossible(String message) {

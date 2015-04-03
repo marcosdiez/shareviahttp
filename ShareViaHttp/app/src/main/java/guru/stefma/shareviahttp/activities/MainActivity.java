@@ -24,6 +24,9 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
 
         setupToolbar();
+        setupLinkMsgView();
+        setupNavigationViews();
+        createViewClickListener();
         setupPickItemView();
     }
 
@@ -54,12 +57,19 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+    private void setViewsVisible() {
+        findViewById(R.id.link_layout).setVisibility(View.VISIBLE);
+        findViewById(R.id.navigation_layout).setVisibility(View.VISIBLE);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             ArrayList<Uri> uriList = getFileUris(data);
             initHttpServer(uriList);
             saveServerUrlToClipboard();
+            setLinkMessageToView();
+            setViewsVisible();
         }
     }
 
