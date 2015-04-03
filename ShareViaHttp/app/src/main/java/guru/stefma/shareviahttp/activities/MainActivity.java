@@ -3,30 +3,20 @@ package guru.stefma.shareviahttp.activities;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import guru.stefma.shareviahttp.MyHttpServer;
 import guru.stefma.shareviahttp.R;
-import guru.stefma.shareviahttp.Util;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends BaseActivity {
 
     public static final int REQUEST_CODE = 1024;
-
-    static MyHttpServer httpServer = null;
-    String preferedServerUri;
-    CharSequence[] listOfServerUris;
-    final Activity thisActivity = this;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,7 +58,8 @@ public class MainActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             ArrayList<Uri> uriList = getFileUris(data);
-            init(uriList);
+            initHttpServer(uriList);
+            saveServerUrlToClipboard(preferedServerUrl);
         }
     }
 
@@ -87,37 +78,5 @@ public class MainActivity extends ActionBarActivity {
             }
         }
         return theUris;
-    }
-
-    void init(ArrayList<Uri> uris) {
-        Util.context = this.getApplicationContext();
-        ArrayList<Uri> myUris = uris;
-        if (myUris == null || myUris.size() == 0) {
-            finish();
-            return;
-        }
-
-        httpServer = new MyHttpServer(9999);
-        listOfServerUris = httpServer.ListOfIpAddresses();
-        preferedServerUri = listOfServerUris[0].toString();
-
-        loadUrisToServer(myUris);
-    }
-
-    void loadUrisToServer(ArrayList<Uri> myUris) {
-        MyHttpServer.SetFiles(myUris);
-        serverUriChanged();
-    }
-
-    void serverUriChanged() {
-        sendLinkToClipBoard(preferedServerUri);
-    }
-
-    private void sendLinkToClipBoard(String url) {
-        ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        clipboard.setPrimaryClip(ClipData.newPlainText(url, url));
-
-        Toast.makeText(this, "URL has been copied to the clipboard.",
-                Toast.LENGTH_SHORT).show();
     }
 }

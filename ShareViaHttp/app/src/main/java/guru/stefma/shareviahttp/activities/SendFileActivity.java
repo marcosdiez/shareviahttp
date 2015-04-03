@@ -24,17 +24,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package guru.stefma.shareviahttp.activities;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
@@ -47,12 +43,7 @@ import guru.stefma.shareviahttp.MyHttpServer;
 import guru.stefma.shareviahttp.R;
 import guru.stefma.shareviahttp.Util;
 
-public class SendFileActivity extends ActionBarActivity {
-
-    static MyHttpServer httpServer = null;
-    String preferedServerUri;
-    CharSequence[] listOfServerUris;
-    final Activity thisActivity = this;
+public class SendFileActivity extends BaseActivity {
 
     private TextView uriPath;
     private TextView link_msg;
@@ -63,14 +54,20 @@ public class SendFileActivity extends ActionBarActivity {
     private View changeIp;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_file);
 
         setupToolbar();
         setupViews();
         createViewClickListener();
-        init();
+
+        ArrayList<Uri> uriList = getFileUris();
+        uriPath.setText("File(s): " + Uri.decode(uriList.toString()));
+        initHttpServer(uriList);
+        saveServerUrlToClipboard(preferedServerUrl);
+        generateBarCodeIfPossible(preferedServerUrl);
+        setLinkMessageText();
     }
 
     private void setupToolbar() {
@@ -119,7 +116,7 @@ public class SendFileActivity extends ActionBarActivity {
             public void onClick(View view) {
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("text/plain");
-                i.putExtra(Intent.EXTRA_TEXT, preferedServerUri);
+                i.putExtra(Intent.EXTRA_TEXT, preferedServerUrl);
                 startActivity(Intent.createChooser(i, SendFileActivity.this.getString(R.string.share_url)));
             }
         });
@@ -130,21 +127,6 @@ public class SendFileActivity extends ActionBarActivity {
                 createChangeIpDialog();
             }
         });
-    }
-
-    void init() {
-        Util.context = this.getApplicationContext();
-        ArrayList<Uri> myUris = getFileUris();
-        if (myUris == null || myUris.size() == 0) {
-            finish();
-            return;
-        }
-
-        httpServer = new MyHttpServer(9999);
-        listOfServerUris = httpServer.ListOfIpAddresses();
-        preferedServerUri = listOfServerUris[0].toString();
-
-        loadUrisToServer(myUris);
     }
 
     private ArrayList<Uri> getFileUris() {
@@ -190,28 +172,8 @@ public class SendFileActivity extends ActionBarActivity {
         return theUris;
     }
 
-    void loadUrisToServer(ArrayList<Uri> myUris) {
-        MyHttpServer.SetFiles(myUris);
-        serverUriChanged();
-        uriPath.setText("File(s): " + Uri.decode(myUris.toString()));
-    }
-
-    void serverUriChanged() {
-        sendLinkToClipBoard(preferedServerUri);
-        generateBarCodeIfPossible(preferedServerUri);
-        formatHyperlinks();
-    }
-
-    private void sendLinkToClipBoard(String url) {
-        ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        clipboard.setPrimaryClip(ClipData.newPlainText(url, url));
-
-        Toast.makeText(this, "URL has been copied to the clipboard.",
-                Toast.LENGTH_SHORT).show();
-    }
-
-    void formatHyperlinks() {
-        link_msg.setText(preferedServerUri);
+    void setLinkMessageText() {
+        link_msg.setText(preferedServerUrl);
     }
 
     void createChangeIpDialog() {
@@ -220,9 +182,11 @@ public class SendFileActivity extends ActionBarActivity {
         b.setSingleChoiceItems(listOfServerUris, 0,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        preferedServerUri = listOfServerUris[whichButton]
+                        preferedServerUrl = listOfServerUris[whichButton]
                                 .toString();
-                        serverUriChanged();
+                        saveServerUrlToClipboard(preferedServerUrl);
+                        generateBarCodeIfPossible(preferedServerUrl);
+                        setLinkMessageText();
                         dialog.dismiss();
                     }
                 });
