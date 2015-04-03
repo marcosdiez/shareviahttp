@@ -39,9 +39,9 @@ public class BaseActivity extends ActionBarActivity {
         MyHttpServer.SetFiles(myUris);
     }
 
-    protected void saveServerUrlToClipboard(String url) {
+    protected void saveServerUrlToClipboard() {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        clipboard.setPrimaryClip(ClipData.newPlainText(url, url));
+        clipboard.setPrimaryClip(ClipData.newPlainText(preferedServerUrl, preferedServerUrl));
 
         Toast.makeText(this, "URL has been copied to the clipboard.",
                 Toast.LENGTH_SHORT).show();

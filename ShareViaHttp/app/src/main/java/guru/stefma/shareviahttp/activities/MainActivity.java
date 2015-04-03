@@ -59,7 +59,7 @@ public class MainActivity extends BaseActivity {
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             ArrayList<Uri> uriList = getFileUris(data);
             initHttpServer(uriList);
-            saveServerUrlToClipboard(preferedServerUrl);
+            saveServerUrlToClipboard();
         }
     }
 

@@ -65,7 +65,7 @@ public class SendFileActivity extends BaseActivity {
         ArrayList<Uri> uriList = getFileUris();
         uriPath.setText("File(s): " + Uri.decode(uriList.toString()));
         initHttpServer(uriList);
-        saveServerUrlToClipboard(preferedServerUrl);
+        saveServerUrlToClipboard();
         generateBarCodeIfPossible(preferedServerUrl);
         setLinkMessageText();
     }
@@ -184,7 +184,7 @@ public class SendFileActivity extends BaseActivity {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         preferedServerUrl = listOfServerUris[whichButton]
                                 .toString();
-                        saveServerUrlToClipboard(preferedServerUrl);
+                        saveServerUrlToClipboard();
                         generateBarCodeIfPossible(preferedServerUrl);
                         setLinkMessageText();
                         dialog.dismiss();
