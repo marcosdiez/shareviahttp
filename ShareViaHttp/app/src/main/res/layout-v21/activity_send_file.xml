@@ -6,22 +6,17 @@
     android:layout_height="match_parent"
     android:background="@color/light_blue">
 
-    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/tools"
+    <include
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/dark_blue"
-        android:minHeight="?attr/actionBarSize"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+        layout="@layout/toolbar" />
 
     <RelativeLayout
         android:id="@+id/link_layout"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_below="@id/toolbar"
-        android:background="@color/dark_blue">
+        android:background="@color/dark_blue"
+        android:elevation="4dp">
 
         <TextView
             android:id="@+id/link_msg"
