@@ -24,18 +24,18 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
 
         setupToolbar();
-        setupShareButton();
+        setupPickItemView();
     }
 
     private void setupToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
+        toolbar.setTitle(getString(R.string.app_name));
         toolbar.setTitleTextColor(getResources().getColor(R.color.light_blue));
         setSupportActionBar(toolbar);
     }
 
-    private void setupShareButton() {
-        findViewById(R.id.pick_item).setOnClickListener(new View.OnClickListener() {
+    private void setupPickItemView() {
+        findViewById(R.id.pick_items).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 boolean isKitKatOrHigher = getResources().getBoolean(R.bool.isKitKatOrHigher);
