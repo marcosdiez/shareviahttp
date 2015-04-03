@@ -10,24 +10,9 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar" />
 
-    <RelativeLayout
+    <include
         android:id="@+id/link_layout"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_below="@id/toolbar"
-        android:background="@color/dark_blue">
-
-        <TextView
-            android:id="@+id/link_msg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:autoLink="all"
-            android:text="@string/standar_url"
-            android:textColorLink="@color/orange"
-            android:textSize="21sp"
-            android:textStyle="bold" />
-    </RelativeLayout>
+        layout="@layout/link_layout" />
 
     <ScrollView
         android:id="@+id/scrolling_information"
@@ -71,42 +56,7 @@
 
     </ScrollView>
 
-    <LinearLayout
+    <include
         android:id="@+id/navigation_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="4dp"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal">
-
-        <guru.stefma.shareviahttp.views.RoundedImageButtonWithTextView
-            android:id="@+id/button_rate"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            app:imageSrc="@drawable/ic_rate_app"
-            app:text="@string/button_rate" />
-
-        <guru.stefma.shareviahttp.views.RoundedImageButtonWithTextView
-            android:id="@+id/change_ip"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            app:imageSrc="@drawable/ic_ip"
-            app:text="@string/change_ip" />
-
-
-        <guru.stefma.shareviahttp.views.RoundedImageButtonWithTextView
-            android:id="@+id/stop_server"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            app:imageSrc="@drawable/ic_stop"
-            app:text="@string/stop_server" />
-
-        <guru.stefma.shareviahttp.views.RoundedImageButtonWithTextView
-            android:id="@+id/button_share_url"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            app:imageSrc="@drawable/ic_share"
-            app:text="@string/share_url" />
-    </LinearLayout>
+        layout="@layout/navigation_layout" />
 </RelativeLayout>
