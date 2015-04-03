@@ -11,7 +11,8 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.github.mrengineer13.snackbar.SnackBar;
 
 import java.util.ArrayList;
 
@@ -70,8 +71,10 @@ public class BaseActivity extends ActionBarActivity {
                 if (p != null) {
                     p.stopServer();
                 }
-                Toast.makeText(thisActivity, R.string.now_sharing_anymore,
-                        Toast.LENGTH_SHORT).show();
+                new SnackBar.Builder(thisActivity)
+                        .withMessage(getString(R.string.now_sharing_anymore))
+                        .withDuration(SnackBar.SHORT_SNACK)
+                        .show();
             }
         });
 
@@ -127,8 +130,10 @@ public class BaseActivity extends ActionBarActivity {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         clipboard.setPrimaryClip(ClipData.newPlainText(preferedServerUrl, preferedServerUrl));
 
-        Toast.makeText(this, "URL has been copied to the clipboard.",
-                Toast.LENGTH_SHORT).show();
+        new SnackBar.Builder(thisActivity)
+                .withMessage("URL has been copied to the clipboard.")
+                .withDuration(SnackBar.MED_SNACK)
+                .show();
     }
 
     protected void setLinkMessageToView() {

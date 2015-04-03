@@ -33,7 +33,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.github.mrengineer13.snackbar.SnackBar;
 
 import java.util.ArrayList;
 
@@ -100,16 +101,20 @@ public class SendFileActivity extends BaseActivity {
         if (myUri == null) {
             String tempString = (String) extras.get(Intent.EXTRA_TEXT);
             if (tempString == null) {
-                Toast.makeText(this, "Error obtaining the file path...",
-                        Toast.LENGTH_LONG).show();
+                new SnackBar.Builder(thisActivity)
+                        .withMessage("Error obtaining the file path")
+                        .withDuration(SnackBar.LONG_SNACK)
+                        .show();
                 return null;
             }
 
             myUri = Uri.parse(tempString);
 
             if (myUri == null) {
-                Toast.makeText(this, "Error obtaining the file path",
-                        Toast.LENGTH_LONG).show();
+                new SnackBar.Builder(thisActivity)
+                        .withMessage("Error obtaining the file path")
+                        .withDuration(SnackBar.LONG_SNACK)
+                        .show();
                 return null;
             }
         }
@@ -128,10 +133,11 @@ public class SendFileActivity extends BaseActivity {
             formatBarcodeLink();
             return;
         }
-        Toast.makeText(
-                this,
-                "Please open the following address on the target computer: "
-                        + message, Toast.LENGTH_SHORT).show();
+
+        new SnackBar.Builder(thisActivity)
+                .withMessage("Please open the following address on the target computer: " + message)
+                .withDuration(SnackBar.MED_SNACK)
+                .show();
     }
 
     void formatBarcodeLink() {
