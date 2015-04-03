@@ -29,41 +29,40 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 
-public class Util {	
-	public static String myLogName = "ShareViaHttp"; 
-	public static Context context = null;
+public class Util {
+    public static String myLogName = "ShareViaHttp";
+    public static Context context = null;
 
-	private static String appVersion = null;
-	private static String packageName=null; 	
-	
-	static void loadData(){
-		PackageInfo packageInfo;
-		try {
-			packageInfo = context.getPackageManager()
-					.getPackageInfo(context.getPackageName(), 0);
-		} catch (NameNotFoundException e) {
-			appVersion="BETA";
-			packageName="unknown";
-			return;
-		}
+    private static String appVersion = null;
+    private static String packageName = null;
 
-		packageName = packageInfo.packageName;
-		appVersion = packageInfo.versionName;
-	}
-	
-	
-	public static String getPackageName() {
-		if (packageName == null) {
-			loadData();
-		}
-		return packageName;
-	}
-	
-	public static String getAppVersion() {
-		if (appVersion == null) {
-			loadData();
-		}
-		return appVersion;
-	}
-	
+    public static String getPackageName() {
+        if (packageName == null) {
+            loadData();
+        }
+        return packageName;
+    }
+
+    static void loadData() {
+        PackageInfo packageInfo;
+        try {
+            packageInfo = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+        } catch (NameNotFoundException e) {
+            appVersion = "BETA";
+            packageName = "unknown";
+            return;
+        }
+
+        packageName = packageInfo.packageName;
+        appVersion = packageInfo.versionName;
+    }
+
+    public static String getAppVersion() {
+        if (appVersion == null) {
+            loadData();
+        }
+        return appVersion;
+    }
+
 }
