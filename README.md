@@ -11,7 +11,7 @@ Simply *share* from your gallery or file manager with "Share via HTTP"
 
 ## Fork
 
-This is a fork of <a href="https://github.com/marcosdiez/shareviahttp">ShareViaHttp</a>
+This is a fork of <a href="https://github.com/marcosdiez/shareviahttp">ShareViaHttp</a>.<br>
 Thank you to <a href="https://github.com/marcosdiez">Marcos Diez</a>! 
 
 ## License
