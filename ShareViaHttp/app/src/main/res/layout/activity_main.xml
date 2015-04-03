@@ -8,6 +8,11 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar" />
 
+    <include
+        android:id="@+id/link_layout"
+        android:visibility="gone"
+        layout="@layout/link_layout" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -19,6 +24,11 @@
             android:layout_width="250dp"
             android:src="@drawable/ic_pick_items"
             android:background="@drawable/rounded_button" />
+
+        <include
+            layout="@layout/navigation_layout"
+            android:visibility="gone"
+            android:id="@+id/navigation_layout" />
     </RelativeLayout>
 
 </LinearLayout>

@@ -67,7 +67,7 @@ public class SendFileActivity extends BaseActivity {
         initHttpServer(uriList);
         saveServerUrlToClipboard();
         generateBarCodeIfPossible(preferedServerUrl);
-        setLinkMessageText();
+        setLinkMessageToView(link_msg);
     }
 
     private void setupToolbar() {
@@ -172,10 +172,6 @@ public class SendFileActivity extends BaseActivity {
         return theUris;
     }
 
-    void setLinkMessageText() {
-        link_msg.setText(preferedServerUrl);
-    }
-
     void createChangeIpDialog() {
         AlertDialog.Builder b = new AlertDialog.Builder(this);
         b.setTitle(R.string.change_ip);
@@ -186,7 +182,7 @@ public class SendFileActivity extends BaseActivity {
                                 .toString();
                         saveServerUrlToClipboard();
                         generateBarCodeIfPossible(preferedServerUrl);
-                        setLinkMessageText();
+                        setLinkMessageToView(link_msg);
                         dialog.dismiss();
                     }
                 });
