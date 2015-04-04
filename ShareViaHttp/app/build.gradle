@@ -5,7 +5,7 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "com.MarocsDiez.shareviahttp"
+        applicationId "com.MarcosDiez.shareviahttp"
         minSdkVersion 14
         targetSdkVersion 21
         versionCode 20
