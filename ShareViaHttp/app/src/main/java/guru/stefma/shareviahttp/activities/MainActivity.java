@@ -30,13 +30,6 @@ public class MainActivity extends BaseActivity {
         setupPickItemView();
     }
 
-    private void setupToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(getString(R.string.app_name));
-        toolbar.setTitleTextColor(getResources().getColor(R.color.light_blue));
-        setSupportActionBar(toolbar);
-    }
-
     private void setupPickItemView() {
         findViewById(R.id.pick_items).setOnClickListener(new View.OnClickListener() {
             @Override

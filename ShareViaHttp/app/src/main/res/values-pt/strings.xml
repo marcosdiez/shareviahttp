@@ -9,7 +9,7 @@
 	<string name="technical_info">Restrições Técnicas: No 3G, todos terão acesso ao seu arquivo porém a velocidade será lenta. No WiFi, a velocidade será rápida porém apenas as pessoas na mesma rede poderão baixar o arquivo.</string>
     <string name="barcode_scanner_msg">Apropósito, se você instalar o <a href="http://market.android.com/details?id=com.google.zxing.client.android">Leitor de Código de Barras</a>, esta URL pode ser enviada como um código de barras também.</string>
         
-    <string name="button_rate">Dar uma nota para este App</string>
+    <string name="rate_app">Dar uma nota para este App</string>
     <string name="change_ip">Escolher IP</string>
     <string name="share_containing_folder">Compartilhar Pasta Que Contém Este Arquivo</string> 
     <string name="stop_server">Desligar Compartilhamento</string>

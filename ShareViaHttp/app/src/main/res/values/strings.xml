@@ -8,9 +8,10 @@
 
 	<string name="technical_info">Technical restrictions: On 3G, the file transfer will be slow but everybody will have access to it. On WiFi, transfers will be fast but only people on the same network (LAN) will be able to access your files. </string>
     <string name="barcode_scanner_msg">Also, if you install the <a href="http://market.android.com/details?id=com.google.zxing.client.android">Barcode Scanner</a>, this URL can be sent as a barcode as well.</string>
-        
-    <string name="button_rate">Rate this App</string>
-    <string name="change_ip">Choose the IP Address</string>
+
+    <string name="rate_app">Rate App</string>
+    <string name="button_qrcode">Create QR</string>
+    <string name="change_ip">Change IP</string>
     <string name="share_containing_folder">Share Containing Folder</string>
     <string name="share_url">Share URL</string>
     <string name="stop_server">Stop Server</string>    
@@ -22,7 +23,7 @@
      
     <string name="alert_dialog_ok">OK</string>
     <string name="alert_dialog_cancel">Cancel</string>
-    
-        
-   
+    <string name="qr_code_not_available">QR-Code App not available</string>
+
+
 </resources>

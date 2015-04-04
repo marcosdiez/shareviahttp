@@ -10,30 +10,30 @@
     android:orientation="horizontal">
 
     <guru.stefma.shareviahttp.views.RoundedImageButtonWithTextView
-        android:id="@+id/button_rate"
+        android:id="@+id/button_qr_code"
         android:layout_width="90dp"
-        android:layout_height="90dp"
-        app:imageSrc="@drawable/ic_rate_app"
-        app:text="@string/button_rate" />
+        android:layout_height="95dp"
+        app:imageSrc="@drawable/ic_qrcode"
+        app:text="@string/button_qrcode" />
 
     <guru.stefma.shareviahttp.views.RoundedImageButtonWithTextView
         android:id="@+id/change_ip"
         android:layout_width="90dp"
-        android:layout_height="90dp"
+        android:layout_height="95dp"
         app:imageSrc="@drawable/ic_ip"
         app:text="@string/change_ip" />
 
     <guru.stefma.shareviahttp.views.RoundedImageButtonWithTextView
         android:id="@+id/stop_server"
         android:layout_width="90dp"
-        android:layout_height="90dp"
+        android:layout_height="95dp"
         app:imageSrc="@drawable/ic_stop"
         app:text="@string/stop_server" />
 
     <guru.stefma.shareviahttp.views.RoundedImageButtonWithTextView
         android:id="@+id/button_share_url"
         android:layout_width="90dp"
-        android:layout_height="90dp"
+        android:layout_height="95dp"
         app:imageSrc="@drawable/ic_share"
         app:text="@string/share_url" />
 </LinearLayout>
