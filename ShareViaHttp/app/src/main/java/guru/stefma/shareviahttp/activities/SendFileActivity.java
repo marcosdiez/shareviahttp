@@ -24,14 +24,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package guru.stefma.shareviahttp.activities;
 
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.Toolbar;
-import android.text.method.LinkMovementMethod;
-import android.view.View;
 import android.widget.TextView;
 
 import com.github.mrengineer13.snackbar.SnackBar;
@@ -43,7 +40,6 @@ import guru.stefma.shareviahttp.R;
 public class SendFileActivity extends BaseActivity {
 
     private TextView uriPath;
-    private TextView txtBarCodeScannerInfo;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,7 +56,6 @@ public class SendFileActivity extends BaseActivity {
         uriPath.setText("File(s): " + Uri.decode(uriList.toString()));
         initHttpServer(uriList);
         saveServerUrlToClipboard();
-        generateBarCodeIfPossible(preferedServerUrl);
         setLinkMessageToView();
     }
 
@@ -73,7 +68,6 @@ public class SendFileActivity extends BaseActivity {
 
     private void setupOwnViews() {
         uriPath = (TextView) findViewById(R.id.uriPath);
-        txtBarCodeScannerInfo = (TextView) findViewById(R.id.txtBarCodeScannerInfo);
     }
 
     private ArrayList<Uri> getFileUris() {
@@ -121,28 +115,5 @@ public class SendFileActivity extends BaseActivity {
 
         theUris.add(myUri);
         return theUris;
-    }
-
-    public void generateBarCodeIfPossible(String message) {
-        Intent intent = new Intent("com.google.zxing.client.android.ENCODE");
-        intent.putExtra("ENCODE_TYPE", "TEXT_TYPE");
-        intent.putExtra("ENCODE_DATA", message);
-        try {
-            startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            formatBarcodeLink();
-            return;
-        }
-
-        new SnackBar.Builder(thisActivity)
-                .withMessage("Please open the following address on the target computer: " + message)
-                .withDuration(SnackBar.MED_SNACK)
-                .show();
-    }
-
-    void formatBarcodeLink() {
-        txtBarCodeScannerInfo.setVisibility(View.VISIBLE);
-        txtBarCodeScannerInfo.setMovementMethod(LinkMovementMethod
-                .getInstance());
     }
 }

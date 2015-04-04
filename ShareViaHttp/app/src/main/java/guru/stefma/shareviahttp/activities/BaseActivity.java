@@ -2,6 +2,7 @@ package guru.stefma.shareviahttp.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
@@ -9,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.TextView;
@@ -32,7 +34,7 @@ public class BaseActivity extends ActionBarActivity {
     private TextView link_msg;
 
     // NavigationViews
-    protected View bttnRate;
+    protected View bttnQrCode;
     protected View stopServer;
     protected View share;
     protected View changeIp;
@@ -47,20 +49,17 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     protected void setupNavigationViews() {
-        bttnRate = findViewById(R.id.button_rate);
+        bttnQrCode = findViewById(R.id.button_qr_code);
         stopServer = findViewById(R.id.stop_server);
         share = findViewById(R.id.button_share_url);
         changeIp = findViewById(R.id.change_ip);
     }
 
     protected void createViewClickListener() {
-        bttnRate.setOnClickListener(new View.OnClickListener() {
+        bttnQrCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String theUrl = "https://market.android.com/details?id="
-                        + Util.getPackageName();
-                Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse(theUrl));
-                startActivity(browse);
+                generateBarCodeIfPossible();
             }
         });
 
@@ -95,6 +94,23 @@ public class BaseActivity extends ActionBarActivity {
                 createChangeIpDialog();
             }
         });
+    }
+
+    public void generateBarCodeIfPossible() {
+        // TODO: Create a QR-Code online and download the image
+        // TODO: after the image was downloaded show the QR-Code in own activity
+        Intent intent = new Intent("com.google.zxing.client.android.ENCODE");
+        intent.putExtra("ENCODE_TYPE", "TEXT_TYPE");
+        intent.putExtra("ENCODE_DATA", link_msg.getText().toString());
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            new SnackBar.Builder(thisActivity)
+                    .withMessageId(R.string.qr_code_not_available)
+                    .withDuration(SnackBar.MED_SNACK)
+                    .show();
+            return;
+        }
     }
 
     private void createChangeIpDialog() {

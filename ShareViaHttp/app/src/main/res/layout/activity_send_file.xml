@@ -35,15 +35,6 @@
                 tools:text="Hallo" />
 
             <TextView
-                android:id="@+id/txtBarCodeScannerInfo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/barcode_scanner_msg"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
-            <TextView
                 android:id="@+id/technical_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
