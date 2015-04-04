@@ -22,7 +22,7 @@
             android:layout_centerInParent="true"
             android:layout_height="250dp"
             android:layout_width="250dp"
-            android:src="@drawable/ic_pick_items"
+            android:src="@drawable/ic_pick_files"
             android:background="@drawable/rounded_button" />
 
         <include
