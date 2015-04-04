@@ -59,13 +59,6 @@ public class SendFileActivity extends BaseActivity {
         setLinkMessageToView();
     }
 
-    private void setupToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
-        toolbar.setTitleTextColor(getResources().getColor(R.color.light_blue));
-        setSupportActionBar(toolbar);
-    }
-
     private void setupOwnViews() {
         uriPath = (TextView) findViewById(R.id.uriPath);
     }

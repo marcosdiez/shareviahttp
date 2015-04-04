@@ -12,8 +12,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mrengineer13.snackbar.SnackBar;
 
@@ -42,6 +47,14 @@ public class BaseActivity extends ActionBarActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Util.context = this;
+    }
+
+    protected void setupToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(getString(R.string.app_name));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.light_blue));
+        setSupportActionBar(toolbar);
     }
 
     protected void setupLinkMsgView() {
@@ -156,5 +169,25 @@ public class BaseActivity extends ActionBarActivity {
     protected void setLinkMessageToView() {
         link_msg.setPaintFlags(link_msg.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         link_msg.setText(preferedServerUrl);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_rate_app:
+                String theUrl = "market://details?id="
+                        + Util.getPackageName();
+                Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse(theUrl));
+                startActivity(browse);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
