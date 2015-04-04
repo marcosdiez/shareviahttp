@@ -6,6 +6,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -137,6 +138,7 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     protected void setLinkMessageToView() {
+        link_msg.setPaintFlags(link_msg.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         link_msg.setText(preferedServerUrl);
     }
 }

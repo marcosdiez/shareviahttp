@@ -11,9 +11,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:autoLink="all"
         android:text="@string/standar_url"
-        android:textColorLink="@color/orange"
+        android:textColor="@color/orange"
         android:textSize="21sp"
         android:textStyle="bold" />
 </RelativeLayout>
