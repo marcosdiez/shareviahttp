@@ -1,4 +1,4 @@
-package guru.stefma.shareviahttp.activities;
+package com.MarcosDiez.shareviahttp.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -18,15 +17,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mrengineer13.snackbar.SnackBar;
 
 import java.util.ArrayList;
 
-import guru.stefma.shareviahttp.MyHttpServer;
-import guru.stefma.shareviahttp.R;
-import guru.stefma.shareviahttp.Util;
+import com.MarcosDiez.shareviahttp.MyHttpServer;
+import com.MarcosDiez.shareviahttp.R;
+import com.MarcosDiez.shareviahttp.Util;
 
 public class BaseActivity extends ActionBarActivity {
 

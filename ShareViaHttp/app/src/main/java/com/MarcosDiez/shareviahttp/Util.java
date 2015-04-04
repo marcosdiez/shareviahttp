@@ -23,7 +23,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 
-package guru.stefma.shareviahttp;
+package com.MarcosDiez.shareviahttp;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;

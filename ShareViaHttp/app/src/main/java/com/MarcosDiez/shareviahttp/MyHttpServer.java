@@ -22,7 +22,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package guru.stefma.shareviahttp;
+package com.MarcosDiez.shareviahttp;
 
 //package webs;
 import java.io.IOException;

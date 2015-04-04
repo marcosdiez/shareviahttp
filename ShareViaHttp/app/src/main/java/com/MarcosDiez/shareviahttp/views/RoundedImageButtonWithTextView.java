@@ -1,4 +1,4 @@
-package guru.stefma.shareviahttp.views;
+package com.MarcosDiez.shareviahttp.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -9,7 +9,7 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import guru.stefma.shareviahttp.R;
+import com.MarcosDiez.shareviahttp.R;
 
 public class RoundedImageButtonWithTextView extends RelativeLayout {
 

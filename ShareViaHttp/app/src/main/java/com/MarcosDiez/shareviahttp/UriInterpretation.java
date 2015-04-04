@@ -3,7 +3,7 @@
  * APACHE 2.0 License.
  * 
  */
-package guru.stefma.shareviahttp;
+package com.MarcosDiez.shareviahttp;
 
 import java.io.File;
 import java.io.FileNotFoundException;

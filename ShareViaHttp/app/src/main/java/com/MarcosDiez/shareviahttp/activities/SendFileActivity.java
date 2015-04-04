@@ -22,20 +22,19 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package guru.stefma.shareviahttp.activities;
+package com.MarcosDiez.shareviahttp.activities;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import com.github.mrengineer13.snackbar.SnackBar;
 
 import java.util.ArrayList;
 
-import guru.stefma.shareviahttp.R;
+import com.MarcosDiez.shareviahttp.R;
 
 public class SendFileActivity extends BaseActivity {
 

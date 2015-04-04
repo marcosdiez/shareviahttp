@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="guru.stefma.shareviahttp">
+    package="com.MarcosDiez.shareviahttp">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -19,7 +19,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".activities.MainActivity"
+            android:name="com.MarcosDiez.shareviahttp.activities.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,7 +29,7 @@
         </activity>
 
         <activity
-            android:name=".activities.SendFileActivity"
+            android:name="com.MarcosDiez.shareviahttp.activities.SendFileActivity"
             android:label="@string/app_name"
             android:excludeFromRecents="true">
             <intent-filter>

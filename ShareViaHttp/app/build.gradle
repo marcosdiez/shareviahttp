@@ -5,10 +5,10 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "ws.stefma.shareviahttp"
+        applicationId "com.MarocsDiez.shareviahttp"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 1
+        versionCode 20
         versionName "2.0"
     }
 
