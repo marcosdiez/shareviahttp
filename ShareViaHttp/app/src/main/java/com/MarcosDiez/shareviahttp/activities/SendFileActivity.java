@@ -28,16 +28,21 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.Button;
 
 import com.MarcosDiez.shareviahttp.UriInterpretation;
 import com.github.mrengineer13.snackbar.SnackBar;
 
+import java.io.File;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 
 import com.MarcosDiez.shareviahttp.R;
 
 public class SendFileActivity extends BaseActivity {
+
+    ArrayList<UriInterpretation> uriList = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,11 +54,72 @@ public class SendFileActivity extends BaseActivity {
         setupNavigationViews();
         createViewClickListener();
 
-        ArrayList<UriInterpretation> uriList = getFileUris();
+        uriList = getFileUris();
+
         populateUriPath(uriList);
         initHttpServer(uriList);
         saveServerUrlToClipboard();
         setLinkMessageToView();
+        setupShareContainingFolderButton(uriList);
+    }
+
+    private void setupShareContainingFolderButton(ArrayList<UriInterpretation> uriList){
+        Button shareContainingFolderButton = (Button) findViewById(R.id.button_share_containing_folder);
+
+        if( buttonShareContainingFolderShouldBeVisible(uriList)){
+            shareContainingFolderButton.setVisibility(View.VISIBLE);
+        }else{
+            shareContainingFolderButton.setVisibility(View.GONE);
+        }
+
+        shareContainingFolderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickButtonShareContainingFolder();
+            }
+        });
+    }
+
+    private void onClickButtonShareContainingFolder() {
+        String path = uriList.get(0).getPath();
+        int pos = path.lastIndexOf(File.separator);
+        if (pos <= 0) {
+            new SnackBar.Builder(thisActivity)
+                    .withMessage("Error getting parent directory.")
+                    .withDuration(SnackBar.LONG_SNACK)
+                    .show();
+            return ;
+        }
+
+
+        String newPath = path.substring(0, pos);
+
+        newPath = URLDecoder.decode(newPath);
+
+        // I must now assume the file exists because android gives me a fake path anyway
+        // like  /storage/emulated/0
+
+        Uri theNewUri = Uri.parse(newPath);
+        ArrayList<UriInterpretation> newUriArray = new ArrayList<UriInterpretation>();
+        newUriArray.add(new UriInterpretation(theNewUri));
+        new SnackBar.Builder(thisActivity)
+                .withMessage("We are now sharing [" + newPath + "]")
+                .withDuration(SnackBar.LONG_SNACK)
+                .show();
+
+        uriList = newUriArray;
+        httpServer.SetFiles(newUriArray);
+        populateUriPath(newUriArray);
+    }
+
+    private boolean buttonShareContainingFolderShouldBeVisible(ArrayList<UriInterpretation> uriList){
+        if(uriList.size() != 1)
+            return false;
+
+        String uriPath = uriList.get(0).getPath();
+        if( uriPath == null || uriPath.length() == 0 )
+            return false;
+        return uriPath.startsWith(File.separator) || uriPath.startsWith("file:");
     }
 
 

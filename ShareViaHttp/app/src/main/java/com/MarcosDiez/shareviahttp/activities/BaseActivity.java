@@ -170,7 +170,7 @@ public class BaseActivity extends ActionBarActivity {
         listOfServerUris = httpServer.ListOfIpAddresses();
         preferredServerUrl = listOfServerUris[0].toString();
 
-        MyHttpServer.SetFiles(myUris);
+        httpServer.SetFiles(myUris);
     }
 
     protected void saveServerUrlToClipboard() {
