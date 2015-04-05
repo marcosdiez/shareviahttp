@@ -5,7 +5,7 @@ All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.   
+      notice, this list of conditions and the following disclaimer.
  * Neither the name of  Marcos Diez nor the
       names of its contributors may be used to endorse or promote products
       derived from this software without specific prior written permission.
@@ -23,7 +23,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 /**
- * 
+ *
  * Title: A simple Webserver Tutorial NO warranty, NO guarantee, MAY DO damage
  * to FILES, SOFTWARE, HARDWARE!! Description: This is a simple tutorial on
  * making a webserver posted on http://turtlemeat.com . Go there to read the
@@ -31,9 +31,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * modify it as you like, but you should give credit and maybe a link to
  * turtlemeat.com, you know R-E-S-P-E-C-T. You gotta respect the work that has
  * been put down.
- * 
+ *
  * Copyright: Copyright (c) 2002 Company: TurtleMeat
- * 
+ *
  * @author: Jon Berg <jon.berg[on_server]turtlemeat.com
  * @version 1.0
  */
@@ -181,17 +181,17 @@ public class HttpServerConnection implements Runnable {
 
 		InputStream requestedfile = null;
 
-		if (!theUriInterpretation.isDirectory) {
+		if (!theUriInterpretation.isDirectory()) {
 			try {
 				requestedfile = theUriInterpretation.getInputStream();
 			} catch (FileNotFoundException e) {
 				try {
 					s("Couldn't locate file. Sending input as text/plain");
-					// instead of sending a 404, we will send the contact as text/plain 
+					// instead of sending a 404, we will send the contact as text/plain
 					output.writeBytes(construct_http_header(200, "text/plain"));
 					output.writeBytes(fileUriStr);
-					
-					
+
+
 					// if you could not open the file send a 404
 					//s("Sending HTTP ERROR 404:" + e.getMessage());
 					//output.writeBytes(construct_http_header(404, null));
@@ -205,7 +205,7 @@ public class HttpServerConnection implements Runnable {
 		// happy day scenario
 
 		String outputString = construct_http_header(200,
-				theUriInterpretation.mime);
+                theUriInterpretation.getMime());
 
 		try {
 			output.writeBytes(outputString);
@@ -213,7 +213,7 @@ public class HttpServerConnection implements Runnable {
 			// if it was a HEAD request, we don't print any BODY
 			if (!sendOnlyHeader) {
 
-				if (theUriInterpretation.isDirectory || fileUriZ.size() > 1) {
+				if (theUriInterpretation.isDirectory() || fileUriZ.size() > 1) {
 					FileZipper zz = new FileZipper(output, fileUriZ);
 					zz.run();
 				} else {
@@ -241,13 +241,13 @@ public class HttpServerConnection implements Runnable {
 	}
 
 	private void shareRootUrl(DataOutputStream output) {
-		if (theUriInterpretation.isDirectory) {
-			redirectToFinalPath(output, theUriInterpretation.name + ".ZIP");
+		if (theUriInterpretation.isDirectory()) {
+			redirectToFinalPath(output, theUriInterpretation.getName() + ".ZIP");
 			return;
 		}
 
 		if (fileUriZ.size() == 1) {
-			redirectToFinalPath(output, theUriInterpretation.name);
+			redirectToFinalPath(output, theUriInterpretation.getName());
 		} else {
 			SimpleDateFormat format = new SimpleDateFormat(
 					"yyyy-MM-dd_HH_mm_ss");
@@ -331,9 +331,9 @@ public class HttpServerConnection implements Runnable {
 		if (theUriInterpretation == null) {
 			return "";
 		}
-		if (fileUriZ.size() == 1 && theUriInterpretation.size > 0) {
+		if (fileUriZ.size() == 1 && theUriInterpretation.getSize() > 0) {
 			return "Content-Length: "
-					+ Long.toString(theUriInterpretation.size) + "\r\n";
+					+ Long.toString(theUriInterpretation.getSize()) + "\r\n";
 		}
 		return "";
 	}
