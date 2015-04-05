@@ -25,16 +25,20 @@ v2.00:
 - Material Design
 - bugfix: open containing folder works on Lollipop and KitKat
 
-v1.12
+v1.12:
 - proper support for IPv6
-v1.11
+
+v1.11:
 - Works on Android 4.4 KitKat ( read storage content permission )
 - You can now share phone contacts as well ( shares as vCards )  ( requires the read contacts permission )
-v1.10
+
+v1.10:
 - URL is copied to clipboard and can be shared as well
-v1.09
+
+v1.09:
 - Ability to share folders ( directories )
-v1.08
+
+v1.08:
 - Ability to share multiple files at once
 - Ability to choose which IP will be displayed on the barcode
 - We now use threadpool to manage our threads
