@@ -30,7 +30,7 @@ import com.MarcosDiez.shareviahttp.Util;
 public class BaseActivity extends ActionBarActivity {
 
     protected static MyHttpServer httpServer = null;
-    protected String preferedServerUrl;
+    protected String preferredServerUrl;
     protected CharSequence[] listOfServerUris;
     protected final Activity thisActivity = this;
 
@@ -98,7 +98,7 @@ public class BaseActivity extends ActionBarActivity {
             public void onClick(View view) {
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("text/plain");
-                i.putExtra(Intent.EXTRA_TEXT, preferedServerUrl);
+                i.putExtra(Intent.EXTRA_TEXT, preferredServerUrl);
                 startActivity(Intent.createChooser(i, BaseActivity.this.getString(R.string.share_url)));
             }
         });
@@ -134,7 +134,7 @@ public class BaseActivity extends ActionBarActivity {
         b.setSingleChoiceItems(listOfServerUris, 0,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        preferedServerUrl = listOfServerUris[whichButton]
+                        preferredServerUrl = listOfServerUris[whichButton]
                                 .toString();
                         saveServerUrlToClipboard();
                         setLinkMessageToView();
@@ -144,17 +144,17 @@ public class BaseActivity extends ActionBarActivity {
         b.create().show();
     }
 
-    private void setupOwnViews() {
-        uriPath = (TextView) findViewById(R.id.uriPath);
-    }
-
     protected void populateUriPath(ArrayList<UriInterpretation> uriList) {
         StringBuilder output = new StringBuilder();
         String sep = "\n";
-        output.append(uriList.size() > 1 ? "Files:" : "File:");
-        output.append(sep);
+        boolean first = true;
         for( UriInterpretation thisUriInterpretation : uriList){
-            output.append(thisUriInterpretation.getPath() + sep);
+            if(first){
+                first = false;
+            }else{
+                output.append(sep);
+            }
+            output.append(thisUriInterpretation.getPath());
         }
         uriPath.setText(output.toString());
     }
@@ -168,14 +168,14 @@ public class BaseActivity extends ActionBarActivity {
 
         httpServer = new MyHttpServer(9999);
         listOfServerUris = httpServer.ListOfIpAddresses();
-        preferedServerUrl = listOfServerUris[0].toString();
+        preferredServerUrl = listOfServerUris[0].toString();
 
         MyHttpServer.SetFiles(myUris);
     }
 
     protected void saveServerUrlToClipboard() {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        clipboard.setPrimaryClip(ClipData.newPlainText(preferedServerUrl, preferedServerUrl));
+        clipboard.setPrimaryClip(ClipData.newPlainText(preferredServerUrl, preferredServerUrl));
 
         new SnackBar.Builder(thisActivity)
                 .withMessage("URL has been copied to the clipboard.")
@@ -185,7 +185,7 @@ public class BaseActivity extends ActionBarActivity {
 
     protected void setLinkMessageToView() {
         link_msg.setPaintFlags(link_msg.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        link_msg.setText(preferedServerUrl);
+        link_msg.setText(preferredServerUrl);
     }
 
     @Override
