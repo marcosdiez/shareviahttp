@@ -28,17 +28,21 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.Button;
 
+import com.MarcosDiez.shareviahttp.UriInterpretation;
 import com.github.mrengineer13.snackbar.SnackBar;
 
+import java.io.File;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 
 import com.MarcosDiez.shareviahttp.R;
 
 public class SendFileActivity extends BaseActivity {
 
-    private TextView uriPath;
+    ArrayList<UriInterpretation> uriList = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,38 +50,85 @@ public class SendFileActivity extends BaseActivity {
         setContentView(R.layout.activity_send_file);
 
         setupToolbar();
-        setupLinkMsgView();
+        setupTextViews();
         setupNavigationViews();
         createViewClickListener();
-        setupOwnViews();
 
-        ArrayList<Uri> uriList = getFileUris();
-        uriPath.setText("File(s): " + Uri.decode(uriList.toString()));
+        uriList = getFileUris();
+
+        populateUriPath(uriList);
         initHttpServer(uriList);
         saveServerUrlToClipboard();
         setLinkMessageToView();
+        setupShareContainingFolderButton(uriList);
     }
 
-    private void setupOwnViews() {
-        uriPath = (TextView) findViewById(R.id.uriPath);
+    private void setupShareContainingFolderButton(ArrayList<UriInterpretation> uriList){
+        Button shareContainingFolderButton = (Button) findViewById(R.id.button_share_containing_folder);
+
+        if( buttonShareContainingFolderShouldBeVisible(uriList)){
+            shareContainingFolderButton.setVisibility(View.VISIBLE);
+        }else{
+            shareContainingFolderButton.setVisibility(View.GONE);
+        }
+
+        shareContainingFolderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickButtonShareContainingFolder();
+            }
+        });
     }
 
-    private ArrayList<Uri> getFileUris() {
+    private void onClickButtonShareContainingFolder() {
+        String path = uriList.get(0).getPath();
+        int pos = path.lastIndexOf(File.separator);
+        if (pos <= 0) {
+            new SnackBar.Builder(thisActivity)
+                    .withMessage("Error getting parent directory.")
+                    .withDuration(SnackBar.LONG_SNACK)
+                    .show();
+            return ;
+        }
+
+
+        String newPath = path.substring(0, pos);
+
+        newPath = URLDecoder.decode(newPath);
+
+        // I must now assume the file exists because android gives me a fake path anyway
+        // like  /storage/emulated/0
+
+        Uri theNewUri = Uri.parse(newPath);
+        ArrayList<UriInterpretation> newUriArray = new ArrayList<UriInterpretation>();
+        newUriArray.add(new UriInterpretation(theNewUri));
+        new SnackBar.Builder(thisActivity)
+                .withMessage("We are now sharing [" + newPath + "]")
+                .withDuration(SnackBar.LONG_SNACK)
+                .show();
+
+        uriList = newUriArray;
+        httpServer.SetFiles(newUriArray);
+        populateUriPath(newUriArray);
+    }
+
+    private boolean buttonShareContainingFolderShouldBeVisible(ArrayList<UriInterpretation> uriList){
+        if(uriList.size() != 1)
+            return false;
+
+        String uriPath = uriList.get(0).getPath();
+        if( uriPath == null || uriPath.length() == 0 )
+            return false;
+        return uriPath.startsWith(File.separator) || uriPath.startsWith("file:");
+    }
+
+
+    private ArrayList<UriInterpretation> getFileUris() {
         Intent dataIntent = getIntent();
-        ArrayList<Uri> theUris = new ArrayList<Uri>();
+        ArrayList<UriInterpretation> theUris = new ArrayList<UriInterpretation>();
 
         if (Intent.ACTION_SEND_MULTIPLE.equals(dataIntent.getAction())) {
-            ArrayList<Parcelable> list = dataIntent
-                    .getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-            if (list != null) {
-                for (Parcelable parcelable : list) {
-                    Uri stream = (Uri) parcelable;
-                    if (stream != null) {
-                        theUris.add(stream);
-                    }
-                }
-            }
-            return theUris;
+            return getUrisForActionSendMultiple(dataIntent, theUris);
         }
 
         Bundle extras = dataIntent.getExtras();
@@ -105,7 +156,21 @@ public class SendFileActivity extends BaseActivity {
             }
         }
 
-        theUris.add(myUri);
+        theUris.add(new UriInterpretation(myUri));
+        return theUris;
+    }
+
+    private ArrayList<UriInterpretation> getUrisForActionSendMultiple(Intent dataIntent, ArrayList<UriInterpretation> theUris) {
+        ArrayList<Parcelable> list = dataIntent
+                .getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+        if (list != null) {
+            for (Parcelable parcelable : list) {
+                Uri stream = (Uri) parcelable;
+                if (stream != null) {
+                    theUris.add(new UriInterpretation(stream));
+                }
+            }
+        }
         return theUris;
     }
 }

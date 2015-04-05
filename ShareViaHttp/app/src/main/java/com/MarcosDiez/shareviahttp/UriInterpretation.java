@@ -1,7 +1,7 @@
 /*
  * Contatins code from https://github.com/k9mail/k-9/blob/master/src/com/fsck/k9/activity/MessageCompose.java
  * APACHE 2.0 License.
- * 
+ *
  */
 package com.MarcosDiez.shareviahttp;
 
@@ -18,12 +18,13 @@ import android.util.Log;
 
 public class UriInterpretation {
 
-	public long size = -1;
-	public String name = null;
-	public String mime;
-	public boolean isDirectory = false;
-	Uri uri;
-	ContentResolver contentResolver;
+	private long size = -1;
+	private String name = null;
+    private String path = null;
+	private String mime;
+	private boolean isDirectory = false;
+	private Uri uri;
+    private ContentResolver contentResolver;
 
 	public InputStream getInputStream() throws FileNotFoundException {
 		return contentResolver.openInputStream(uri);
@@ -40,7 +41,7 @@ public class UriInterpretation {
 		if (metadataCursor != null) {
 			try {
 				if (metadataCursor.moveToFirst()) {
-					name = metadataCursor.getString(0);
+					path = name = metadataCursor.getString(0);
 					size = metadataCursor.getInt(1);
 				}
 			} finally {
@@ -50,6 +51,7 @@ public class UriInterpretation {
 
 		if (name == null) {
 			name = uri.getLastPathSegment();
+            path = uri.toString();
 		}
 
 		getMime(uri, contentResolver);
@@ -148,4 +150,28 @@ public class UriInterpretation {
 		}
 
 	}
+
+    public long getSize() {
+        return size;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getMime() {
+        return mime;
+    }
+
+    public boolean isDirectory() {
+        return isDirectory;
+    }
+
+    public Uri getUri() {
+        return uri;
+    }
 }

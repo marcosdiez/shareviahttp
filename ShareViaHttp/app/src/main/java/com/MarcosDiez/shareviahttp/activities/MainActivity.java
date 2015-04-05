@@ -12,6 +12,7 @@ import android.view.View;
 import java.util.ArrayList;
 
 import com.MarcosDiez.shareviahttp.R;
+import com.MarcosDiez.shareviahttp.UriInterpretation;
 
 public class MainActivity extends BaseActivity {
 
@@ -23,10 +24,22 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
 
         setupToolbar();
-        setupLinkMsgView();
+        setupTextViews();
         setupNavigationViews();
         createViewClickListener();
         setupPickItemView();
+        // debugSendFileActivity();
+    }
+
+    private void debugSendFileActivity(){
+        String path = "/mnt/sdcard/Audible/Audible.log";
+
+        Intent intent = new Intent(this, SendFileActivity.class);
+        intent.addCategory("android.intent.category.DEFAULT");
+        intent.putExtra(Intent.EXTRA_TEXT, path);
+        // intent.setType("inode/directory");
+
+        startActivity(intent);
     }
 
     private void setupPickItemView() {
@@ -57,7 +70,8 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            ArrayList<Uri> uriList = getFileUris(data);
+            ArrayList<UriInterpretation> uriList = getFileUris(data);
+            populateUriPath(uriList);
             initHttpServer(uriList);
             saveServerUrlToClipboard();
             setLinkMessageToView();
@@ -65,18 +79,36 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        // Read values from the "savedInstanceState"-object and put them in your textview
+        super.onRestoreInstanceState(savedInstanceState);
+        uriPath.setText(savedInstanceState.getCharSequence("uriPath"));
+        link_msg.setText(savedInstanceState.getCharSequence("link_msg"));
+        setViewsVisible();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putCharSequence("link_msg", link_msg.getText());
+        outState.putCharSequence("uriPath", uriPath.getText());
+        // Save the values you need from your textview into "outState"-object
+        super.onSaveInstanceState(outState);
+    }
+
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private ArrayList<Uri> getFileUris(Intent data) {
-        ArrayList<Uri> theUris = new ArrayList<Uri>();
+    private ArrayList<UriInterpretation> getFileUris(Intent data) {
+        ArrayList<UriInterpretation> theUris = new ArrayList<UriInterpretation>();
         Uri dataUri = data.getData();
         if (dataUri != null) {
-            theUris.add(dataUri);
+            theUris.add(new UriInterpretation(dataUri));
         } else {
             ClipData clipData = data.getClipData();
             for (int i = 0; i < clipData.getItemCount(); ++i) {
                 ClipData.Item item = clipData.getItemAt(i);
                 Uri uri = item.getUri();
-                theUris.add(uri);
+                theUris.add(new UriInterpretation(uri));
             }
         }
         return theUris;

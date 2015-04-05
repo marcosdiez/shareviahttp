@@ -21,16 +21,16 @@ public class FileZipper implements Runnable {
 	}
 
 	OutputStream dest;
-	ArrayList<Uri> inputUris;
+	ArrayList<UriInterpretation> inputUriInterpretations;
 	Boolean atLeastOneDirectory = false;
 
-	public FileZipper(OutputStream dest, ArrayList<Uri> inputUris) {
+	public FileZipper(OutputStream dest, ArrayList<UriInterpretation> inputUriInterpretations) {
 		/*
 		 * // get a list of files from current directory File f = new File(".");
 		 * String inputFiles[] = f.list();
 		 */
 		this.dest = dest;
-		this.inputUris = inputUris;
+		this.inputUriInterpretations = inputUriInterpretations;
 
 	}
 
@@ -52,9 +52,8 @@ public class FileZipper implements Runnable {
 			// out.setMethod(method);
 			// out.setLevel(1) ;
 			byte data[] = new byte[BUFFER];
-			for (Uri thisUri : inputUris) {
-				UriInterpretation uriFile = new UriInterpretation(thisUri);
-				addFileOrDirectory(BUFFER, out, data, uriFile);
+			for (UriInterpretation thisUriInterpretation : inputUriInterpretations) {
+				addFileOrDirectory(BUFFER, out, data, thisUriInterpretation);
 			}
 			out.close();
 			s("Zip Done. Checksum: " + checksum.getChecksum().getValue());
@@ -66,7 +65,7 @@ public class FileZipper implements Runnable {
 	void addFileOrDirectory(int BUFFER, ZipOutputStream out, byte[] data,
 			UriInterpretation uriFile) throws FileNotFoundException,
 			IOException {
-		if (uriFile.isDirectory) {
+		if (uriFile.isDirectory()) {
 			addDirectory(BUFFER, out, data, uriFile);
 		} else {
 			addFile(BUFFER, out, data, uriFile);
@@ -77,7 +76,7 @@ public class FileZipper implements Runnable {
 			UriInterpretation uriFile) throws FileNotFoundException,
 			IOException {
 		atLeastOneDirectory = true;
-		String directoryPath = uriFile.uri.getPath();
+		String directoryPath = uriFile.getUri().getPath();
 		if (directoryPath.charAt(directoryPath.length() - 1) != File.separatorChar) {
 			directoryPath += File.separatorChar;
 		}
@@ -105,7 +104,7 @@ public class FileZipper implements Runnable {
 			UriInterpretation uriFile) throws FileNotFoundException,
 			IOException {
 		BufferedInputStream origin;
-		s("Adding File: " + uriFile.uri.getPath() + " -- " + uriFile.name);
+		s("Adding File: " + uriFile.getUri().getPath() + " -- " + uriFile.getName());
 		origin = new BufferedInputStream(uriFile.getInputStream(), BUFFER);
 
 		ZipEntry entry = new ZipEntry(getFileName(uriFile));
@@ -121,13 +120,13 @@ public class FileZipper implements Runnable {
 	String getFileName(UriInterpretation uriFile) {
 		/*	Galery Sends uri.getPath() with values like /external/images/media/16458
 		 *  while urlFile.name returns IMG_20120427_120038.jpg
-		 * 	
+		 *
 		 *  since such name has no directory info, that would break real directories
 		 */
 		if (atLeastOneDirectory) {
-			return uriFile.uri.getPath().substring(1);
+			return uriFile.getUri().getPath().substring(1);
 		}
-		return uriFile.name;
+		return uriFile.getName();
 	}
 
 }
