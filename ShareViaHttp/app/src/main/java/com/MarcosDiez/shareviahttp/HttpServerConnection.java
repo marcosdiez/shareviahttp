@@ -53,7 +53,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import android.net.Uri;
 import android.util.Log;
 
 public class HttpServerConnection implements Runnable {
@@ -126,7 +125,7 @@ public class HttpServerConnection implements Runnable {
 			sendOnlyHeader = true;
 		} else {
 			if (!upperCaseHeader.startsWith("GET")) {
-				dealWithUnsuporthedMethod(output);
+				dealWithUnsupportedMethod(output);
 				return;
 			}
 		}
@@ -142,7 +141,7 @@ public class HttpServerConnection implements Runnable {
 			return;
 		}
 
-		String fileUriStr = fileUriZ.size() == 1 ? fileUriZ.get(0).toString()
+		String fileUriStr = fileUriZ.size() == 1 ? fileUriZ.get(0).getUri().toString()
 				: fileUriZ.toString();
 
 		s("Client requested: [" + path + "][" + fileUriStr + "]");
@@ -289,7 +288,7 @@ public class HttpServerConnection implements Runnable {
 		return path;
 	}
 
-	private void dealWithUnsuporthedMethod(DataOutputStream output) {
+	private void dealWithUnsupportedMethod(DataOutputStream output) {
 		try {
 			output.writeBytes(construct_http_header(501, null));
 			return;
