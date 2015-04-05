@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.MarcosDiez.shareviahttp.UriInterpretation;
 import com.github.mrengineer13.snackbar.SnackBar;
 
 import java.util.ArrayList;
@@ -140,7 +141,7 @@ public class BaseActivity extends ActionBarActivity {
         b.create().show();
     }
 
-    protected void initHttpServer(ArrayList<Uri> myUris) {
+    protected void initHttpServer(ArrayList<UriInterpretation> myUris) {
         Util.context = this.getApplicationContext();
         if (myUris == null || myUris.size() == 0) {
             finish();

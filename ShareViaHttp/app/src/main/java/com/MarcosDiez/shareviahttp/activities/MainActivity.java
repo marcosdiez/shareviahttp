@@ -12,6 +12,7 @@ import android.view.View;
 import java.util.ArrayList;
 
 import com.MarcosDiez.shareviahttp.R;
+import com.MarcosDiez.shareviahttp.UriInterpretation;
 
 public class MainActivity extends BaseActivity {
 
@@ -57,7 +58,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            ArrayList<Uri> uriList = getFileUris(data);
+            ArrayList<UriInterpretation> uriList = getFileUris(data);
             initHttpServer(uriList);
             saveServerUrlToClipboard();
             setLinkMessageToView();
@@ -66,17 +67,17 @@ public class MainActivity extends BaseActivity {
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private ArrayList<Uri> getFileUris(Intent data) {
-        ArrayList<Uri> theUris = new ArrayList<Uri>();
+    private ArrayList<UriInterpretation> getFileUris(Intent data) {
+        ArrayList<UriInterpretation> theUris = new ArrayList<UriInterpretation>();
         Uri dataUri = data.getData();
         if (dataUri != null) {
-            theUris.add(dataUri);
+            theUris.add(new UriInterpretation(dataUri));
         } else {
             ClipData clipData = data.getClipData();
             for (int i = 0; i < clipData.getItemCount(); ++i) {
                 ClipData.Item item = clipData.getItemAt(i);
                 Uri uri = item.getUri();
-                theUris.add(uri);
+                theUris.add(new UriInterpretation(uri));
             }
         }
         return theUris;

@@ -58,7 +58,7 @@ import android.util.Log;
 
 public class HttpServerConnection implements Runnable {
 
-	public HttpServerConnection(ArrayList<Uri> fileUris, Socket connectionsocket) {
+	public HttpServerConnection(ArrayList<UriInterpretation> fileUris, Socket connectionsocket) {
 		this.fileUriZ = fileUris;
 		this.connectionsocket = connectionsocket;
 
@@ -66,7 +66,7 @@ public class HttpServerConnection implements Runnable {
 
 	private UriInterpretation theUriInterpretation;
 	private Socket connectionsocket;
-	private ArrayList<Uri> fileUriZ;
+	private ArrayList<UriInterpretation> fileUriZ;
 	private String ipAddress = "";
 
 	public void run() {
@@ -164,7 +164,7 @@ public class HttpServerConnection implements Runnable {
 		}
 
 		try {
-			theUriInterpretation = new UriInterpretation(fileUriZ.get(0));
+			theUriInterpretation = fileUriZ.get(0);
 		} catch (java.lang.SecurityException e) {
 			e.printStackTrace();
 			s("Share Via HTTP has no permition to read such file.");

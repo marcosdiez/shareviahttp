@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.widget.TextView;
 
+import com.MarcosDiez.shareviahttp.UriInterpretation;
 import com.github.mrengineer13.snackbar.SnackBar;
 
 import java.util.ArrayList;
@@ -51,20 +52,31 @@ public class SendFileActivity extends BaseActivity {
         createViewClickListener();
         setupOwnViews();
 
-        ArrayList<Uri> uriList = getFileUris();
-        uriPath.setText("File(s): " + Uri.decode(uriList.toString()));
+        ArrayList<UriInterpretation> uriList = getFileUris();
+        populateUriPath(uriList);
         initHttpServer(uriList);
         saveServerUrlToClipboard();
         setLinkMessageToView();
+    }
+
+    private void populateUriPath(ArrayList<UriInterpretation> uriList) {
+        StringBuilder output = new StringBuilder();
+        String sep = "\n";
+        output.append(uriList.size() > 1 ? "Files:" : "File:");
+        output.append(sep);
+        for( UriInterpretation thisUriInterpretation : uriList){
+            output.append(thisUriInterpretation.getPath() + sep);
+        }
+        uriPath.setText(output.toString());
     }
 
     private void setupOwnViews() {
         uriPath = (TextView) findViewById(R.id.uriPath);
     }
 
-    private ArrayList<Uri> getFileUris() {
+    private ArrayList<UriInterpretation> getFileUris() {
         Intent dataIntent = getIntent();
-        ArrayList<Uri> theUris = new ArrayList<Uri>();
+        ArrayList<UriInterpretation> theUris = new ArrayList<UriInterpretation>();
 
         if (Intent.ACTION_SEND_MULTIPLE.equals(dataIntent.getAction())) {
             ArrayList<Parcelable> list = dataIntent
@@ -73,7 +85,7 @@ public class SendFileActivity extends BaseActivity {
                 for (Parcelable parcelable : list) {
                     Uri stream = (Uri) parcelable;
                     if (stream != null) {
-                        theUris.add(stream);
+                        theUris.add(new UriInterpretation(stream));
                     }
                 }
             }
@@ -105,7 +117,7 @@ public class SendFileActivity extends BaseActivity {
             }
         }
 
-        theUris.add(myUri);
+        theUris.add(new UriInterpretation(myUri));
         return theUris;
     }
 }

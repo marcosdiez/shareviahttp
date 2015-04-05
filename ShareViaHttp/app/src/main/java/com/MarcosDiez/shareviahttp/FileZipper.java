@@ -21,16 +21,16 @@ public class FileZipper implements Runnable {
 	}
 
 	OutputStream dest;
-	ArrayList<Uri> inputUris;
+	ArrayList<UriInterpretation> inputUriInterpretations;
 	Boolean atLeastOneDirectory = false;
 
-	public FileZipper(OutputStream dest, ArrayList<Uri> inputUris) {
+	public FileZipper(OutputStream dest, ArrayList<UriInterpretation> inputUriInterpretations) {
 		/*
 		 * // get a list of files from current directory File f = new File(".");
 		 * String inputFiles[] = f.list();
 		 */
 		this.dest = dest;
-		this.inputUris = inputUris;
+		this.inputUriInterpretations = inputUriInterpretations;
 
 	}
 
@@ -52,9 +52,8 @@ public class FileZipper implements Runnable {
 			// out.setMethod(method);
 			// out.setLevel(1) ;
 			byte data[] = new byte[BUFFER];
-			for (Uri thisUri : inputUris) {
-				UriInterpretation uriFile = new UriInterpretation(thisUri);
-				addFileOrDirectory(BUFFER, out, data, uriFile);
+			for (UriInterpretation thisUriInterpretation : inputUriInterpretations) {
+				addFileOrDirectory(BUFFER, out, data, thisUriInterpretation);
 			}
 			out.close();
 			s("Zip Done. Checksum: " + checksum.getChecksum().getValue());

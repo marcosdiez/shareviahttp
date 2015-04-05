@@ -65,11 +65,11 @@ public class MyHttpServer extends Thread {
 
 	// by design, we only serve one file at a time.
 
-	public static void SetFiles(ArrayList<Uri> fileUris) {
+	public static void SetFiles(ArrayList<UriInterpretation> fileUris) {
 		MyHttpServer.fileUris = fileUris;
 	}
 
-	public static ArrayList<Uri> GetFiles(){
+	public static ArrayList<UriInterpretation> GetFiles(){
 		return MyHttpServer.fileUris;
 	}
 
@@ -82,7 +82,7 @@ public class MyHttpServer extends Thread {
 	}
 
 	private static int port;
-	private static ArrayList<Uri> fileUris;
+	private static ArrayList<UriInterpretation> fileUris;
 
 	private static ServerSocket serversocket = null;
 	private boolean webserverLoop = true;

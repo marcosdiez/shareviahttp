@@ -20,6 +20,7 @@ public class UriInterpretation {
 
 	private long size = -1;
 	private String name = null;
+    private String path = null;
 	private String mime;
 	private boolean isDirectory = false;
 	private Uri uri;
@@ -40,7 +41,7 @@ public class UriInterpretation {
 		if (metadataCursor != null) {
 			try {
 				if (metadataCursor.moveToFirst()) {
-					name = metadataCursor.getString(0);
+					path = name = metadataCursor.getString(0);
 					size = metadataCursor.getInt(1);
 				}
 			} finally {
@@ -50,6 +51,7 @@ public class UriInterpretation {
 
 		if (name == null) {
 			name = uri.getLastPathSegment();
+            path = uri.toString();
 		}
 
 		getMime(uri, contentResolver);
@@ -151,6 +153,10 @@ public class UriInterpretation {
 
     public long getSize() {
         return size;
+    }
+
+    public String getPath() {
+        return path;
     }
 
     public String getName() {
