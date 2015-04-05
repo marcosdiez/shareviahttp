@@ -9,13 +9,13 @@
     <string name="barcode_scanner_msg">Apropósito, se você instalar o <a href="http://market.android.com/details?id=com.google.zxing.client.android">Leitor de Código de Barras</a>, esta URL pode ser enviada como um código de barras também.</string>
 
     <string name="rate_app">Dar uma nota para este App</string>
-	<string name="button_qrcode">Criar QR</string>    
+	<string name="button_qrcode">Criar QR</string>
 	<string name="change_ip">Escolher IP</string>
     <string name="share_containing_folder">Compartilhar Pasta Que Contém Este Arquivo</string>
-	<string name="share_url">Compartilhar URL</string>    
+	<string name="share_url">Enviar URL</string>
 	<string name="stop_server">Desligar Compartilhamento</string>
-    
-	
+
+
 
     <string name="now_sharing_anymore">O arquivo não está mais sendo compartilhado.</string>
 
