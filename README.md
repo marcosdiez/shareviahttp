@@ -12,7 +12,7 @@ Simply *share* from this app, your gallery or a file manager with "Share via HTT
 
 ## Thanks
 
-The awesome UI was done by <a href="https://github.com/StefMa">Marcos Diez</a>!
+The awesome UI was done by <a href="https://github.com/StefMa">Stefan M.</a>!
 
 ## License
 See the [LICENSE](LICENSE.md) file for license rights and limitations.
