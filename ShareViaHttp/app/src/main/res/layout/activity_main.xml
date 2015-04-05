@@ -17,11 +17,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ImageButton
+            android:id="@+id/pick_items"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/rounded_button"
+            android:minHeight="250dp"
+            android:minWidth="250dp"
+            android:src="@drawable/ic_pick_files" />
+
         <ScrollView
             android:id="@+id/scrolling_information"
             android:layout_width="match_parent"
-            android:layout_height="84dp"
+            android:layout_height="match_parent"
+            android:layout_above="@id/pick_items"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:fadeScrollbars="false">
 
             <TextView
@@ -33,16 +45,6 @@
                 android:autoLink="none" />
 
         </ScrollView>
-
-        <ImageButton
-            android:id="@+id/pick_items"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:layout_centerInParent="true"
-            android:background="@drawable/rounded_button"
-            android:minHeight="250dp"
-            android:minWidth="250dp"
-            android:src="@drawable/ic_pick_files" />
 
         <include
             android:id="@+id/navigation_layout"
