@@ -1,41 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/toolbar"/>
+        layout="@layout/toolbar" />
 
     <include
         android:id="@+id/link_layout"
         layout="@layout/link_layout"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <ScrollView
             android:id="@+id/scrolling_information"
             android:layout_width="match_parent"
             android:layout_height="84dp"
             android:layout_marginTop="10dp"
-            android:fadeScrollbars="false"
-            >
+            android:fadeScrollbars="false">
 
             <TextView
                 android:id="@+id/uriPath"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-
-                android:autoLink="none"
-                />
+                android:layout_height="wrap_content"
+                android:autoLink="none" />
 
         </ScrollView>
-
 
         <ImageButton
             android:id="@+id/pick_items"
@@ -45,13 +42,12 @@
             android:background="@drawable/rounded_button"
             android:minHeight="250dp"
             android:minWidth="250dp"
-            android:src="@drawable/ic_pick_files"/>
-
+            android:src="@drawable/ic_pick_files" />
 
         <include
             android:id="@+id/navigation_layout"
             layout="@layout/navigation_layout"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </RelativeLayout>
 
 </LinearLayout>
