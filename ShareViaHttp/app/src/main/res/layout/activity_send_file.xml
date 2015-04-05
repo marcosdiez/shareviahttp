@@ -39,10 +39,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:autoLink="all"
+                android:autoLink="none"
                 android:text="@string/technical_info" />
-        </LinearLayout>
 
+            <Button
+                android:id="@+id/button_share_containing_folder"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/share_containing_folder"
+                android:layout_marginTop="10dp"
+
+                android:background="#2980b9"
+                android:textColor="@android:color/white"
+                android:textAllCaps="true"
+                />
+
+        </LinearLayout>
     </ScrollView>
 
     <include
