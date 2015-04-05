@@ -62,17 +62,7 @@ public class SendFileActivity extends BaseActivity {
         ArrayList<UriInterpretation> theUris = new ArrayList<UriInterpretation>();
 
         if (Intent.ACTION_SEND_MULTIPLE.equals(dataIntent.getAction())) {
-            ArrayList<Parcelable> list = dataIntent
-                    .getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-            if (list != null) {
-                for (Parcelable parcelable : list) {
-                    Uri stream = (Uri) parcelable;
-                    if (stream != null) {
-                        theUris.add(new UriInterpretation(stream));
-                    }
-                }
-            }
-            return theUris;
+            return getUrisForActionSendMultiple(dataIntent, theUris);
         }
 
         Bundle extras = dataIntent.getExtras();
@@ -101,6 +91,20 @@ public class SendFileActivity extends BaseActivity {
         }
 
         theUris.add(new UriInterpretation(myUri));
+        return theUris;
+    }
+
+    private ArrayList<UriInterpretation> getUrisForActionSendMultiple(Intent dataIntent, ArrayList<UriInterpretation> theUris) {
+        ArrayList<Parcelable> list = dataIntent
+                .getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+        if (list != null) {
+            for (Parcelable parcelable : list) {
+                Uri stream = (Uri) parcelable;
+                if (stream != null) {
+                    theUris.add(new UriInterpretation(stream));
+                }
+            }
+        }
         return theUris;
     }
 }
