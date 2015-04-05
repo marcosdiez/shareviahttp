@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/toolbar"/>
+        layout="@layout/toolbar" />
 
     <include
         android:id="@+id/link_layout"
-        layout="@layout/link_layout"/>
+        layout="@layout/link_layout" />
 
     <ScrollView
         android:id="@+id/scrolling_information"
@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:autoLink="none"
-                tools:text="Hallo"/>
+                tools:text="Hallo" />
 
             <TextView
                 android:id="@+id/technical_info"
@@ -40,24 +40,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:autoLink="none"
-                android:text="@string/technical_info"/>
+                android:text="@string/technical_info" />
 
             <Button
                 android:id="@+id/button_share_containing_folder"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:background="#2980b9"
-
+                android:background="@color/dark_blue"
                 android:text="@string/share_containing_folder"
                 android:textAllCaps="true"
-                android:textColor="@android:color/white"
-                />
+                android:textColor="@color/light_blue" />
 
         </LinearLayout>
     </ScrollView>
 
     <include
         android:id="@+id/navigation_layout"
-        layout="@layout/navigation_layout"/>
+        layout="@layout/navigation_layout" />
 </RelativeLayout>

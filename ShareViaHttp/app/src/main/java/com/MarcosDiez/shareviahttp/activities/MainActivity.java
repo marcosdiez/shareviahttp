@@ -9,10 +9,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
-import java.util.ArrayList;
-
 import com.MarcosDiez.shareviahttp.R;
 import com.MarcosDiez.shareviahttp.UriInterpretation;
+
+import java.util.ArrayList;
 
 public class MainActivity extends BaseActivity {
 
@@ -31,7 +31,7 @@ public class MainActivity extends BaseActivity {
         // debugSendFileActivity();
     }
 
-    private void debugSendFileActivity(){
+    private void debugSendFileActivity() {
         String path = "/mnt/sdcard/Audible/Audible.log";
 
         Intent intent = new Intent(this, SendFileActivity.class);
@@ -85,7 +85,10 @@ public class MainActivity extends BaseActivity {
         super.onRestoreInstanceState(savedInstanceState);
         uriPath.setText(savedInstanceState.getCharSequence("uriPath"));
         link_msg.setText(savedInstanceState.getCharSequence("link_msg"));
-        setViewsVisible();
+
+        if (!savedInstanceState.getCharSequence("uriPath").equals("")) {
+            setViewsVisible();
+        }
     }
 
     @Override
