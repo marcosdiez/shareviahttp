@@ -17,6 +17,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ScrollView
+            android:id="@+id/scrolling_information"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/pick_items"
+            >
+
+            <TextView
+                android:id="@+id/uriPath"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:autoLink="none"
+                android:layout_gravity="top"
+                />
+
+        </ScrollView>
+
         <ImageButton
             android:id="@+id/pick_items"
             android:layout_centerInParent="true"

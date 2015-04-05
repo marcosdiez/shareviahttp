@@ -24,7 +24,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
 
         setupToolbar();
-        setupLinkMsgView();
+        setupTextViews();
         setupNavigationViews();
         createViewClickListener();
         setupPickItemView();
@@ -59,6 +59,7 @@ public class MainActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             ArrayList<UriInterpretation> uriList = getFileUris(data);
+            populateUriPath(uriList);
             initHttpServer(uriList);
             saveServerUrlToClipboard();
             setLinkMessageToView();

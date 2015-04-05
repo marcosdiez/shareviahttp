@@ -37,6 +37,8 @@ public class BaseActivity extends ActionBarActivity {
     // LinkMessageView
     private TextView link_msg;
 
+    protected TextView uriPath;
+
     // NavigationViews
     protected View bttnQrCode;
     protected View stopServer;
@@ -56,8 +58,9 @@ public class BaseActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
     }
 
-    protected void setupLinkMsgView() {
+    protected void setupTextViews() {
         link_msg = (TextView) findViewById(R.id.link_msg);
+        uriPath = (TextView) findViewById(R.id.uriPath);
     }
 
     protected void setupNavigationViews() {
@@ -139,6 +142,21 @@ public class BaseActivity extends ActionBarActivity {
                     }
                 });
         b.create().show();
+    }
+
+    private void setupOwnViews() {
+        uriPath = (TextView) findViewById(R.id.uriPath);
+    }
+
+    protected void populateUriPath(ArrayList<UriInterpretation> uriList) {
+        StringBuilder output = new StringBuilder();
+        String sep = "\n";
+        output.append(uriList.size() > 1 ? "Files:" : "File:");
+        output.append(sep);
+        for( UriInterpretation thisUriInterpretation : uriList){
+            output.append(thisUriInterpretation.getPath() + sep);
+        }
+        uriPath.setText(output.toString());
     }
 
     protected void initHttpServer(ArrayList<UriInterpretation> myUris) {

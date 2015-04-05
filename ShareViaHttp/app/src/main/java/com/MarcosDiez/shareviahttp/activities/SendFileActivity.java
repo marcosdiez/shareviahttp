@@ -39,18 +39,15 @@ import com.MarcosDiez.shareviahttp.R;
 
 public class SendFileActivity extends BaseActivity {
 
-    private TextView uriPath;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_file);
 
         setupToolbar();
-        setupLinkMsgView();
+        setupTextViews();
         setupNavigationViews();
         createViewClickListener();
-        setupOwnViews();
 
         ArrayList<UriInterpretation> uriList = getFileUris();
         populateUriPath(uriList);
@@ -59,20 +56,6 @@ public class SendFileActivity extends BaseActivity {
         setLinkMessageToView();
     }
 
-    private void populateUriPath(ArrayList<UriInterpretation> uriList) {
-        StringBuilder output = new StringBuilder();
-        String sep = "\n";
-        output.append(uriList.size() > 1 ? "Files:" : "File:");
-        output.append(sep);
-        for( UriInterpretation thisUriInterpretation : uriList){
-            output.append(thisUriInterpretation.getPath() + sep);
-        }
-        uriPath.setText(output.toString());
-    }
-
-    private void setupOwnViews() {
-        uriPath = (TextView) findViewById(R.id.uriPath);
-    }
 
     private ArrayList<UriInterpretation> getFileUris() {
         Intent dataIntent = getIntent();
