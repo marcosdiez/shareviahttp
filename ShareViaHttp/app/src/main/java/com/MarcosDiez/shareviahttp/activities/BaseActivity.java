@@ -35,7 +35,7 @@ public class BaseActivity extends ActionBarActivity {
     protected final Activity thisActivity = this;
 
     // LinkMessageView
-    private TextView link_msg;
+    protected TextView link_msg;
 
     protected TextView uriPath;
 

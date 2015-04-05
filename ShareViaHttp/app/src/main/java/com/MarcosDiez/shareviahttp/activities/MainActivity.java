@@ -67,6 +67,24 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        // Read values from the "savedInstanceState"-object and put them in your textview
+        super.onRestoreInstanceState(savedInstanceState);
+        uriPath.setText(savedInstanceState.getCharSequence("uriPath"));
+        link_msg.setText(savedInstanceState.getCharSequence("link_msg"));
+        setViewsVisible();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putCharSequence("link_msg", link_msg.getText());
+        outState.putCharSequence("uriPath", uriPath.getText());
+        // Save the values you need from your textview into "outState"-object
+        super.onSaveInstanceState(outState);
+    }
+
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private ArrayList<UriInterpretation> getFileUris(Intent data) {
         ArrayList<UriInterpretation> theUris = new ArrayList<UriInterpretation>();
