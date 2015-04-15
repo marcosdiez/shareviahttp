@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="app_name">HTTP bidez bidali</string>
+<string name="standard_url">http://127.0.0.1/</string>
+<string name="technical_info">Murrizketa teknikoak: WiFipean beti funtzionatuko du. Beste edonon, suebakien, NATen, etab.en arabera funtzionatuko du. Blokeatu gabeko IPv6 helbide batek edonon funtzionatu beharko luke.</string>
+<string name="barcode_scanner_msg">Baita, <a href="http://market.android.com/details?id=com.google.zxing.client.android">Barra-kode Eskanerra</a> instalatzen baduzu, URL hau barra-kode bezala bidali daiteke.</string>
+<string name="rate_app">Aplikazioa puntuatu</string>
+<string name="button_qrcode">QR kodea sortu</string>
+<string name="change_ip">IPa aldatu</string>
+<string name="share_containing_folder">Fitxategi hau dagoen karpeta partekatu</string>
+<string name="share_url">Share URLa partekatu</string>
+<string name="stop_server">Zerbitzaria gelditu</string>
+<string name="now_sharing_anymore">Eskatutako fitxategia ez da gehiago partekatzen ari.</string>
+<string name="alert_dialog_ok">Ados</string>
+<string name="alert_dialog_cancel">Utzi</string>
+<string name="qr_code_not_available">QR kodeentzako aplikaziorik ez dago eskuragarri</string>
+</resources>
