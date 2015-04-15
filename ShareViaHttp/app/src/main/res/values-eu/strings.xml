@@ -8,7 +8,7 @@
 <string name="button_qrcode">QR kodea sortu</string>
 <string name="change_ip">IPa aldatu</string>
 <string name="share_containing_folder">Fitxategi hau dagoen karpeta partekatu</string>
-<string name="share_url">Share URLa partekatu</string>
+<string name="share_url">URLa partekatu</string>
 <string name="stop_server">Zerbitzaria gelditu</string>
 <string name="now_sharing_anymore">Eskatutako fitxategia ez da gehiago partekatzen ari.</string>
 <string name="alert_dialog_ok">Ados</string>
