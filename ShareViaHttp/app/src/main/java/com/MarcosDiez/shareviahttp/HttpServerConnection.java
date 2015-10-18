@@ -47,8 +47,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -357,6 +359,12 @@ public class HttpServerConnection implements Runnable {
 				+ "\r\n");
 		if (location != null) {
 			// we don't want cache for the root URL
+			try {
+				location = URLEncoder.encode(location, "UTF-8");
+				s("after urlencode location:" + location);
+			} catch (UnsupportedEncodingException e) {
+				s(Log.getStackTraceString(e));
+			}
 			output.append("Location: " + location + "\r\n"); // server name
 
 			output.append("Expires: Tue, 03 Jul 2001 06:00:00 GMT\r\n");
