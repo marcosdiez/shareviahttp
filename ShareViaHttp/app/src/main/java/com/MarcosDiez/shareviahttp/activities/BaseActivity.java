@@ -178,7 +178,7 @@ public class BaseActivity extends ActionBarActivity {
         clipboard.setPrimaryClip(ClipData.newPlainText(preferredServerUrl, preferredServerUrl));
 
         new SnackBar.Builder(thisActivity)
-                .withMessage("URL has been copied to the clipboard.")
+                .withMessage(getString(R.string.url_clipboard))
                 .withDuration(SnackBar.MED_SNACK)
                 .show();
     }
