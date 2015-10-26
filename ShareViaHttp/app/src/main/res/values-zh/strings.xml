@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">网页分享</string>
+    <string name="alert_dialog_cancel">取消</string>
+    <string name="alert_dialog_ok">确定</string>
+    <string name="barcode_scanner_msg">并且，如果你安装了<a href="http://market.android.com/details?id=com.google.zxing.client.android">条码扫描器</a>的话， 这个网页 URL 还可以通过二维码发送。</string>
+    <string name="button_qrcode">二维码</string>
+    <string name="change_ip">修改IP</string>
+    <string name="qr_code_not_available">未安装二维码应用</string>
+    <string name="now_sharing_anymore">请求的文件已经过期</string>
+    <string name="share_containing_folder">分享所在文件夹</string>
+    <string name="rate_app">应用评分</string>
+    <string name="share_url">分享URL</string>
+    <string name="stop_server">停止服务</string>
+    <string name="technical_info">技术局限：在 WiFi 网络下一般能正常使用，但在其他网络条件下，情况和防火墙，NAT等有关。一个没有被屏蔽的 IPv6 地址情况应该一直可用。</string>
+    <string name="url_clipboard">网页URL已复制到剪贴板</string>
+</resources>
