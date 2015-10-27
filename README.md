@@ -6,9 +6,9 @@ Simply *share* from this app, your gallery or a file manager with "Share via HTT
 
 ## Screenshots
 
-![Screenshot 1](GooglePlay/screen0.png)
-![Screenshot 2](GooglePlay/screen3.png)
-
+<img src="GooglePlay/screen0.png" width=auto height=400/>
+<img src="GooglePlay/screen1.png" width=auto height=400/>
+<img src="GooglePlay/screen3.png" width=auto height=400/>
 
 ## Thanks
 
