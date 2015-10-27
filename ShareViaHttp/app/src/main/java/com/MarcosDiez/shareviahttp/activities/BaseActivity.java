@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -18,14 +19,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.MarcosDiez.shareviahttp.UriInterpretation;
-import com.github.mrengineer13.snackbar.SnackBar;
-
-import java.util.ArrayList;
-
 import com.MarcosDiez.shareviahttp.MyHttpServer;
 import com.MarcosDiez.shareviahttp.R;
+import com.MarcosDiez.shareviahttp.UriInterpretation;
 import com.MarcosDiez.shareviahttp.Util;
+
+import java.util.ArrayList;
 
 public class BaseActivity extends ActionBarActivity {
 
@@ -86,10 +85,7 @@ public class BaseActivity extends ActionBarActivity {
                 if (p != null) {
                     p.stopServer();
                 }
-                new SnackBar.Builder(thisActivity)
-                        .withMessage(getString(R.string.now_sharing_anymore))
-                        .withDuration(SnackBar.SHORT_SNACK)
-                        .show();
+                Snackbar.make(findViewById(android.R.id.content), getString(R.string.now_sharing_anymore), Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -120,11 +116,7 @@ public class BaseActivity extends ActionBarActivity {
         try {
             startActivity(intent);
         } catch (ActivityNotFoundException e) {
-            new SnackBar.Builder(thisActivity)
-                    .withMessageId(R.string.qr_code_not_available)
-                    .withDuration(SnackBar.MED_SNACK)
-                    .show();
-            return;
+            Snackbar.make(findViewById(android.R.id.content), getString(R.string.qr_code_not_available), Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -177,10 +169,7 @@ public class BaseActivity extends ActionBarActivity {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         clipboard.setPrimaryClip(ClipData.newPlainText(preferredServerUrl, preferredServerUrl));
 
-        new SnackBar.Builder(thisActivity)
-                .withMessage(getString(R.string.url_clipboard))
-                .withDuration(SnackBar.MED_SNACK)
-                .show();
+        Snackbar.make(findViewById(android.R.id.content), getString(R.string.url_clipboard), Snackbar.LENGTH_LONG).show();
     }
 
     protected void setLinkMessageToView() {

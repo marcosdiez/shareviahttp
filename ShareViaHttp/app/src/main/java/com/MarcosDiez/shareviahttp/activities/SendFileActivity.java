@@ -28,17 +28,16 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.Button;
 
+import com.MarcosDiez.shareviahttp.R;
 import com.MarcosDiez.shareviahttp.UriInterpretation;
-import com.github.mrengineer13.snackbar.SnackBar;
 
 import java.io.File;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-
-import com.MarcosDiez.shareviahttp.R;
 
 public class SendFileActivity extends BaseActivity {
 
@@ -84,11 +83,8 @@ public class SendFileActivity extends BaseActivity {
         String path = uriList.get(0).getPath();
         int pos = path.lastIndexOf(File.separator);
         if (pos <= 0) {
-            new SnackBar.Builder(thisActivity)
-                    .withMessage("Error getting parent directory.")
-                    .withDuration(SnackBar.LONG_SNACK)
-                    .show();
-            return ;
+            Snackbar.make(findViewById(android.R.id.content), "Error getting parent directory.", Snackbar.LENGTH_LONG).show();
+            return;
         }
 
 
@@ -102,10 +98,7 @@ public class SendFileActivity extends BaseActivity {
         Uri theNewUri = Uri.parse(newPath);
         ArrayList<UriInterpretation> newUriArray = new ArrayList<UriInterpretation>();
         newUriArray.add(new UriInterpretation(theNewUri));
-        new SnackBar.Builder(thisActivity)
-                .withMessage("We are now sharing [" + newPath + "]")
-                .withDuration(SnackBar.LONG_SNACK)
-                .show();
+        Snackbar.make(findViewById(android.R.id.content), "We are now sharing [" + newPath + "]", Snackbar.LENGTH_LONG).show();
 
         uriList = newUriArray;
         httpServer.SetFiles(newUriArray);
@@ -138,20 +131,14 @@ public class SendFileActivity extends BaseActivity {
         if (myUri == null) {
             String tempString = (String) extras.get(Intent.EXTRA_TEXT);
             if (tempString == null) {
-                new SnackBar.Builder(thisActivity)
-                        .withMessage("Error obtaining the file path")
-                        .withDuration(SnackBar.LONG_SNACK)
-                        .show();
+                Snackbar.make(findViewById(android.R.id.content), "Error obtaining the file path", Snackbar.LENGTH_LONG).show();
                 return null;
             }
 
             myUri = Uri.parse(tempString);
 
             if (myUri == null) {
-                new SnackBar.Builder(thisActivity)
-                        .withMessage("Error obtaining the file path")
-                        .withDuration(SnackBar.LONG_SNACK)
-                        .show();
+                Snackbar.make(findViewById(android.R.id.content), "Error obtaining the file path", Snackbar.LENGTH_LONG).show();
                 return null;
             }
         }
