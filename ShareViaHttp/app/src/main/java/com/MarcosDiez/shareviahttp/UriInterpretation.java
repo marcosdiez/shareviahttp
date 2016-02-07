@@ -5,16 +5,16 @@
  */
 package com.MarcosDiez.shareviahttp;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.net.URLDecoder;
-
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.util.Log;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.net.URLDecoder;
 
 public class UriInterpretation {
 
@@ -97,7 +97,7 @@ public class UriInterpretation {
 
 	private void getMime(Uri uri, ContentResolver contentResolver) {
 		mime = contentResolver.getType(uri);
-		if (mime == null) {
+		if (mime == null || name == null) {
 			mime = "application/octet-stream";
 		}
 		if (mime.equals("application/octet-stream")) {

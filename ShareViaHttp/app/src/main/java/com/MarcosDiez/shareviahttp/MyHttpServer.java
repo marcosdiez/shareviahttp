@@ -25,6 +25,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.MarcosDiez.shareviahttp;
 
 //package webs;
+import android.util.Log;
+
 import java.io.IOException;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -36,9 +38,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import android.net.Uri;
-import android.util.Log;
 
 /**
  *
@@ -69,7 +68,7 @@ public class MyHttpServer extends Thread {
 		MyHttpServer.fileUris = fileUris;
 	}
 
-	public static ArrayList<UriInterpretation> GetFiles(){
+	public static ArrayList<UriInterpretation> GetFiles() {
 		return MyHttpServer.fileUris;
 	}
 
@@ -91,15 +90,15 @@ public class MyHttpServer extends Thread {
 		if (port == 80) {
 			return "http://" + ipAddress + "/";
 		}
-        if( ipAddress.indexOf(":") >= 0 ){
-            // IPv6
-            int pos = ipAddress.indexOf("%");
-            // java insists in adding %wlan and %p2p0 to everything
-            if( pos > 0 ){
-                ipAddress = ipAddress.substring(0, pos);
-            }
-            return "http://[" + ipAddress + "]:" + port + "/";
-        }
+		if (ipAddress.indexOf(":") >= 0) {
+			// IPv6
+			int pos = ipAddress.indexOf("%");
+			// java insists in adding %wlan and %p2p0 to everything
+			if (pos > 0) {
+				ipAddress = ipAddress.substring(0, pos);
+			}
+			return "http://[" + ipAddress + "]:" + port + "/";
+		}
 		return "http://" + ipAddress + ":" + port + "/";
 	}
 
@@ -123,12 +122,12 @@ public class MyHttpServer extends Thread {
 
 		try {
 			for (Enumeration<NetworkInterface> en = NetworkInterface
-					.getNetworkInterfaces(); en.hasMoreElements();) {
+					.getNetworkInterfaces(); en.hasMoreElements(); ) {
 				NetworkInterface intf = en.nextElement();
 
-				Log.d(Util.myLogName , "Inteface: " + intf.getDisplayName());
+				Log.d(Util.myLogName, "Inteface: " + intf.getDisplayName());
 				for (Enumeration<InetAddress> enumIpAddr = intf
-						.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+						.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
 					InetAddress inetAddress = enumIpAddr.nextElement();
 
 					String theIpTemp = inetAddress.getHostAddress();
@@ -137,18 +136,18 @@ public class MyHttpServer extends Thread {
 					if (inetAddress instanceof Inet6Address
 							|| inetAddress.isLoopbackAddress()) {
 
-                        arrayOfIps.add(theIp);
+						arrayOfIps.add(theIp);
 						continue;
 					}
 
-                    arrayOfIps.add(0, theIp); // we prefer non local IPv4
+					arrayOfIps.add(0, theIp); // we prefer non local IPv4
 				}
 			}
 
-            if(arrayOfIps.size() == 0){
-                String firstIp = getServerUrl("0.0.0.0");
-                arrayOfIps.add(firstIp);
-            }
+			if (arrayOfIps.size() == 0) {
+				String firstIp = getServerUrl("0.0.0.0");
+				arrayOfIps.add(firstIp);
+			}
 
 		} catch (SocketException ex) {
 			Log.e("httpServer", ex.toString());
@@ -165,10 +164,10 @@ public class MyHttpServer extends Thread {
 			InetAddress ipv6 = null;
 
 			for (Enumeration<NetworkInterface> en = NetworkInterface
-					.getNetworkInterfaces(); en.hasMoreElements();) {
+					.getNetworkInterfaces(); en.hasMoreElements(); ) {
 				NetworkInterface intf = en.nextElement();
 				for (Enumeration<InetAddress> enumIpAddr = intf
-						.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+						.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
 					InetAddress inetAddress = enumIpAddr.nextElement();
 					if (inetAddress instanceof Inet6Address) {
 						ipv6 = inetAddress;
@@ -227,6 +226,8 @@ public class MyHttpServer extends Thread {
 				threadPool.submit(theHttpConnection);
 
 			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (NullPointerException e) {
 				e.printStackTrace();
 			}
 		}
