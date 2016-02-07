@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Надіслати через HTTP</string>
+
+
+
+
+
+    <string name="technical_info">Технічні обмеження: У локальній Wi-Fi мережі працює завжди. В іншому випадку, робота залежить від брандмауерів, NAT, і т.п. На незаблокованих IPv6 адресах повинен працювати скрізь.</string>
+    <string name="barcode_scanner_msg">Також, якщо встановлено <a href="http://market.android.com/details?id=com.google.zxing.client.android">Barcode Scanner</a>, це посилання може бути надіслано через QR-код.</string>
+
+    <string name="rate_app">Оцінити додаток</string>
+    <string name="button_qrcode">Створити QR</string>
+    <string name="change_ip">Змінити IP</string>
+    <string name="share_containing_folder">Поширити вміст теки</string>
+    <string name="share_url">Поділитися URL</string>
+    <string name="stop_server">Зупинити сервер</string>
+
+
+    <string name="now_sharing_anymore">Запитаний файл вже не доступний для розповсюдження.</string>
+
+
+
+    <string name="alert_dialog_ok">Гаразд</string>
+    <string name="alert_dialog_cancel">Скасувати</string>
+    <string name="qr_code_not_available">Додаток для QR-кодів не доступний</string>
+    <string name="url_clipboard">URL скопійовано до буферу обміну.</string>
+
+
+</resources>
