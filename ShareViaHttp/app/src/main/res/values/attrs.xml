@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="RoundedImageButtonWithTextView">
+    <declare-styleable name="FloatingActionButtonWithText">
         <attr name="imageSrc" format="reference" localization="suggested" />
         <attr name="text" format="string" localization="suggested" />
     </declare-styleable>
