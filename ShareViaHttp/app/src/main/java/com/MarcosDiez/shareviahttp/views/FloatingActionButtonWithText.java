@@ -17,7 +17,6 @@ public class FloatingActionButtonWithText extends RelativeLayout {
 
         TypedArray typedArray = context.obtainStyledAttributes(attrs,
                 R.styleable.FloatingActionButtonWithText, 0, 0);
-        @DrawableRes
         final int drawableRes = typedArray
                 .getResourceId(R.styleable.FloatingActionButtonWithText_imageSrc, -1);
         final String text = typedArray.getString(R.styleable.FloatingActionButtonWithText_text);
