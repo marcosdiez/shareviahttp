@@ -15,17 +15,20 @@ public class FloatingActionButtonWithText extends RelativeLayout {
     public FloatingActionButtonWithText(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+        inflate(context, R.layout.fab_with_text, this);
+
         TypedArray typedArray = context.obtainStyledAttributes(attrs,
                 R.styleable.FloatingActionButtonWithText, 0, 0);
-        final int drawableRes = typedArray
-                .getResourceId(R.styleable.FloatingActionButtonWithText_imageSrc, -1);
-        final String text = typedArray.getString(R.styleable.FloatingActionButtonWithText_text);
-        typedArray.recycle();
+        try {
+            final int drawableRes = typedArray
+                    .getResourceId(R.styleable.FloatingActionButtonWithText_imageSrc, -1);
+            final String text = typedArray.getString(R.styleable.FloatingActionButtonWithText_text);
 
-        inflate(getContext(), R.layout.fab_with_text, this);
-
-        setupImageButton(drawableRes);
-        setupTextView(text);
+            setupImageButton(drawableRes);
+            setupTextView(text);
+        } finally {
+            typedArray.recycle();
+        }
     }
 
     private void setupTextView(String text) {
