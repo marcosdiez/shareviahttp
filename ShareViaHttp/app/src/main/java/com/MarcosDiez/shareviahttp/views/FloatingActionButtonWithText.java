@@ -39,5 +39,6 @@ public class FloatingActionButtonWithText extends RelativeLayout {
     private void setupImageButton(@DrawableRes int drawableRes) {
         FloatingActionButton fab = (FloatingActionButton) getChildAt(0);
         fab.setImageResource(drawableRes);
+        fab.setClickable(false);
     }
 }
