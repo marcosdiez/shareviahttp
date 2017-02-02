@@ -22,6 +22,12 @@ See the [LICENSE](LICENSE.md) file for license rights and limitations.
 v2.04:
 - Google told me my app must have a privacy policy or else it would be removed from the store. So I added one.
 
+v2.02:
+- Translation to Chinese (Thanks to haobug )
+
+v2.01:
+- translation to German, Spanish and Basque
+- fix for non ascii paths
 
 v2.00:
 - This app finally has an App icon, so one can pick which files will be sent.
