@@ -25,6 +25,6 @@
     <string name="alert_dialog_cancel">Cancel</string>
     <string name="qr_code_not_available">QR-Code App not available</string>
     <string name="url_clipboard">URL has been copied to the clipboard.</string>
-
+    <string name="privacy_policy">Privacy Policy</string>
 
 </resources>

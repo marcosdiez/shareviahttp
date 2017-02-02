@@ -2,6 +2,7 @@ package com.MarcosDiez.shareviahttp.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -19,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.MarcosDiez.shareviahttp.DisplayRawFileFragment;
 import com.MarcosDiez.shareviahttp.MyHttpServer;
 import com.MarcosDiez.shareviahttp.R;
 import com.MarcosDiez.shareviahttp.UriInterpretation;
@@ -68,6 +70,8 @@ public class BaseActivity extends AppCompatActivity {
         share = findViewById(R.id.button_share_url);
         changeIp = findViewById(R.id.change_ip);
     }
+
+
 
     protected void createViewClickListener() {
         bttnQrCode.setOnClickListener(new View.OnClickListener() {
@@ -184,16 +188,31 @@ public class BaseActivity extends AppCompatActivity {
         return true;
     }
 
+    private void showPrivacyPolicy()
+    {
+        DialogFragment newFragment = DisplayRawFileFragment.newInstance(getString(R.string.privacy_policy), R.raw.privacy_policy);
+        newFragment.show(getFragmentManager(), "dialog");
+    }
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_rate_app:
-                String theUrl = "market://details?id="
-                        + Util.getPackageName();
-                Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse(theUrl));
-                startActivity(browse);
+                rate_this_app();
+                return super.onOptionsItemSelected(item);
+            case R.id.action_privacy_policy:
+                showPrivacyPolicy();
+                return super.onOptionsItemSelected(item);
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void rate_this_app() {
+        String theUrl = "market://details?id="
+                + Util.getPackageName();
+        Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse(theUrl));
+        startActivity(browse);
     }
 }

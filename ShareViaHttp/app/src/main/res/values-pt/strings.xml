@@ -22,5 +22,6 @@
     <string name="alert_dialog_ok">OK</string>
     <string name="alert_dialog_cancel">Cancelar</string>
 	<string name="qr_code_not_available">App de QR Code não disponível</string>
+    <string name="privacy_policy">Política de Privacidade</string>
 
 </resources>

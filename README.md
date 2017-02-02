@@ -19,6 +19,9 @@ See the [LICENSE](LICENSE.md) file for license rights and limitations.
 
 
 ## ChangeLog
+v2.04:
+- Google told me my app must have a privacy policy or else it would be removed from the store. So I added one.
+
 
 v2.00:
 - This app finally has an App icon, so one can pick which files will be sent.
