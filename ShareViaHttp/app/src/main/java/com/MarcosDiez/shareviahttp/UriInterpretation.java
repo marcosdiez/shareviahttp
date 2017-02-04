@@ -99,6 +99,9 @@ public class UriInterpretation {
 		mime = contentResolver.getType(uri);
 		if (mime == null || name == null) {
 			mime = "application/octet-stream";
+			if(name == null){
+				return;
+			}
 		}
 		if (mime.equals("application/octet-stream")) {
 			// we can do better than that

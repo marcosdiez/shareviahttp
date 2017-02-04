@@ -40,6 +40,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.MarcosDiez.shareviahttp;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
@@ -54,8 +56,6 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import android.util.Log;
 
 public class HttpServerConnection implements Runnable {
 
@@ -339,6 +339,10 @@ public class HttpServerConnection implements Runnable {
 		return "";
 	}
 
+	private String generateRandomFileNameForTextPlainContent(){
+		return "StringContent-" + Math.round((Math.random() * 100000000)) + ".txt";
+	}
+
 	// this method makes the HTTP header for the response
 	// the headers job is to tell the browser the result of the request
 	// among if it was successful or not.
@@ -357,11 +361,19 @@ public class HttpServerConnection implements Runnable {
 												// connections
 		output.append("Server: " + Util.myLogName + " " + Util.getAppVersion()
 				+ "\r\n");
+
+		if( location == null && return_code == 302){
+			location = generateRandomFileNameForTextPlainContent();
+		}
 		if (location != null) {
 			// we don't want cache for the root URL
 			try {
-				location = URLEncoder.encode(location, "UTF-8");
-				s("after urlencode location:" + location);
+				if(!location.contains("://")) {
+					// so russians can download their files as well :)
+					// but if a protocol like http://, than we may as well redirect
+					location = URLEncoder.encode(location, "UTF-8");
+					s("after urlencode location:" + location);
+				}
 			} catch (UnsupportedEncodingException e) {
 				s(Log.getStackTraceString(e));
 			}
