@@ -368,7 +368,8 @@ public class HttpServerConnection implements Runnable {
 		if (location != null) {
 			// we don't want cache for the root URL
 			try {
-				if(!location.contains("://")) {
+				int pos = location.indexOf("://");
+				if(pos > 0 && pos < 10) {
 					// so russians can download their files as well :)
 					// but if a protocol like http://, than we may as well redirect
 					location = URLEncoder.encode(location, "UTF-8");
