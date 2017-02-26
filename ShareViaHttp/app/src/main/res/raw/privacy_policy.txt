@@ -3,7 +3,7 @@ Share Via Http Privacy Policy
 Share via HTTP is a Free and Open Source application.
 It has no ads and no intention in profit from you in any manner.
 
-One may obtain it's source code here: https://github.com/marcosdiez/shareviahttp
+One may obtain its source code here: https://github.com/marcosdiez/shareviahttp
 
 The idea of this app is to help YOU to share YOUR data with whoever YOU want.
 
