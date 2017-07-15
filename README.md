@@ -4,6 +4,11 @@
 
 Simply *share* from this app, your gallery or a file manager with "Share via HTTP"
 
+<a href="https://f-droid.org/packages/com.MarcosDiez.shareviahttp" target="_blank">
+<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="100"/></a>
+<a href="https://play.google.com/store/apps/details?id=com.MarcosDiez.shareviahttp" target="_blank">
+<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="100"/></a>
+
 ## Screenshots
 
 <img src="GooglePlay/screen0.png" width=auto height=400/>
