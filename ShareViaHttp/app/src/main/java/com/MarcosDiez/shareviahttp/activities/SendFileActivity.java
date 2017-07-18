@@ -96,11 +96,11 @@ public class SendFileActivity extends BaseActivity {
 
         Uri theNewUri = Uri.parse(newPath);
         ArrayList<UriInterpretation> newUriArray = new ArrayList<>();
-        newUriArray.add(new UriInterpretation(theNewUri));
+        newUriArray.add(new UriInterpretation(theNewUri, this.getContentResolver()));
         Snackbar.make(findViewById(android.R.id.content), "We are now sharing [" + newPath + "]", Snackbar.LENGTH_LONG).show();
 
         uriList = newUriArray;
-        httpServer.SetFiles(newUriArray);
+        httpServer.setFiles(newUriArray);
         populateUriPath(newUriArray);
     }
 
@@ -143,7 +143,7 @@ public class SendFileActivity extends BaseActivity {
             }
         }
 
-        theUris.add(new UriInterpretation(myUri));
+        theUris.add(new UriInterpretation(myUri, this.getContentResolver()));
         return theUris;
     }
 
@@ -154,7 +154,7 @@ public class SendFileActivity extends BaseActivity {
             for (Parcelable parcelable : list) {
                 Uri stream = (Uri) parcelable;
                 if (stream != null) {
-                    theUris.add(new UriInterpretation(stream));
+                    theUris.add(new UriInterpretation(stream, this.getContentResolver()));
                 }
             }
         }

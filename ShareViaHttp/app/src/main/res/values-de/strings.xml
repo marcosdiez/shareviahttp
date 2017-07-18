@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">Share via HTTP</string>
     <string name="technical_info">Technische Einschränkung: Im WiFI funktioniert es immer. Allerdings hängt es auch von Firewalls, NAT, etc. ab. Eine nicht geblockte IPv6 Adresse funktioniert immer.</string>
-    <string name="barcode_scanner_msg">Wenn du die <a href="http://market.android.com/details?id=com.google.zxing.client.android">Barcode Scanner</a> App installierst, kann die URL auch als barcode versendet werden.</string>
     <string name="rate_app">Bewerte die App</string>
     <string name="button_qrcode">Erstelle QR</string>
     <string name="change_ip">IP wechseln</string>
@@ -13,4 +12,6 @@
     <string name="alert_dialog_ok">OK</string>
     <string name="alert_dialog_cancel">Abbrechen</string>
     <string name="qr_code_not_available">QR-Code App nicht vorhanden</string>
+    <string name="connected_ip">Verbunden: %s</string>
+    <string name="disconnected_ip">Unverbunden: %s</string>
 </resources>

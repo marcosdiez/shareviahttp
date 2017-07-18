@@ -10,44 +10,77 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.MarcosDiez.shareviahttp.BuildConfig;
 import com.MarcosDiez.shareviahttp.DisplayRawFileFragment;
 import com.MarcosDiez.shareviahttp.MyHttpServer;
 import com.MarcosDiez.shareviahttp.R;
 import com.MarcosDiez.shareviahttp.UriInterpretation;
-import com.MarcosDiez.shareviahttp.Util;
 
 import java.util.ArrayList;
 
 public class BaseActivity extends AppCompatActivity {
 
+    public static final int HANDLER_CONNECTION_START = 42;
+    public static final int HANDLER_CONNECTION_END = 4242;
     protected static MyHttpServer httpServer = null;
     protected String preferredServerUrl;
     protected CharSequence[] listOfServerUris;
-
     // LinkMessageView
     protected TextView link_msg;
-
     protected TextView uriPath;
-
     // NavigationViews
     protected View bttnQrCode;
     protected View stopServer;
     protected View share;
     protected View changeIp;
 
+    private Handler mHandler;
+
+    public void sendConnectionStartMessage(String ipAddress) {
+        Log.d("mm", "begin: " + ipAddress  + " " + this);
+        mHandler.handleMessage(mHandler.obtainMessage(BaseActivity.HANDLER_CONNECTION_START, ipAddress));
+    }
+
+    public void sendConnectionEndMessage(String ipAddress) {
+        Log.d("mm", "end: " + ipAddress + " " + this);
+        mHandler.handleMessage(mHandler.obtainMessage(BaseActivity.HANDLER_CONNECTION_END, ipAddress));
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Util.context = this;
+        mHandler = new Handler(Looper.getMainLooper()) {
+
+            @Override
+            public void handleMessage(Message inputMessage) {
+                switch (inputMessage.what) {
+                    case HANDLER_CONNECTION_START:
+                        String msg = String.format(getString(R.string.connected_ip), (String) inputMessage.obj);
+                        Snackbar.make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG).show();
+                        break;
+                    case HANDLER_CONNECTION_END:
+                        String msg2 = String.format(getString(R.string.disconnected_ip), (String) inputMessage.obj);
+                        Snackbar.make(findViewById(android.R.id.content), msg2, Snackbar.LENGTH_LONG).show();
+                        break;
+                    default:
+                        super.handleMessage(inputMessage);
+                }
+            }
+        };
     }
 
     protected void setupToolbar() {
@@ -108,15 +141,14 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void generateBarCodeIfPossible() {
-        // TODO: Create a QR-Code online and download the image
-        // TODO: after the image was downloaded show the QR-Code in own activity
         Intent intent = new Intent("com.google.zxing.client.android.ENCODE");
         intent.putExtra("ENCODE_TYPE", "TEXT_TYPE");
         intent.putExtra("ENCODE_DATA", link_msg.getText().toString());
         try {
             startActivity(intent);
         } catch (ActivityNotFoundException e) {
-            Snackbar.make(findViewById(android.R.id.content), getString(R.string.qr_code_not_available), Snackbar.LENGTH_LONG).show();
+            Toast.makeText(this, "You need to download the Barcode Scanner to generate QR Codes", Toast.LENGTH_LONG).show();
+            openInPlayStore("com.google.zxing.client.android");
         }
     }
 
@@ -152,17 +184,18 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected void initHttpServer(ArrayList<UriInterpretation> myUris) {
-        Util.context = this.getApplicationContext();
         if (myUris == null || myUris.size() == 0) {
             finish();
             return;
         }
 
         httpServer = new MyHttpServer(9999);
-        listOfServerUris = httpServer.ListOfIpAddresses();
+        listOfServerUris = httpServer.listOfIpAddresses();
         preferredServerUrl = listOfServerUris[0].toString();
 
-        httpServer.SetFiles(myUris);
+        httpServer.setBaseActivity(this);
+        httpServer.setFiles(myUris);
+
     }
 
     protected void saveServerUrlToClipboard() {
@@ -205,8 +238,12 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private void rate_this_app() {
-        String theUrl = "market://details?id="
-                + Util.getPackageName();
+        String appName = BuildConfig.APPLICATION_ID;
+        openInPlayStore(appName);
+    }
+
+    private void openInPlayStore(String appName) {
+        String theUrl = "market://details?id=" + appName;
         Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse(theUrl));
         startActivity(browse);
     }

@@ -3,7 +3,6 @@
     <string name="app_name">网页分享</string>
     <string name="alert_dialog_cancel">取消</string>
     <string name="alert_dialog_ok">确定</string>
-    <string name="barcode_scanner_msg">并且，如果你安装了<a href="http://market.android.com/details?id=com.google.zxing.client.android">条码扫描器</a>的话， 这个网页 URL 还可以通过二维码发送。</string>
     <string name="button_qrcode">二维码</string>
     <string name="change_ip">修改IP</string>
     <string name="qr_code_not_available">未安装二维码应用</string>

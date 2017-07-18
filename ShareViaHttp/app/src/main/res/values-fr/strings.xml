@@ -3,7 +3,6 @@
     <string name="app_name">Partage via HTTP</string>
 
     <string name="technical_info">Restrictions techniques : sur le réseau Wi-Fi, cela fonctionnera toujours. Ailleurs, cela dépendra des pare-feux, NAT, etc… Une adresse IPv6 non bloquée devrait toujours fonctionner.</string>
-    <string name="barcode_scanner_msg">De plus, si vous installez le <a href="https://play.google.com/store/apps/details?id=com.google.zxing.client.android">Barcode Scanner</a>, cette URL peut également être partagée en tant que code-barres.</string>
 
     <string name="rate_app">Noter l\'App</string>
     <string name="button_qrcode">Créer QR</string>

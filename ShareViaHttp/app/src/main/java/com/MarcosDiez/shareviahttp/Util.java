@@ -5,7 +5,7 @@ All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.   
+      notice, this list of conditions and the following disclaimer.
  * Neither the name of  Marcos Diez nor the
       names of its contributors may be used to endorse or promote products
       derived from this software without specific prior written permission.
@@ -25,44 +25,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package com.MarcosDiez.shareviahttp;
 
-import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
-
 public class Util {
     public static String myLogName = "ShareViaHttp";
-    public static Context context = null;
-
-    private static String appVersion = null;
-    private static String packageName = null;
-
-    public static String getPackageName() {
-        if (packageName == null) {
-            loadData();
-        }
-        return packageName;
-    }
-
-    static void loadData() {
-        PackageInfo packageInfo;
-        try {
-            packageInfo = context.getPackageManager()
-                    .getPackageInfo(context.getPackageName(), 0);
-        } catch (NameNotFoundException e) {
-            appVersion = "BETA";
-            packageName = "unknown";
-            return;
-        }
-
-        packageName = packageInfo.packageName;
-        appVersion = packageInfo.versionName;
-    }
-
-    public static String getAppVersion() {
-        if (appVersion == null) {
-            loadData();
-        }
-        return appVersion;
-    }
-
 }

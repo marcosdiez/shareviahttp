@@ -1,5 +1,9 @@
 package com.MarcosDiez.shareviahttp;
 
+import android.content.ContentResolver;
+import android.net.Uri;
+import android.util.Log;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -12,9 +16,6 @@ import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import android.net.Uri;
-import android.util.Log;
-
 public class FileZipper implements Runnable {
 	private void s(String s2) { // an alias to avoid typing so much!
 		Log.d(Util.myLogName, s2);
@@ -23,14 +24,16 @@ public class FileZipper implements Runnable {
 	OutputStream dest;
 	ArrayList<UriInterpretation> inputUriInterpretations;
 	Boolean atLeastOneDirectory = false;
+	ContentResolver contentResolver;
 
-	public FileZipper(OutputStream dest, ArrayList<UriInterpretation> inputUriInterpretations) {
+	public FileZipper(OutputStream dest, ArrayList<UriInterpretation> inputUriInterpretations, ContentResolver contentResolver) {
 		/*
 		 * // get a list of files from current directory File f = new File(".");
 		 * String inputFiles[] = f.list();
 		 */
 		this.dest = dest;
 		this.inputUriInterpretations = inputUriInterpretations;
+		this.contentResolver = contentResolver;
 
 	}
 
@@ -92,7 +95,7 @@ public class FileZipper implements Runnable {
 					String fixedFileName = "file://" + directoryPath
 							+ aFilePath;
 					Uri aFileUri = Uri.parse(fixedFileName);
-					UriInterpretation uriFile2 = new UriInterpretation(aFileUri);
+					UriInterpretation uriFile2 = new UriInterpretation(aFileUri, contentResolver);
 					addFileOrDirectory(BUFFER, out, data, uriFile2);
 				}
 			}

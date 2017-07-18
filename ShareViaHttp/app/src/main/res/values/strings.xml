@@ -5,7 +5,6 @@
     <string name="standard_url" translatable="false">http://127.0.0.1/</string>
 
     <string name="technical_info">Technical restrictions: Within WiFi it will always work. Elsewhere, it will depend on firewalls, NAT, etc. A non blocked IPv6 address should work everywhere.</string>
-    <string name="barcode_scanner_msg">Also, if you install the <a href="http://market.android.com/details?id=com.google.zxing.client.android">Barcode Scanner</a>, this URL can be sent as a barcode as well.</string>
 
     <string name="rate_app">Rate App</string>
     <string name="button_qrcode">Create QR</string>
@@ -14,14 +13,13 @@
     <string name="share_url">Share URL</string>
     <string name="stop_server">Stop Server</string>
 
-
     <string name="now_sharing_anymore">The requested file is not being shared anymore.</string>
-
 
     <string name="alert_dialog_ok">OK</string>
     <string name="alert_dialog_cancel">Cancel</string>
     <string name="qr_code_not_available">QR-Code App not available</string>
     <string name="url_clipboard">URL has been copied to the clipboard.</string>
     <string name="privacy_policy">Privacy Policy</string>
-
+    <string name="disconnected_ip">Disconnected: %s</string>
+    <string name="connected_ip">Connected: %s</string>
 </resources>

@@ -30,10 +30,11 @@ public class UriInterpretation {
 		return contentResolver.openInputStream(uri);
 	}
 
-	public UriInterpretation(Uri uri) {
+	public UriInterpretation(Uri uri, ContentResolver contentResolver) {
 		this.uri = uri;
 
-		contentResolver = Util.context.getContentResolver();
+		this.contentResolver = contentResolver;
+
 		Cursor metadataCursor = contentResolver.query(uri, new String[] {
 				OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE }, null,
 				null, null);
@@ -78,7 +79,7 @@ public class UriInterpretation {
 					f = new File(uriString);
 					size = f.length();
 				}
-				Log.v(Util.myLogName, "zzz" + size);
+				///Log.v(Util.myLogName, "zzz" + size);
 
 			} else {
 				try {

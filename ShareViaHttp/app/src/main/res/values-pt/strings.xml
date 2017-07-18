@@ -3,7 +3,6 @@
     <string name="app_name">Mandar por HTTP</string>
 
     <string name="technical_info">Restrições Técnicas: No Wifi, todos terão acesso ao(s) arquivo(s). Fora, vai depender de firewalls, NAT, etc... Em um IPv6 não bloqueado, deve funcionar em qualquer lugar.</string>
-    <string name="barcode_scanner_msg">Apropósito, se você instalar o <a href="http://market.android.com/details?id=com.google.zxing.client.android">Leitor de Código de Barras</a>, esta URL pode ser enviada como um código de barras também.</string>
 
     <string name="rate_app">Dar uma nota para este App</string>
 	<string name="button_qrcode">Criar QR</string>
@@ -18,5 +17,7 @@
     <string name="alert_dialog_cancel">Cancelar</string>
 	<string name="qr_code_not_available">App de QR Code não disponível</string>
     <string name="privacy_policy">Política de Privacidade</string>
+    <string name="connected_ip">Conectado: %s</string>
+    <string name="disconnected_ip">Desconectado: %s</string>
 
 </resources>

@@ -23,7 +23,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 /**
- *
  * Title: A simple Webserver Tutorial NO warranty, NO guarantee, MAY DO damage
  * to FILES, SOFTWARE, HARDWARE!! Description: This is a simple tutorial on
  * making a webserver posted on http://turtlemeat.com . Go there to read the
@@ -31,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * modify it as you like, but you should give credit and maybe a link to
  * turtlemeat.com, you know R-E-S-P-E-C-T. You gotta respect the work that has
  * been put down.
- *
+ * <p>
  * Copyright: Copyright (c) 2002 Company: TurtleMeat
  *
  * @author: Jon Berg <jon.berg[on_server]turtlemeat.com
@@ -41,6 +40,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.MarcosDiez.shareviahttp;
 
 import android.util.Log;
+
+import com.MarcosDiez.shareviahttp.activities.BaseActivity;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -59,342 +60,347 @@ import java.util.Date;
 
 public class HttpServerConnection implements Runnable {
 
-	public HttpServerConnection(ArrayList<UriInterpretation> fileUris, Socket connectionsocket) {
-		this.fileUriZ = fileUris;
-		this.connectionsocket = connectionsocket;
+    private BaseActivity launcherActivity;
+    private UriInterpretation theUriInterpretation;
+    private Socket connectionSocket;
+    private ArrayList<UriInterpretation> fileUriZ;
+    private String ipAddress = "";
+    public HttpServerConnection(ArrayList<UriInterpretation> fileUris, Socket connectionSocket, BaseActivity launcherActivity) {
+        this.fileUriZ = fileUris;
+        this.connectionSocket = connectionSocket;
+        this.launcherActivity = launcherActivity;
+    }
 
-	}
+    private static String httpReturnCodeToString(int return_code) {
+        switch (return_code) {
+            case 200:
+                return "200 OK";
+            case 302:
+                return "302 Moved Temporarily";
+            case 400:
+                return "400 Bad Request";
+            case 403:
+                return "403 Forbidden";
+            case 404:
+                return "404 Not Found";
+            case 500:
+                return "500 Internal Server Error";
+            case 501:
+            default:
+                return "501 Not Implemented";
+        }
+    }
 
-	private UriInterpretation theUriInterpretation;
-	private Socket connectionsocket;
-	private ArrayList<UriInterpretation> fileUriZ;
-	private String ipAddress = "";
+    public void run() {
+        ipAddress = getClientIpAddress();
 
-	public void run() {
-		ipAddress = getClientIpAddress();
+        launcherActivity.sendConnectionStartMessage(ipAddress);
 
-		InputStream theInputStream;
-		try {
-			theInputStream = connectionsocket.getInputStream();
-		} catch (IOException e1) {
-			s("Error getting the InputString from connection socket.");
-			e1.printStackTrace();
-			return;
-		}
+        try {
+            InputStream theInputStream;
+            try {
+                theInputStream = connectionSocket.getInputStream();
+            } catch (IOException e1) {
+                s("Error getting the InputString from connection socket.");
+                e1.printStackTrace();
+                return;
+            }
 
-		OutputStream theOuputStream;
-		try {
-			theOuputStream = connectionsocket.getOutputStream();
-		} catch (IOException e1) {
-			s("Error getting the OuputStream from connection socket.");
-			e1.printStackTrace();
-			return;
-		}
+            OutputStream theOutputStream;
+            try {
+                theOutputStream = connectionSocket.getOutputStream();
+            } catch (IOException e1) {
+                s("Error getting the OutputStream from connection socket.");
+                e1.printStackTrace();
+                return;
+            }
 
-		BufferedReader input = new BufferedReader(new InputStreamReader(
-				theInputStream));
+            BufferedReader input = new BufferedReader(new InputStreamReader(
+                    theInputStream));
 
-		DataOutputStream output = new DataOutputStream(theOuputStream);
-		http_handler(input, output);
-		try {
-			output.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		s("Closing connection.");
-	}
+            DataOutputStream output = new DataOutputStream(theOutputStream);
+            http_handler(input, output);
+            try {
+                output.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } finally {
+            s("Closing connection.");
+            launcherActivity.sendConnectionEndMessage(ipAddress);
+        }
+    }
 
-	private String getClientIpAddress() {
-		InetAddress client = connectionsocket.getInetAddress();
-		return client.getHostAddress() + "/" + client.getHostName();
-	}
+    private String getClientIpAddress() {
+        InetAddress client = connectionSocket.getInetAddress();
+        return client.getHostAddress() + "/" + client.getHostName();
+    }
 
-	// our implementation of the hypertext transfer protocol
-	// its very basic and stripped down
-	private void http_handler(BufferedReader input, DataOutputStream output) {
-		String header;
-		try {
-			header = input.readLine();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-			return;
-		}
-		String upperCaseHeader = header.toUpperCase();
-		Boolean sendOnlyHeader = false;
+    // our implementation of the hypertext transfer protocol
+    // its very basic and stripped down
+    private void http_handler(BufferedReader input, DataOutputStream output) {
+        String header;
+        try {
+            header = input.readLine();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+            return;
+        }
+        String upperCaseHeader = header.toUpperCase();
+        Boolean sendOnlyHeader = false;
 
-		if (upperCaseHeader.startsWith("HEAD")) {
-			sendOnlyHeader = true;
-		} else {
-			if (!upperCaseHeader.startsWith("GET")) {
-				dealWithUnsupportedMethod(output);
-				return;
-			}
-		}
+        if (upperCaseHeader.startsWith("HEAD")) {
+            sendOnlyHeader = true;
+        } else {
+            if (!upperCaseHeader.startsWith("GET")) {
+                dealWithUnsupportedMethod(output);
+                return;
+            }
+        }
 
-		String path = getRequestedFilePath(header);
+        String path = getRequestedFilePath(header);
 
-		if (path == null || path == "") {
-			s("path is null!!!");
-			return;
-		}
-		if (fileUriZ == null) {
-			s("fileUri is null");
-			return;
-		}
+        if (path == null || path == "") {
+            s("path is null!!!");
+            return;
+        }
+        if (fileUriZ == null) {
+            s("fileUri is null");
+            return;
+        }
 
-		String fileUriStr = fileUriZ.size() == 1 ? fileUriZ.get(0).getUri().toString()
-				: fileUriZ.toString();
+        String fileUriStr = fileUriZ.size() == 1 ? fileUriZ.get(0).getUri().toString()
+                : fileUriZ.toString();
 
-		s("Client requested: [" + path + "][" + fileUriStr + "]");
+        s("Client requested: [" + path + "][" + fileUriStr + "]");
 
-		if (path.equals("/favicon.ico")) { // we have no favicon
-			shareFavIcon(output);
-			return;
-		}
+        if (path.equals("/favicon.ico")) { // we have no favicon
+            shareFavIcon(output);
+            return;
+        }
 
-		if (fileUriStr.startsWith("http://")
-				|| fileUriStr.startsWith("https://")
-				|| fileUriStr.startsWith("ftp://")
-				|| fileUriStr.startsWith("maito:")
-				|| fileUriStr.startsWith("callto:")
-				|| fileUriStr.startsWith("skype:")) {
-			// we will work as a simple URL redirector
-			redirectToFinalPath(output, fileUriStr);
-			return;
-		}
+        if (fileUriStr.startsWith("http://")
+                || fileUriStr.startsWith("https://")
+                || fileUriStr.startsWith("ftp://")
+                || fileUriStr.startsWith("maito:")
+                || fileUriStr.startsWith("callto:")
+                || fileUriStr.startsWith("skype:")) {
+            // we will work as a simple URL redirector
+            redirectToFinalPath(output, fileUriStr);
+            return;
+        }
 
-		try {
-			theUriInterpretation = fileUriZ.get(0);
-		} catch (java.lang.SecurityException e) {
-			e.printStackTrace();
-			s("Share Via HTTP has no permition to read such file.");
-			return;
-		}
-		if (path.equals("/")) {
-			shareRootUrl(output);
-			return;
-		}
-		shareOneFile(output, sendOnlyHeader , fileUriStr);
-	}
+        try {
+            theUriInterpretation = fileUriZ.get(0);
+        } catch (java.lang.SecurityException e) {
+            e.printStackTrace();
+            s("Share Via HTTP has no permition to read such file.");
+            return;
+        }
+        if (path.equals("/")) {
+            shareRootUrl(output);
+            return;
+        }
+        shareOneFile(output, sendOnlyHeader, fileUriStr);
+    }
 
-	private void shareOneFile(DataOutputStream output, Boolean sendOnlyHeader, String fileUriStr ) {
+    private void shareOneFile(DataOutputStream output, Boolean sendOnlyHeader, String fileUriStr) {
 
-		InputStream requestedfile = null;
+        InputStream requestedfile = null;
 
-		if (!theUriInterpretation.isDirectory()) {
-			try {
-				requestedfile = theUriInterpretation.getInputStream();
-			} catch (FileNotFoundException e) {
-				try {
-					s("Couldn't locate file. Sending input as text/plain");
-					// instead of sending a 404, we will send the contact as text/plain
-					output.writeBytes(construct_http_header(200, "text/plain"));
-					output.writeBytes(fileUriStr);
+        if (!theUriInterpretation.isDirectory()) {
+            try {
+                requestedfile = theUriInterpretation.getInputStream();
+            } catch (FileNotFoundException e) {
+                try {
+                    s("I couldn't locate file. I am sending the input as text/plain");
+                    // instead of sending a 404, we will send the contact as text/plain
+                    output.writeBytes(construct_http_header(200, "text/plain"));
+                    output.writeBytes(fileUriStr);
 
 
-					// if you could not open the file send a 404
-					//s("Sending HTTP ERROR 404:" + e.getMessage());
-					//output.writeBytes(construct_http_header(404, null));
-					return;
-				} catch (IOException e2) {
-					s("errorX:" + e2.getMessage());
-					return;
-				}
-			} // print error to gui
-		}
-		// happy day scenario
+                    // if you could not open the file send a 404
+                    //s("Sending HTTP ERROR 404:" + e.getMessage());
+                    //output.writeBytes(construct_http_header(404, null));
+                    return;
+                } catch (IOException e2) {
+                    s("errorX:" + e2.getMessage());
+                    return;
+                }
+            } // print error to gui
+        }
+        // happy day scenario
 
-		String outputString = construct_http_header(200,
+        String outputString = construct_http_header(200,
                 theUriInterpretation.getMime());
 
-		try {
-			output.writeBytes(outputString);
+        try {
+            output.writeBytes(outputString);
 
-			// if it was a HEAD request, we don't print any BODY
-			if (!sendOnlyHeader) {
+            // if it was a HEAD request, we don't print any BODY
+            if (!sendOnlyHeader) {
 
-				if (theUriInterpretation.isDirectory() || fileUriZ.size() > 1) {
-					FileZipper zz = new FileZipper(output, fileUriZ);
-					zz.run();
-				} else {
-					byte[] buffer = new byte[4096];
-					for (int n; (n = requestedfile.read(buffer)) != -1;) {
-						output.write(buffer, 0, n);
-					}
-				}
+                if (theUriInterpretation.isDirectory() || fileUriZ.size() > 1) {
+                    FileZipper zz = new FileZipper(output, fileUriZ, launcherActivity.getContentResolver());
+                    zz.run();
+                } else {
+                    byte[] buffer = new byte[4096];
+                    for (int n; (n = requestedfile.read(buffer)) != -1; ) {
+                        output.write(buffer, 0, n);
+                    }
+                }
 
-			}
-			requestedfile.close();
-		} catch (IOException e) {
-		}
-	}
+            }
+            requestedfile.close();
+        } catch (IOException e) {
+        }
+    }
 
-	private void redirectToFinalPath(DataOutputStream output, String thePath) {
+    private void redirectToFinalPath(DataOutputStream output, String thePath) {
 
-		String redirectOutput = construct_http_header(302, null, thePath);
-		try {
-			// if you could not open the file send a 404
-			output.writeBytes(redirectOutput);
-			// close the stream
-		} catch (IOException e2) {
-		}
-	}
+        String redirectOutput = construct_http_header(302, null, thePath);
+        try {
+            // if you could not open the file send a 404
+            output.writeBytes(redirectOutput);
+            // close the stream
+        } catch (IOException e2) {
+        }
+    }
 
-	private void shareRootUrl(DataOutputStream output) {
-		if (theUriInterpretation.isDirectory()) {
-			redirectToFinalPath(output, theUriInterpretation.getName() + ".ZIP");
-			return;
-		}
+    private void shareRootUrl(DataOutputStream output) {
+        if (theUriInterpretation.isDirectory()) {
+            redirectToFinalPath(output, theUriInterpretation.getName() + ".ZIP");
+            return;
+        }
 
-		if (fileUriZ.size() == 1) {
-			redirectToFinalPath(output, theUriInterpretation.getName());
-		} else {
-			SimpleDateFormat format = new SimpleDateFormat(
-					"yyyy-MM-dd_HH_mm_ss");
-			redirectToFinalPath(output,
-					"ShareViaHttpBundle-" + format.format(new Date()) + ".ZIP");
-		}
-	}
+        if (fileUriZ.size() == 1) {
+            redirectToFinalPath(output, theUriInterpretation.getName());
+        } else {
+            SimpleDateFormat format = new SimpleDateFormat(
+                    "yyyy-MM-dd_HH_mm_ss");
+            redirectToFinalPath(output,
+                    "ShareViaHttpBundle-" + format.format(new Date()) + ".ZIP");
+        }
+    }
 
-	private void shareFavIcon(DataOutputStream output) {
-		try {
-			// if you could not open the file send a 404
-			output.writeBytes(construct_http_header(404, null));
-			// close the stream
-		} catch (IOException e2) {
-		}
-	}
+    private void shareFavIcon(DataOutputStream output) {
+        try {
+            // if you could not open the file send a 404
+            output.writeBytes(construct_http_header(404, null));
+            // close the stream
+        } catch (IOException e2) {
+        }
+    }
 
-	private String getRequestedFilePath(String inputHeader) {
-		String path;
-		String tmp2 = new String(inputHeader);
+    private String getRequestedFilePath(String inputHeader) {
+        String path;
+        String tmp2 = new String(inputHeader);
 
-		// tmp contains "GET /index.html HTTP/1.0 ......."
-		// find first space
-		// find next space
-		// copy whats between minus slash, then you get "index.html"
-		// it's a bit of dirty code, but bear with me...
-		int start = 0;
-		int end = 0;
-		for (int a = 0; a < tmp2.length(); a++) {
-			if (tmp2.charAt(a) == ' ' && start != 0) {
-				end = a;
-				break;
-			}
-			if (tmp2.charAt(a) == ' ' && start == 0) {
-				start = a;
-			}
-		}
-		path = tmp2.substring(start + 1, end); // fill in the path
-		return path;
-	}
+        // tmp contains "GET /index.html HTTP/1.0 ......."
+        // find first space
+        // find next space
+        // copy whats between minus slash, then you get "index.html"
+        // it's a bit of dirty code, but bear with me...
+        int start = 0;
+        int end = 0;
+        for (int a = 0; a < tmp2.length(); a++) {
+            if (tmp2.charAt(a) == ' ' && start != 0) {
+                end = a;
+                break;
+            }
+            if (tmp2.charAt(a) == ' ' && start == 0) {
+                start = a;
+            }
+        }
+        path = tmp2.substring(start + 1, end); // fill in the path
+        return path;
+    }
 
-	private void dealWithUnsupportedMethod(DataOutputStream output) {
-		try {
-			output.writeBytes(construct_http_header(501, null));
-			return;
-		} catch (Exception e3) { // if some error happened catch it
-			s("_error:" + e3.getMessage());
-		} // and display error
-	}
+    private void dealWithUnsupportedMethod(DataOutputStream output) {
+        try {
+            output.writeBytes(construct_http_header(501, null));
+        } catch (Exception e3) { // if some error happened catch it
+            s("_error:" + e3.getMessage());
+        } // and display error
+    }
 
-	private void s(String s2) { // an alias to avoid typing so much!
-		Log.d(Util.myLogName, "[" + ipAddress + "] " + s2);
-	}
+    private void s(String s2) { // an alias to avoid typing so much!
+        Log.d(Util.myLogName, "[" + ipAddress + "] " + s2);
+    }
 
-	private static String httpReturnCodeToString(int return_code) {
-		switch (return_code) {
-		case 200:
-			return "200 OK";
-		case 302:
-			return "302 Moved Temporarily";
-		case 400:
-			return "400 Bad Request";
-		case 403:
-			return "403 Forbidden";
-		case 404:
-			return "404 Not Found";
-		case 500:
-			return "500 Internal Server Error";
-		case 501:
-		default:
-			return "501 Not Implemented";
-		}
-	}
+    private String construct_http_header(int return_code, String mime) {
+        return construct_http_header(return_code, mime, null);
+    }
 
-	private String construct_http_header(int return_code, String mime) {
-		return construct_http_header(return_code, mime, null);
-	}
+    // it is not always possible to get the file size :(
+    private String getFileSizeHeader() {
+        if (theUriInterpretation == null) {
+            return "";
+        }
+        if (fileUriZ.size() == 1 && theUriInterpretation.getSize() > 0) {
+            return "Content-Length: "
+                    + Long.toString(theUriInterpretation.getSize()) + "\r\n";
+        }
+        return "";
+    }
 
-	// it is not always possible to get the file size :(
-	private String getFileSizeHeader() {
-		if (theUriInterpretation == null) {
-			return "";
-		}
-		if (fileUriZ.size() == 1 && theUriInterpretation.getSize() > 0) {
-			return "Content-Length: "
-					+ Long.toString(theUriInterpretation.getSize()) + "\r\n";
-		}
-		return "";
-	}
+    private String generateRandomFileNameForTextPlainContent() {
+        return "StringContent-" + Math.round((Math.random() * 100000000)) + ".txt";
+    }
 
-	private String generateRandomFileNameForTextPlainContent(){
-		return "StringContent-" + Math.round((Math.random() * 100000000)) + ".txt";
-	}
+    // this method makes the HTTP header for the response
+    // the headers job is to tell the browser the result of the request
+    // among if it was successful or not.
+    private String construct_http_header(int return_code, String mime,
+                                         String location) {
 
-	// this method makes the HTTP header for the response
-	// the headers job is to tell the browser the result of the request
-	// among if it was successful or not.
-	private String construct_http_header(int return_code, String mime,
-			String location) {
+        StringBuilder output = new StringBuilder();
+        output.append("HTTP/1.0 ");
+        output.append(httpReturnCodeToString(return_code) + "\r\n");
+        output.append(getFileSizeHeader());
+        SimpleDateFormat format = new SimpleDateFormat(
+                "EEE, dd MMM yyyy HH:mm:ss zzz");
 
-		StringBuilder output = new StringBuilder();
-		output.append("HTTP/1.0 ");
-		output.append(httpReturnCodeToString(return_code) + "\r\n");
-		output.append(getFileSizeHeader());
-		SimpleDateFormat format = new SimpleDateFormat(
-				"EEE, dd MMM yyyy HH:mm:ss zzz");
-		output.append("Date: " + format.format(new Date()) + "\r\n");
 
-		output.append("Connection: close\r\n"); // we can't handle persistent
-												// connections
-		output.append("Server: " + Util.myLogName + " " + Util.getAppVersion()
-				+ "\r\n");
+        output.append("Date: " + format.format(new Date()) + "\r\n");
 
-		if( location == null && return_code == 302){
-			location = generateRandomFileNameForTextPlainContent();
-		}
-		if (location != null) {
-			// we don't want cache for the root URL
-			try {
-				int pos = location.indexOf("://");
-				if(pos > 0 && pos < 10) {
-					// so russians can download their files as well :)
-					// but if a protocol like http://, than we may as well redirect
-					location = URLEncoder.encode(location, "UTF-8");
-					s("after urlencode location:" + location);
-				}
-			} catch (UnsupportedEncodingException e) {
-				s(Log.getStackTraceString(e));
-			}
-			output.append("Location: " + location + "\r\n"); // server name
+        output.append("Connection: close\r\n"); // we can't handle persistent
+        // connections
+        output.append("Server: ").append(Util.myLogName).append(" ").append(BuildConfig.VERSION_NAME).append("\r\n");
 
-			output.append("Expires: Tue, 03 Jul 2001 06:00:00 GMT\r\n");
-			// output.append("Last-Modified: " . gmdate("D, d M Y H:i:s") .
-			// " GMT");
-			output.append("Cache-Control: no-store, no-cache, must-revalidate, max-age=0\r\n");
-			output.append("Cache-Control: post-check=0, pre-check=0\r\n");
-			output.append("Pragma: no-cache\r\n");
-		}
-		if (mime != null) {
-			if (fileUriZ.size() > 1) {
-				mime = "multipart/x-zip";
-			}
-			output.append("Content-Type: " + mime + "\r\n");
-		}
-		output.append("\r\n");
-		return output.toString();
-	}
+        if (location == null && return_code == 302) {
+            location = generateRandomFileNameForTextPlainContent();
+        }
+        if (location != null) {
+            // we don't want cache for the root URL
+            try {
+                int pos = location.indexOf("://");
+                if (pos > 0 && pos < 10) {
+                    // so russians can download their files as well :)
+                    // but if a protocol like http://, than we may as well redirect
+                    location = URLEncoder.encode(location, "UTF-8");
+                    s("after urlencode location:" + location);
+                }
+            } catch (UnsupportedEncodingException e) {
+                s(Log.getStackTraceString(e));
+            }
+
+            output.append("Location: ").append(location).append("\r\n"); // server name
+
+            output.append("Expires: Tue, 03 Jul 2001 06:00:00 GMT\r\n");
+            output.append("Cache-Control: no-store, no-cache, must-revalidate, max-age=0\r\n");
+            output.append("Cache-Control: post-check=0, pre-check=0\r\n");
+            output.append("Pragma: no-cache\r\n");
+        }
+        if (mime != null) {
+            if (fileUriZ.size() > 1) {
+                mime = "multipart/x-zip";
+            }
+            output.append("Content-Type: ").append(mime).append("\r\n");
+        }
+        output.append("\r\n");
+        return output.toString();
+    }
 
 }

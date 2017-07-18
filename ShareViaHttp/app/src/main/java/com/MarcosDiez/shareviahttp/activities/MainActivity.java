@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
+import com.MarcosDiez.shareviahttp.BuildConfig;
 import com.MarcosDiez.shareviahttp.R;
 import com.MarcosDiez.shareviahttp.UriInterpretation;
 
@@ -32,22 +33,23 @@ public class MainActivity extends BaseActivity {
     }
 
     private void debugSendFileActivity() {
-        String path = "/mnt/sdcard/Audible/Audible.log";
+        if (!BuildConfig.BUILD_TYPE.equals("release")) {    // this should not happen
+            String path = "/mnt/sdcard/m.txt";
 
-        Intent intent = new Intent(this, SendFileActivity.class);
-        intent.addCategory("android.intent.category.DEFAULT");
-        intent.putExtra(Intent.EXTRA_TEXT, path);
-        // intent.setType("inode/directory");
+            Intent intent = new Intent(this, SendFileActivity.class);
+            intent.addCategory("android.intent.category.DEFAULT");
+            intent.putExtra(Intent.EXTRA_TEXT, path);
+            // intent.setType("inode/directory");
 
-        startActivity(intent);
+            startActivity(intent);
+        }
     }
 
     private void setupPickItemView() {
         findViewById(R.id.pick_items).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean isKitKatOrHigher = getResources().getBoolean(R.bool.isKitKatOrHigher);
-                if (isKitKatOrHigher) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
                     intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
@@ -86,7 +88,7 @@ public class MainActivity extends BaseActivity {
         uriPath.setText(savedInstanceState.getCharSequence("uriPath"));
         link_msg.setText(savedInstanceState.getCharSequence("link_msg"));
 
-        if (!savedInstanceState.getCharSequence("uriPath").equals("")) {
+        if (!"".equals(savedInstanceState.getCharSequence("uriPath"))) {
             setViewsVisible();
         }
     }
@@ -100,14 +102,13 @@ public class MainActivity extends BaseActivity {
     }
 
 
-
     private ArrayList<UriInterpretation> getFileUris(Intent data) {
         ArrayList<UriInterpretation> theUris = new ArrayList<UriInterpretation>();
         Uri dataUri = data.getData();
         if (dataUri != null) {
-            theUris.add(new UriInterpretation(dataUri));
+            theUris.add(new UriInterpretation(dataUri, this.getContentResolver()));
         } else {
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 getFileUrisFromClipboard(data, theUris);
             }
         }
@@ -120,7 +121,7 @@ public class MainActivity extends BaseActivity {
         for (int i = 0; i < clipData.getItemCount(); ++i) {
             ClipData.Item item = clipData.getItemAt(i);
             Uri uri = item.getUri();
-            theUris.add(new UriInterpretation(uri));
+            theUris.add(new UriInterpretation(uri, this.getContentResolver()));
         }
     }
 }
