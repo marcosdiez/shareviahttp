@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string name="app_name">Compartir por HTTP</string>
-<string name="technical_info">Restricciones técnicas: Con WiFi funcionará siempre. Fuera, dependerá de firewalls, NAT, etc. Una dirección IPv6 no bloqueada debería funcionar en cualquier lugar.</string>
-<string name="barcode_scanner_msg">Además, si instalas la aplicación <a href="http://market.android.com/details?id=com.google.zxing.client.android">Barcode Scanner</a>, esta URL pueder sen enviada como un código de barras también.</string>
-<string name="rate_app">Puntuar esta App</string>
-<string name="button_qrcode">Crear código QR</string>
-<string name="change_ip">Cambiar IP</string>
-<string name="share_containing_folder">Campatir la carpeta que contiene el archivo</string>
-<string name="share_url">Compartir URL</string>
-<string name="stop_server">Parar servidor</string>
-<string name="now_sharing_anymore">El archivo no está siendo compartido más.</string>
-<string name="alert_dialog_ok">OK</string>
-<string name="alert_dialog_cancel">Cancelar</string>
-<string name="qr_code_not_available">Aplicación de códigos QR no disponible</string>
+    <string name="app_name">Compartir por HTTP</string>
+    <string name="technical_info">Restricciones técnicas: Con WiFi funcionará siempre. Fuera, dependerá de firewalls, NAT, etc. Una dirección IPv6 no bloqueada debería funcionar en cualquier lugar.</string>
+    <string name="barcode_scanner_msg">Además, si instalas la aplicación <a href="http://market.android.com/details?id=com.google.zxing.client.android">Barcode Scanner</a>
+    , esta URL pueder sen enviada como un código de barras también.
+</string>
+    <string name="rate_app">Puntuar esta App</string>
+    <string name="button_qrcode">Crear código QR</string>
+    <string name="change_ip">Cambiar IP</string>
+    <string name="share_containing_folder">Campatir la carpeta que contiene el archivo</string>
+    <string name="share_url">Compartir URL</string>
+    <string name="stop_server">Parar servidor</string>
+    <string name="now_sharing_anymore">El archivo no está siendo compartido más.</string>
+    <string name="alert_dialog_ok">OK</string>
+    <string name="alert_dialog_cancel">Cancelar</string>
+    <string name="qr_code_not_available">Aplicación de códigos QR no disponible</string>
+    <string name="url_clipboard">La URL de ha copiado al portapapeles.</string>
+    <string name="privacy_policy">Política de privacidad</string>
 </resources>
