@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="app_name">Compartir por HTTP</string>
-<string name="standard_url">http://127.0.0.1/</string>
 <string name="technical_info">Restricciones técnicas: Con WiFi funcionará siempre. Fuera, dependerá de firewalls, NAT, etc. Una dirección IPv6 no bloqueada debería funcionar en cualquier lugar.</string>
 <string name="barcode_scanner_msg">Además, si instalas la aplicación <a href="http://market.android.com/details?id=com.google.zxing.client.android">Barcode Scanner</a>, esta URL pueder sen enviada como un código de barras también.</string>
 <string name="rate_app">Puntuar esta App</string>

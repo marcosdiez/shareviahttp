@@ -2,11 +2,9 @@
 <resources>
     <string name="app_name">Share via HTTP</string>
 
-    <string name="standard_url">http://127.0.0.1/</string>
+    <string name="standard_url" translatable="false">http://127.0.0.1/</string>
 
-
-
-	<string name="technical_info">Technical restrictions: Within WiFi it will always work. Elsewhere, it will depend on firewalls, NAT, etc. A non blocked IPv6 address should work everywhere.</string>
+    <string name="technical_info">Technical restrictions: Within WiFi it will always work. Elsewhere, it will depend on firewalls, NAT, etc. A non blocked IPv6 address should work everywhere.</string>
     <string name="barcode_scanner_msg">Also, if you install the <a href="http://market.android.com/details?id=com.google.zxing.client.android">Barcode Scanner</a>, this URL can be sent as a barcode as well.</string>
 
     <string name="rate_app">Rate App</string>
@@ -18,7 +16,6 @@
 
 
     <string name="now_sharing_anymore">The requested file is not being shared anymore.</string>
-
 
 
     <string name="alert_dialog_ok">OK</string>

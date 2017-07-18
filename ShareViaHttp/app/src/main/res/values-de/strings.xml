@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Share via HTTP</string>
-    <string name="standard_url">http://127.0.0.1/</string>
     <string name="technical_info">Technische Einschränkung: Im WiFI funktioniert es immer. Allerdings hängt es auch von Firewalls, NAT, etc. ab. Eine nicht geblockte IPv6 Adresse funktioniert immer.</string>
     <string name="barcode_scanner_msg">Wenn du die <a href="http://market.android.com/details?id=com.google.zxing.client.android">Barcode Scanner</a> App installierst, kann die URL auch als barcode versendet werden.</string>
     <string name="rate_app">Bewerte die App</string>

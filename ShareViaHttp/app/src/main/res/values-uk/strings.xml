@@ -3,9 +3,6 @@
     <string name="app_name">Надіслати через HTTP</string>
 
 
-
-
-
     <string name="technical_info">Технічні обмеження: У локальній Wi-Fi мережі працює завжди. В іншому випадку, робота залежить від брандмауерів, NAT, і т.п. На незаблокованих IPv6 адресах повинен працювати скрізь.</string>
     <string name="barcode_scanner_msg">Також, якщо встановлено <a href="http://market.android.com/details?id=com.google.zxing.client.android">Barcode Scanner</a>, це посилання може бути надіслано через QR-код.</string>
 
@@ -18,7 +15,6 @@
 
 
     <string name="now_sharing_anymore">Запитаний файл вже не доступний для розповсюдження.</string>
-
 
 
     <string name="alert_dialog_ok">Гаразд</string>

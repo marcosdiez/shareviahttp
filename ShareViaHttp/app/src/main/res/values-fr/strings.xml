@@ -2,9 +2,7 @@
 <resources>
     <string name="app_name">Partage via HTTP</string>
 
-    <string name="standard_url">http://127.0.0.1/</string>
-
-	  <string name="technical_info">Restrictions techniques : sur le réseau Wi-Fi, cela fonctionnera toujours. Ailleurs, cela dépendra des pare-feux, NAT, etc… Une adresse IPv6 non bloquée devrait toujours fonctionner.</string>
+    <string name="technical_info">Restrictions techniques : sur le réseau Wi-Fi, cela fonctionnera toujours. Ailleurs, cela dépendra des pare-feux, NAT, etc… Une adresse IPv6 non bloquée devrait toujours fonctionner.</string>
     <string name="barcode_scanner_msg">De plus, si vous installez le <a href="https://play.google.com/store/apps/details?id=com.google.zxing.client.android">Barcode Scanner</a>, cette URL peut également être partagée en tant que code-barres.</string>
 
     <string name="rate_app">Noter l\'App</string>
@@ -14,7 +12,7 @@
     <string name="share_url">Partager URL</string>
     <string name="stop_server">Stopper Serveur</string>
 
-    <string name="now_sharing_anymore">Le fichier demandé n'est plus partagé.</string>
+    <string name="now_sharing_anymore">Le fichier demandé n\'est plus partagé.</string>
 
     <string name="alert_dialog_ok">OK</string>
     <string name="alert_dialog_cancel">Annuler</string>
