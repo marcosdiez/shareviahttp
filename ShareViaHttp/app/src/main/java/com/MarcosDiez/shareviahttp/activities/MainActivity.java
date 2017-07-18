@@ -100,20 +100,27 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+
     private ArrayList<UriInterpretation> getFileUris(Intent data) {
         ArrayList<UriInterpretation> theUris = new ArrayList<UriInterpretation>();
         Uri dataUri = data.getData();
         if (dataUri != null) {
             theUris.add(new UriInterpretation(dataUri));
         } else {
-            ClipData clipData = data.getClipData();
-            for (int i = 0; i < clipData.getItemCount(); ++i) {
-                ClipData.Item item = clipData.getItemAt(i);
-                Uri uri = item.getUri();
-                theUris.add(new UriInterpretation(uri));
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                getFileUrisFromClipboard(data, theUris);
             }
         }
         return theUris;
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private void getFileUrisFromClipboard(Intent data, ArrayList<UriInterpretation> theUris) {
+        ClipData clipData = data.getClipData();
+        for (int i = 0; i < clipData.getItemCount(); ++i) {
+            ClipData.Item item = clipData.getItemAt(i);
+            Uri uri = item.getUri();
+            theUris.add(new UriInterpretation(uri));
+        }
     }
 }
