@@ -1,6 +1,5 @@
 package com.MarcosDiez.shareviahttp.activities;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.ActivityNotFoundException;
@@ -33,7 +32,6 @@ public class BaseActivity extends AppCompatActivity {
     protected static MyHttpServer httpServer = null;
     protected String preferredServerUrl;
     protected CharSequence[] listOfServerUris;
-    protected final Activity thisActivity = this;
 
     // LinkMessageView
     protected TextView link_msg;
@@ -70,8 +68,6 @@ public class BaseActivity extends AppCompatActivity {
         share = findViewById(R.id.button_share_url);
         changeIp = findViewById(R.id.change_ip);
     }
-
-
 
     protected void createViewClickListener() {
         bttnQrCode.setOnClickListener(new View.OnClickListener() {
@@ -144,10 +140,10 @@ public class BaseActivity extends AppCompatActivity {
         StringBuilder output = new StringBuilder();
         String sep = "\n";
         boolean first = true;
-        for( UriInterpretation thisUriInterpretation : uriList){
-            if(first){
+        for (UriInterpretation thisUriInterpretation : uriList) {
+            if (first) {
                 first = false;
-            }else{
+            } else {
                 output.append(sep);
             }
             output.append(thisUriInterpretation.getPath());
@@ -188,8 +184,7 @@ public class BaseActivity extends AppCompatActivity {
         return true;
     }
 
-    private void showPrivacyPolicy()
-    {
+    private void showPrivacyPolicy() {
         DialogFragment newFragment = DisplayRawFileFragment.newInstance(getString(R.string.privacy_policy), R.raw.privacy_policy);
         newFragment.show(getFragmentManager(), "dialog");
     }

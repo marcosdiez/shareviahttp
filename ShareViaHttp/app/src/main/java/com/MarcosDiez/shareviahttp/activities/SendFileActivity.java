@@ -87,7 +87,6 @@ public class SendFileActivity extends BaseActivity {
             return;
         }
 
-
         String newPath = path.substring(0, pos);
 
         newPath = URLDecoder.decode(newPath);
@@ -96,7 +95,7 @@ public class SendFileActivity extends BaseActivity {
         // like  /storage/emulated/0
 
         Uri theNewUri = Uri.parse(newPath);
-        ArrayList<UriInterpretation> newUriArray = new ArrayList<UriInterpretation>();
+        ArrayList<UriInterpretation> newUriArray = new ArrayList<>();
         newUriArray.add(new UriInterpretation(theNewUri));
         Snackbar.make(findViewById(android.R.id.content), "We are now sharing [" + newPath + "]", Snackbar.LENGTH_LONG).show();
 
@@ -110,15 +109,16 @@ public class SendFileActivity extends BaseActivity {
             return false;
 
         String uriPath = uriList.get(0).getPath();
-        if( uriPath == null || uriPath.length() == 0 )
+        if( uriPath == null || uriPath.length() == 0 ) {
             return false;
+        }
         return uriPath.startsWith(File.separator) || uriPath.startsWith("file:");
     }
 
 
     private ArrayList<UriInterpretation> getFileUris() {
         Intent dataIntent = getIntent();
-        ArrayList<UriInterpretation> theUris = new ArrayList<UriInterpretation>();
+        ArrayList<UriInterpretation> theUris = new ArrayList<>();
 
         if (Intent.ACTION_SEND_MULTIPLE.equals(dataIntent.getAction())) {
             return getUrisForActionSendMultiple(dataIntent, theUris);
