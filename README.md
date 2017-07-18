@@ -24,6 +24,11 @@ See the [LICENSE](LICENSE.md) file for license rights and limitations.
 
 
 ## ChangeLog
+v2.08:
+- Better compatibility with older devices
+- Better Spanish translation
+- The UI now shows when an IP connects and disconnects from the server
+
 v2.07:
 - Updated Spanish Translations (thanks to https://github.com/MauritsCornelis)
 - fixed jelly bean only code being called on ice cream sandwich (issue 24), Thanks https://github.com/lilicoding
