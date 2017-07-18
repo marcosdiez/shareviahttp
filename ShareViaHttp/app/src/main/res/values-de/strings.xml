@@ -11,7 +11,6 @@
     <string name="now_sharing_anymore">Die angeforderte Datei wird nicht mehr geteilt.</string>
     <string name="alert_dialog_ok">OK</string>
     <string name="alert_dialog_cancel">Abbrechen</string>
-    <string name="qr_code_not_available">QR-Code App nicht vorhanden</string>
     <string name="connected_ip">Verbunden: %s</string>
     <string name="disconnected_ip">Unverbunden: %s</string>
 </resources>

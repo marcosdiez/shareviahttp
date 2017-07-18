@@ -11,7 +11,6 @@
     <string name="now_sharing_anymore">El archivo no está siendo compartido más.</string>
     <string name="alert_dialog_ok">OK</string>
     <string name="alert_dialog_cancel">Cancelar</string>
-    <string name="qr_code_not_available">Aplicación de códigos QR no disponible</string>
     <string name="url_clipboard">La URL de ha copiado al portapapeles.</string>
     <string name="privacy_policy">Política de privacidad</string>
 </resources>

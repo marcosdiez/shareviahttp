@@ -15,7 +15,6 @@
 
     <string name="alert_dialog_ok">OK</string>
     <string name="alert_dialog_cancel">Annuler</string>
-    <string name="qr_code_not_available">L\'application QR-Code n\'est pas disponible</string>
     <string name="url_clipboard">L\'URL a été copiée dans le presse-papiers.</string>
     <string name="privacy_policy">Politique de confidentialité</string>
 

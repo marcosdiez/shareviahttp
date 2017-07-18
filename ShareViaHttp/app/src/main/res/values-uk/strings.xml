@@ -18,7 +18,6 @@
 
     <string name="alert_dialog_ok">Гаразд</string>
     <string name="alert_dialog_cancel">Скасувати</string>
-    <string name="qr_code_not_available">Додаток для QR-кодів не доступний</string>
     <string name="url_clipboard">URL скопійовано до буферу обміну.</string>
 
 

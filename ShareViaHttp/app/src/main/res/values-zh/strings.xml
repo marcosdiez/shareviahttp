@@ -5,7 +5,6 @@
     <string name="alert_dialog_ok">确定</string>
     <string name="button_qrcode">二维码</string>
     <string name="change_ip">修改IP</string>
-    <string name="qr_code_not_available">未安装二维码应用</string>
     <string name="now_sharing_anymore">请求的文件已经过期</string>
     <string name="share_containing_folder">分享所在文件夹</string>
     <string name="rate_app">应用评分</string>
