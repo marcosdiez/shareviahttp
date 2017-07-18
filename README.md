@@ -24,6 +24,13 @@ See the [LICENSE](LICENSE.md) file for license rights and limitations.
 
 
 ## ChangeLog
+v2.07:
+- Updated Spanish Translations (thanks to https://github.com/MauritsCornelis)
+- fixed jelly bean only code being called on ice cream sandwich (issue 24), Thanks https://github.com/lilicoding
+
+v2.06:
+- French Translations (thanks to https://github.com/Poussinou)
+
 v2.04:
 - Google told me my app must have a privacy policy or else it would be removed from the store. So I added one.
 
