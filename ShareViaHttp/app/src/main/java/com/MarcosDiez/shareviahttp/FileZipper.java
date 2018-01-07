@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
@@ -21,10 +22,11 @@ public class FileZipper implements Runnable {
 		Log.d(Util.myLogName, s2);
 	}
 
-	OutputStream dest;
-	ArrayList<UriInterpretation> inputUriInterpretations;
-	Boolean atLeastOneDirectory = false;
-	ContentResolver contentResolver;
+	private OutputStream dest;
+	private ArrayList<UriInterpretation> inputUriInterpretations;
+	private Boolean atLeastOneDirectory = false;
+	private ContentResolver contentResolver;
+	private HashSet<String> fileNamesAlreadyUsed = new HashSet<String>();
 
 	public FileZipper(OutputStream dest, ArrayList<UriInterpretation> inputUriInterpretations, ContentResolver contentResolver) {
 		/*
@@ -121,6 +123,20 @@ public class FileZipper implements Runnable {
 	}
 
 	String getFileName(UriInterpretation uriFile) {
+	    /*  The Android Galary sends us two files with the same name, we must make them unique or we get a
+	    *  "java.util.zip.ZipException: duplicate entry: x.gif" exception
+		*/
+		String fileName = getFileNameHelper(uriFile);
+		while(!fileNamesAlreadyUsed.add(fileName)){
+			// fileNamesAlreadyUsed.add returns TRUE if the file was added to the HashSet
+			// false it it was already there.
+			// in this case we must change the filename, to keep it unique
+			fileName = "_" + fileName;
+		}
+		return fileName;
+	}
+
+	private String getFileNameHelper(UriInterpretation uriFile){
 		/*	Galery Sends uri.getPath() with values like /external/images/media/16458
 		 *  while urlFile.name returns IMG_20120427_120038.jpg
 		 *
