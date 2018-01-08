@@ -60,6 +60,7 @@ public class FileZipper implements Runnable {
 			for (UriInterpretation thisUriInterpretation : inputUriInterpretations) {
 				addFileOrDirectory(BUFFER, out, data, thisUriInterpretation);
 			}
+
 			out.close();
 			s("Zip Done. Checksum: " + checksum.getChecksum().getValue());
 		} catch (Exception e) {

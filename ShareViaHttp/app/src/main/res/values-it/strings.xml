@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Italian Translation provided by Sylvie Ventura <sylvieventura AT tiscali DOT it> -->
+    <string name="app_name">Share via HTTP</string>
+    <string name="standard_url" translatable="false">http://127.0.0.1/</string>
+    <string name="technical_info">Restrizioni tecniche: All\'interno di una rete wifi funziona sempre. Altrimenti dipende dalla configurazione del firewall, della NAT, e così via. Gl indirizzi IPv6 dovrebbero poter funzionare in ogni caso.</string>
+    <string name="rate_app">Valuta l\'app</string>
+    <string name="button_qrcode">Crea QR</string>
+    <string name="change_ip">Cambia IP</string>
+    <string name="share_containing_folder">Condividi la Cartella</string>
+    <string name="share_url">Condividi URL</string>
+    <string name="stop_server">Stop Server</string>
+    <string name="now_sharing_anymore">Il file richiesto non viene più condiviso.</string>
+    <string name="alert_dialog_ok">OK</string>
+    <string name="alert_dialog_cancel">Annulla</string>
+    <string name="url_clipboard">l\'URL è stato copiato nella clipboard.</string>
+    <string name="privacy_policy">Note sulla Privacy</string>
+    <string name="disconnected_ip">Disconnesso: %s</string>
+    <string name="connected_ip">Connesso: %s</string>
+</resources>
