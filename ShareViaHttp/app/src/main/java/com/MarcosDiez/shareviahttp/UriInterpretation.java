@@ -150,6 +150,10 @@ public class UriInterpretation {
 				mime = "application/json";
 				return;
 			}
+			if (extension.equals(".epub")) {
+				mime = "application/epub+zip";
+				return;
+			}
 
 		}
 
