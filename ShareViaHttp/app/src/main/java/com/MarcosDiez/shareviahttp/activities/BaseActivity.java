@@ -2,9 +2,12 @@ package com.MarcosDiez.shareviahttp.activities;
 
 import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -14,6 +17,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -118,6 +123,9 @@ public class BaseActivity extends AppCompatActivity {
                 if (p != null) {
                     p.stopServer();
                 }
+                NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotificationManager.cancel(1);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 Snackbar.make(findViewById(android.R.id.content), getString(R.string.now_sharing_anymore), Snackbar.LENGTH_SHORT).show();
             }
         });
@@ -189,6 +197,17 @@ public class BaseActivity extends AppCompatActivity {
             return;
         }
 
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.setAction(Intent.ACTION_MAIN);
+        notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        PendingIntent pIntent = PendingIntent.getActivity(this,0, notificationIntent, 0);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(this.getString(R.string.server_running)).setContentIntent(pIntent);
+        NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(1,builder.build());
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         httpServer = new MyHttpServer(9999);
         listOfServerUris = httpServer.listOfIpAddresses();
         preferredServerUrl = listOfServerUris[0].toString();
@@ -246,5 +265,18 @@ public class BaseActivity extends AppCompatActivity {
         String theUrl = "market://details?id=" + appName;
         Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse(theUrl));
         startActivity(browse);
+    }
+
+    @Override
+    public void onBackPressed(){
+        MyHttpServer p = httpServer;
+        httpServer = null;
+        if (p != null) {
+            p.stopServer();
+        }
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.cancel(1);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        super.onBackPressed();
     }
 }
