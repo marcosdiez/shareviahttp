@@ -10,13 +10,6 @@
     android:orientation="horizontal">
 
     <com.MarcosDiez.shareviahttp.views.FloatingActionButtonWithText
-        android:id="@+id/button_qr_code"
-        android:layout_width="90dp"
-        android:layout_height="95dp"
-        app:imageSrc="@drawable/ic_qrcode"
-        app:text="@string/button_qrcode" />
-
-    <com.MarcosDiez.shareviahttp.views.FloatingActionButtonWithText
         android:id="@+id/change_ip"
         android:layout_width="90dp"
         android:layout_height="95dp"

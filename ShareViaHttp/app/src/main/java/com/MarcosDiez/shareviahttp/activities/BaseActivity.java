@@ -4,12 +4,12 @@ import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,14 +26,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.MarcosDiez.shareviahttp.BuildConfig;
 import com.MarcosDiez.shareviahttp.DisplayRawFileFragment;
 import com.MarcosDiez.shareviahttp.MyHttpServer;
 import com.MarcosDiez.shareviahttp.R;
 import com.MarcosDiez.shareviahttp.UriInterpretation;
+
+import net.glxn.qrgen.android.QRCode;
 
 import java.util.ArrayList;
 
@@ -48,7 +50,6 @@ public class BaseActivity extends AppCompatActivity {
     protected TextView link_msg;
     protected TextView uriPath;
     // NavigationViews
-    protected View bttnQrCode;
     protected View stopServer;
     protected View share;
     protected View changeIp;
@@ -91,7 +92,7 @@ public class BaseActivity extends AppCompatActivity {
     protected void setupToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.app_name));
-        toolbar.setTitleTextColor(getResources().getColor(R.color.light_blue));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
     }
 
@@ -101,20 +102,12 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected void setupNavigationViews() {
-        bttnQrCode = findViewById(R.id.button_qr_code);
         stopServer = findViewById(R.id.stop_server);
         share = findViewById(R.id.button_share_url);
         changeIp = findViewById(R.id.change_ip);
     }
 
     protected void createViewClickListener() {
-        bttnQrCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                generateBarCodeIfPossible();
-            }
-        });
-
         stopServer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -149,15 +142,9 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void generateBarCodeIfPossible() {
-        Intent intent = new Intent("com.google.zxing.client.android.ENCODE");
-        intent.putExtra("ENCODE_TYPE", "TEXT_TYPE");
-        intent.putExtra("ENCODE_DATA", link_msg.getText().toString());
-        try {
-            startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(this, "You need to download the Barcode Scanner to generate QR Codes", Toast.LENGTH_LONG).show();
-            openInPlayStore("com.google.zxing.client.android");
-        }
+        Bitmap myBitmap = QRCode.from(link_msg.getText().toString()).bitmap();
+        ImageView qrImage= (ImageView) findViewById(R.id.QRcode);
+        if (qrImage!=null)  qrImage.setImageBitmap(myBitmap);
     }
 
     private void createChangeIpDialog() {
@@ -227,6 +214,7 @@ public class BaseActivity extends AppCompatActivity {
     protected void setLinkMessageToView() {
         link_msg.setPaintFlags(link_msg.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         link_msg.setText(preferredServerUrl);
+        generateBarCodeIfPossible();
     }
 
     @Override

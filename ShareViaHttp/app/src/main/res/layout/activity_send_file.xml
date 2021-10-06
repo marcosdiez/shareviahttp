@@ -50,10 +50,18 @@
                 android:background="@color/dark_blue"
                 android:text="@string/share_containing_folder"
                 android:textAllCaps="true"
-                android:textColor="@color/light_blue" />
+                android:textColor="@color/white" />
 
         </LinearLayout>
     </ScrollView>
+
+    <ImageView
+        android:id="@+id/QRcode"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_centerInParent="true"
+        android:minHeight="200dp"
+        android:minWidth="200dp" />
 
     <include
         android:id="@+id/navigation_layout"
