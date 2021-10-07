@@ -116,8 +116,7 @@ public class BaseActivity extends AppCompatActivity {
                 if (p != null) {
                     p.stopServer();
                 }
-                NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                mNotificationManager.cancel(1);
+                cancelNotification();
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 Snackbar.make(findViewById(android.R.id.content), getString(R.string.now_sharing_anymore), Snackbar.LENGTH_SHORT).show();
             }
@@ -188,11 +187,7 @@ public class BaseActivity extends AppCompatActivity {
         notificationIntent.setAction(Intent.ACTION_MAIN);
         notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         PendingIntent pIntent = PendingIntent.getActivity(this,0, notificationIntent, 0);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(this.getString(R.string.server_running)).setContentIntent(pIntent);
-        NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(1,builder.build());
+        showNotification(pIntent);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         httpServer = new MyHttpServer(9999);
@@ -262,9 +257,21 @@ public class BaseActivity extends AppCompatActivity {
         if (p != null) {
             p.stopServer();
         }
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.cancel(1);
+        cancelNotification();
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onBackPressed();
+    }
+
+    public void showNotification(PendingIntent pIntent){
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(this.getString(R.string.server_running)).setContentIntent(pIntent);
+        NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(1,builder.build());
+    }
+
+    public void cancelNotification(){
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.cancel(1);
     }
 }
