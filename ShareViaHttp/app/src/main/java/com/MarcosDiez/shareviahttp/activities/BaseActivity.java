@@ -2,6 +2,7 @@ package com.MarcosDiez.shareviahttp.activities;
 
 import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ClipData;
@@ -12,12 +13,14 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -92,7 +95,7 @@ public class BaseActivity extends AppCompatActivity {
     protected void setupToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.app_name));
-        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        toolbar.setTitleTextColor(ContextCompat.getColor(this,R.color.white));
         setSupportActionBar(toolbar);
     }
 
@@ -187,6 +190,7 @@ public class BaseActivity extends AppCompatActivity {
         notificationIntent.setAction(Intent.ACTION_MAIN);
         notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         PendingIntent pIntent = PendingIntent.getActivity(this,0, notificationIntent, 0);
+        initNotification();
         showNotification(pIntent);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -263,7 +267,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void showNotification(PendingIntent pIntent){
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,"shareViaHttp")
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(this.getString(R.string.server_running)).setContentIntent(pIntent);
         NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -273,5 +277,14 @@ public class BaseActivity extends AppCompatActivity {
     public void cancelNotification(){
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.cancel(1);
+    }
+
+    public void initNotification(){
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String NOTIFICATION_CHANNEL_ID = "shareViaHttp";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "shareViaHttp", NotificationManager.IMPORTANCE_HIGH);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
     }
 }
