@@ -1,7 +1,7 @@
 package com.MarcosDiez.shareviahttp.activities;
 
 import android.app.AlertDialog;
-import android.app.DialogFragment;
+import android.support.v4.app.DialogFragment;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -225,7 +225,7 @@ public class BaseActivity extends AppCompatActivity {
 
     private void showPrivacyPolicy() {
         DialogFragment newFragment = DisplayRawFileFragment.newInstance(getString(R.string.privacy_policy), R.raw.privacy_policy);
-        newFragment.show(getFragmentManager(), "dialog");
+        newFragment.show(getSupportFragmentManager(),"dialog");
     }
 
 
