@@ -168,7 +168,10 @@ public class MyHttpServer extends Thread {
     }
 
     public CharSequence[] listOfIpAddresses() {
-        ArrayList<String> arrayOfIps = new ArrayList<String>();
+        ArrayList<String> arrayOfIps = new ArrayList<String>(); // preferred IPs
+        ArrayList<String> arrayOfIps4 = new ArrayList<String>(); // IPv4 addresses
+        ArrayList<String> arrayOfIps6 = new ArrayList<String>(); // IPv6 addresses
+        ArrayList<String> arrayOfIpsL = new ArrayList<String>(); // loopback
 
 
         try {
@@ -184,16 +187,26 @@ public class MyHttpServer extends Thread {
                     String theIpTemp = inetAddress.getHostAddress();
                     String theIp = getServerUrl(theIpTemp);
 
-                    if (inetAddress instanceof Inet6Address
-                            || inetAddress.isLoopbackAddress()) {
-
-                        arrayOfIps.add(theIp);
+                    if (inetAddress instanceof Inet6Address) {
+                        arrayOfIps6.add(theIp);
+                        continue;
+                    } else if (inetAddress.isLoopbackAddress()) {
+                        arrayOfIpsL.add(theIp);
+                        continue;
+                    } else if (intf.getDisplayName().matches("wlan.*")) {
+                        arrayOfIps.add(0,theIp); // prefer IPv4 on wlan interface
+                        continue;
+                    } else {
+                        arrayOfIps4.add(theIp);
                         continue;
                     }
-
-                    arrayOfIps.add(0, theIp); // we prefer non local IPv4
                 }
             }
+
+            // append IP lists in order of preference
+            arrayOfIps.addAll(arrayOfIps4);
+            arrayOfIps.addAll(arrayOfIps6);
+            arrayOfIps.addAll(arrayOfIpsL);
 
             if (arrayOfIps.size() == 0) {
                 String firstIp = getServerUrl("0.0.0.0");
