@@ -1,19 +1,26 @@
 package com.MarcosDiez.shareviahttp.activities;
 
 import android.app.AlertDialog;
-import android.app.DialogFragment;
-import android.content.ActivityNotFoundException;
+import android.support.v4.app.DialogFragment;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,14 +28,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.MarcosDiez.shareviahttp.BuildConfig;
 import com.MarcosDiez.shareviahttp.DisplayRawFileFragment;
 import com.MarcosDiez.shareviahttp.MyHttpServer;
 import com.MarcosDiez.shareviahttp.R;
 import com.MarcosDiez.shareviahttp.UriInterpretation;
+
+import net.glxn.qrgen.android.QRCode;
 
 import java.util.ArrayList;
 
@@ -43,7 +53,6 @@ public class BaseActivity extends AppCompatActivity {
     protected TextView link_msg;
     protected TextView uriPath;
     // NavigationViews
-    protected View bttnQrCode;
     protected View stopServer;
     protected View share;
     protected View changeIp;
@@ -86,7 +95,7 @@ public class BaseActivity extends AppCompatActivity {
     protected void setupToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.app_name));
-        toolbar.setTitleTextColor(getResources().getColor(R.color.light_blue));
+        toolbar.setTitleTextColor(ContextCompat.getColor(this,R.color.white));
         setSupportActionBar(toolbar);
     }
 
@@ -96,20 +105,12 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected void setupNavigationViews() {
-        bttnQrCode = findViewById(R.id.button_qr_code);
         stopServer = findViewById(R.id.stop_server);
         share = findViewById(R.id.button_share_url);
         changeIp = findViewById(R.id.change_ip);
     }
 
     protected void createViewClickListener() {
-        bttnQrCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                generateBarCodeIfPossible();
-            }
-        });
-
         stopServer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -118,6 +119,8 @@ public class BaseActivity extends AppCompatActivity {
                 if (p != null) {
                     p.stopServer();
                 }
+                cancelNotification();
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 Snackbar.make(findViewById(android.R.id.content), getString(R.string.now_sharing_anymore), Snackbar.LENGTH_SHORT).show();
             }
         });
@@ -141,15 +144,9 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void generateBarCodeIfPossible() {
-        Intent intent = new Intent("com.google.zxing.client.android.ENCODE");
-        intent.putExtra("ENCODE_TYPE", "TEXT_TYPE");
-        intent.putExtra("ENCODE_DATA", link_msg.getText().toString());
-        try {
-            startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(this, "You need to download the Barcode Scanner to generate QR Codes", Toast.LENGTH_LONG).show();
-            openInPlayStore("com.google.zxing.client.android");
-        }
+        Bitmap myBitmap = QRCode.from(link_msg.getText().toString()).bitmap();
+        ImageView qrImage= (ImageView) findViewById(R.id.QRcode);
+        if (qrImage!=null)  qrImage.setImageBitmap(myBitmap);
     }
 
     private void createChangeIpDialog() {
@@ -189,6 +186,14 @@ public class BaseActivity extends AppCompatActivity {
             return;
         }
 
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.setAction(Intent.ACTION_MAIN);
+        notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        PendingIntent pIntent = PendingIntent.getActivity(this,0, notificationIntent, 0);
+        initNotification();
+        showNotification(pIntent);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         httpServer = new MyHttpServer(9999);
         listOfServerUris = httpServer.listOfIpAddresses();
         preferredServerUrl = listOfServerUris[0].toString();
@@ -208,6 +213,7 @@ public class BaseActivity extends AppCompatActivity {
     protected void setLinkMessageToView() {
         link_msg.setPaintFlags(link_msg.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         link_msg.setText(preferredServerUrl);
+        generateBarCodeIfPossible();
     }
 
     @Override
@@ -219,7 +225,7 @@ public class BaseActivity extends AppCompatActivity {
 
     private void showPrivacyPolicy() {
         DialogFragment newFragment = DisplayRawFileFragment.newInstance(getString(R.string.privacy_policy), R.raw.privacy_policy);
-        newFragment.show(getFragmentManager(), "dialog");
+        newFragment.show(getSupportFragmentManager(),"dialog");
     }
 
 
@@ -246,5 +252,39 @@ public class BaseActivity extends AppCompatActivity {
         String theUrl = "market://details?id=" + appName;
         Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse(theUrl));
         startActivity(browse);
+    }
+
+    @Override
+    public void onBackPressed(){
+        MyHttpServer p = httpServer;
+        httpServer = null;
+        if (p != null) {
+            p.stopServer();
+        }
+        cancelNotification();
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        super.onBackPressed();
+    }
+
+    public void showNotification(PendingIntent pIntent){
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,"shareViaHttp")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(this.getString(R.string.server_running)).setContentIntent(pIntent);
+        NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(1,builder.build());
+    }
+
+    public void cancelNotification(){
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.cancel(1);
+    }
+
+    public void initNotification(){
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String NOTIFICATION_CHANNEL_ID = "shareViaHttp";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "shareViaHttp", NotificationManager.IMPORTANCE_HIGH);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
     }
 }

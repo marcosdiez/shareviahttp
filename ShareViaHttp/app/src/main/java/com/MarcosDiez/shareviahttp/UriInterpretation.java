@@ -14,6 +14,7 @@ import android.util.Log;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 public class UriInterpretation {
@@ -74,10 +75,14 @@ public class UriInterpretation {
 				}
 				size = f.length();
 				if (size == 0) {
-					uriString = URLDecoder.decode(uriString).substring(
-							"file://".length());
-					f = new File(uriString);
-					size = f.length();
+					try {
+						uriString = URLDecoder.decode(uriString, "UTF-8").substring(
+								"file://".length());
+						f = new File(uriString);
+						size = f.length();
+					}catch (UnsupportedEncodingException e) {
+						//
+					}
 				}
 				///Log.v(Util.myLogName, "zzz" + size);
 

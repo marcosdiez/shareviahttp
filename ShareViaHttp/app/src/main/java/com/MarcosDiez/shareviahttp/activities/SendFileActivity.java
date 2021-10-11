@@ -36,6 +36,7 @@ import com.MarcosDiez.shareviahttp.R;
 import com.MarcosDiez.shareviahttp.UriInterpretation;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 
@@ -89,7 +90,11 @@ public class SendFileActivity extends BaseActivity {
 
         String newPath = path.substring(0, pos);
 
-        newPath = URLDecoder.decode(newPath);
+        try {
+            newPath = URLDecoder.decode(newPath, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            //
+        }
 
         // I must now assume the file exists because android gives me a fake path anyway
         // like  /storage/emulated/0

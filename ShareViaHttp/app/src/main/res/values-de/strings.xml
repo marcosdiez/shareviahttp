@@ -13,4 +13,7 @@
     <string name="alert_dialog_cancel">Abbrechen</string>
     <string name="connected_ip">Verbunden: %s</string>
     <string name="disconnected_ip">Unverbunden: %s</string>
+    <string name="url_clipboard">URL wurde in die Zwischenablage kopiert.</string>
+    <string name="privacy_policy">Datenschutz-Bestimmungen</string>
+    <string name="server_running">HTTP Server läuft</string>
 </resources>
