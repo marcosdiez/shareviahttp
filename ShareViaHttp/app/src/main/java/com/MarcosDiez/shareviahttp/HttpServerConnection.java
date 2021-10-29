@@ -374,16 +374,18 @@ public class HttpServerConnection implements Runnable {
         }
         if (location != null) {
             // we don't want cache for the root URL
-            try {
-                int pos = location.indexOf("://");
-                if (pos > 0 && pos < 10) {
-                    // so russians can download their files as well :)
-                    // but if a protocol like http://, than we may as well redirect
-                    location = URLEncoder.encode(location, "UTF-8");
-                    s("after urlencode location:" + location);
+            if (!location.startsWith("http")) {  //if it is already an URL leave it as it is
+                try {
+                    int pos = location.indexOf("://");
+                    if (pos > 0 && pos < 10) {
+                        // so russians can download their files as well :)
+                        // but if a protocol like http://, than we may as well redirect
+                        location = URLEncoder.encode(location, "UTF-8");
+                        s("after urlencode location:" + location);
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    s(Log.getStackTraceString(e));
                 }
-            } catch (UnsupportedEncodingException e) {
-                s(Log.getStackTraceString(e));
             }
 
             output.append("Location: ").append(location).append("\r\n"); // server name
