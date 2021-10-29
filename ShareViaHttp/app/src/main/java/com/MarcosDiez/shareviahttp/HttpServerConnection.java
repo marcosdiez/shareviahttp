@@ -374,7 +374,7 @@ public class HttpServerConnection implements Runnable {
         }
         if (location != null) {
             // we don't want cache for the root URL
-            if (!location.startsWith("http")) {  //if it is already an URL leave it as it is
+            if (!location.startsWith("http://") && !location.startsWith("https://")) {  //if it is already an URL leave it as it is
                 try {
                     int pos = location.indexOf("://");
                     if (pos > 0 && pos < 10) {
