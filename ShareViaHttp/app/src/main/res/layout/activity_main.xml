@@ -11,7 +11,7 @@
     <include
         android:id="@+id/link_layout"
         layout="@layout/link_layout"
-        android:visibility="gone" />
+        android:visibility="invisible" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -27,7 +27,8 @@
             android:minHeight="150dp"
             android:minWidth="150dp"
             android:src="@drawable/ic_pick_files"
-            android:layout_toStartOf="@id/center" />
+            android:layout_toStartOf="@id/center"
+            android:contentDescription="" />
 
         <Space
             android:id="@+id/center"
@@ -67,7 +68,7 @@
         <include
             android:id="@+id/navigation_layout"
             layout="@layout/navigation_layout"
-            android:visibility="gone" />
+            android:visibility="invisible" />
     </RelativeLayout>
 
 </LinearLayout>

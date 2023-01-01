@@ -1,7 +1,6 @@
 package com.MarcosDiez.shareviahttp.activities;
 
 import android.app.AlertDialog;
-import android.support.v4.app.DialogFragment;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -18,11 +17,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,11 +26,17 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
+
 import com.MarcosDiez.shareviahttp.BuildConfig;
 import com.MarcosDiez.shareviahttp.DisplayRawFileFragment;
 import com.MarcosDiez.shareviahttp.MyHttpServer;
 import com.MarcosDiez.shareviahttp.R;
 import com.MarcosDiez.shareviahttp.UriInterpretation;
+import com.google.android.material.snackbar.Snackbar;
 
 import net.glxn.qrgen.android.QRCode;
 
@@ -224,7 +224,10 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private void showPrivacyPolicy() {
-        DialogFragment newFragment = DisplayRawFileFragment.newInstance(getString(R.string.privacy_policy), R.raw.privacy_policy);
+        //DialogFragment newFragment = DisplayRawFileFragment.newInstance(getString(R.string.privacy_policy), R.raw.privacy_policy);
+
+        DisplayRawFileFragment newFragment = DisplayRawFileFragment.newInstance(getString(R.string.privacy_policy),R.raw.privacy_policy);
+
         newFragment.show(getSupportFragmentManager(),"dialog");
     }
 
