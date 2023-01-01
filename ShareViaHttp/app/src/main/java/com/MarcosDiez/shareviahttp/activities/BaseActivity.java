@@ -189,7 +189,7 @@ public class BaseActivity extends AppCompatActivity {
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
         notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        PendingIntent pIntent = PendingIntent.getActivity(this,0, notificationIntent, 0);
+        PendingIntent pIntent = PendingIntent.getActivity(this,0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
         initNotification();
         showNotification(pIntent);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
