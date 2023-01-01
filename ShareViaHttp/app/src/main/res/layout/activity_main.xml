@@ -11,7 +11,7 @@
     <include
         android:id="@+id/link_layout"
         layout="@layout/link_layout"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -68,7 +68,7 @@
         <include
             android:id="@+id/navigation_layout"
             layout="@layout/navigation_layout"
-            android:visibility="invisible" />
+            android:visibility="gone" />
     </RelativeLayout>
 
 </LinearLayout>
