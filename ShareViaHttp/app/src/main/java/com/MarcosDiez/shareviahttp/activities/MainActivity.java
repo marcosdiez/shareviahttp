@@ -80,7 +80,7 @@ public class MainActivity extends BaseActivity {
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             ArrayList<UriInterpretation> uriList = getFileUris(data);
             populateUriPath(uriList);
-            initHttpServer(uriList);
+            initHttpServer(uriList,MainActivity.class);
             saveServerUrlToClipboard();
             setLinkMessageToView();
             setViewsVisible();

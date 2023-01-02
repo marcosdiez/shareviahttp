@@ -180,13 +180,13 @@ public class BaseActivity extends AppCompatActivity {
         uriPath.setText(output.toString());
     }
 
-    protected void initHttpServer(ArrayList<UriInterpretation> myUris) {
+    protected void initHttpServer(ArrayList<UriInterpretation> myUris, Class currentActivity) {
         if (myUris == null || myUris.size() == 0) {
             finish();
             return;
         }
 
-        Intent notificationIntent = new Intent(this, MainActivity.class);
+        Intent notificationIntent = new Intent(this, currentActivity);
         notificationIntent.setAction(Intent.ACTION_MAIN);
         notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         PendingIntent pIntent = PendingIntent.getActivity(this,0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);

@@ -31,6 +31,7 @@ import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
 
+import com.MarcosDiez.shareviahttp.MyHttpServer;
 import com.MarcosDiez.shareviahttp.R;
 import com.MarcosDiez.shareviahttp.UriInterpretation;
 import com.google.android.material.snackbar.Snackbar;
@@ -54,10 +55,13 @@ public class SendFileActivity extends BaseActivity {
         setupNavigationViews();
         createViewClickListener();
 
-        uriList = getFileUris();
-
+        if (getIntent().getAction().equals(Intent.ACTION_MAIN)) {  // if click on notification
+            uriList= MyHttpServer.GetFiles();
+        } else  {
+            uriList = getFileUris();
+        }
         populateUriPath(uriList);
-        initHttpServer(uriList);
+        initHttpServer(uriList, SendFileActivity.class);
         saveServerUrlToClipboard();
         setLinkMessageToView();
         setupShareContainingFolderButton(uriList);
