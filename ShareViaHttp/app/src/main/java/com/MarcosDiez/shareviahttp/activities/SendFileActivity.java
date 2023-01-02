@@ -28,12 +28,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.Button;
 
 import com.MarcosDiez.shareviahttp.R;
 import com.MarcosDiez.shareviahttp.UriInterpretation;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;

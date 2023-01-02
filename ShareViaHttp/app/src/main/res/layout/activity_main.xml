@@ -27,7 +27,8 @@
             android:minHeight="150dp"
             android:minWidth="150dp"
             android:src="@drawable/ic_pick_files"
-            android:layout_toStartOf="@id/center" />
+            android:layout_toStartOf="@id/center"
+            android:contentDescription="" />
 
         <Space
             android:id="@+id/center"
