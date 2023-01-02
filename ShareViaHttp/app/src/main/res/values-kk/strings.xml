@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HTTP арқылы бөлісу</string>
+    <string name="technical_info">Техникалық шектеулер: Wi-Fi желісінде бұл қосымша әрқашан жұмысқа жарамды. Басқа жағдайда деректерді жіберу мүмкіндігі firewall-ға, NAT-қа және т.б. байланысты. Бұғатталмаған IPv6 мекенжайы барлық жерде жұмыс істеуі қажет.</string>
+    <string name="rate_app">Қосымшаны бағалау</string>
+    <string name="button_qrcode">QR жасау</string>
+    <string name="change_ip">IP өзгерту</string>
+    <string name="share_containing_folder">Файл орналасқан буманы бөлісу</string>
+    <string name="share_url">URL бөлісу</string>
+    <string name="stop_server">Тоқтату</string>
+    <string name="now_sharing_anymore">Таңдалған файл енді таратылмайды.</string>
+    <string name="alert_dialog_ok">OK</string>
+    <string name="alert_dialog_cancel">Болдырмау</string>
+    <string name="url_clipboard">URL буферге көшірілді.</string>
+    <string name="privacy_policy">Құпиялық саясаты</string>
+    <string name="disconnected_ip">Ажыратылды: %s</string>
+    <string name="connected_ip">Қосылды: %s</string>
+    <string name="server_running">HTTP сервері істеп тұр</string>
+</resources>
