@@ -2,13 +2,14 @@ package com.MarcosDiez.shareviahttp.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.annotation.DrawableRes;
-import android.support.design.widget.FloatingActionButton;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.DrawableRes;
+
 import com.MarcosDiez.shareviahttp.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class FloatingActionButtonWithText extends RelativeLayout {
 

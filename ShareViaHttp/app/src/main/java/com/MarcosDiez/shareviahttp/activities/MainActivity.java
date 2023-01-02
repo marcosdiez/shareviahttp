@@ -9,6 +9,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+
 import com.MarcosDiez.shareviahttp.BuildConfig;
 import com.MarcosDiez.shareviahttp.R;
 import com.MarcosDiez.shareviahttp.UriInterpretation;
@@ -71,6 +76,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             ArrayList<UriInterpretation> uriList = getFileUris(data);
             populateUriPath(uriList);
