@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Share via HTTP</string>
+    <string name="app_name">Sdílejte přes HTTP</string>
 
     <string name="standard_url" translatable="false">http://127.0.0.1/</string>
 
-    <string name="technical_info">Technical restrictions: Within WiFi it will always work. Elsewhere, it will depend on firewalls, NAT, etc. A non blocked IPv6 address should work everywhere.</string>
+    <string name="technical_info">Technická omezení: V rámci WiFi to bude fungovat vždy. Jinde to bude záviset na firewallech, NAT atd. Neblokovaná IPv6 adresa by měla fungovat všude.</string>
 
-    <string name="rate_app">Rate App</string>
-    <string name="button_qrcode">Create QR</string>
-    <string name="change_ip">Change IP</string>
-    <string name="share_containing_folder">Share Containing Folder</string>
-    <string name="share_url">Share URL</string>
-    <string name="stop_server">Stop Server</string>
+    <string name="rate_app">Ohodnoťte aplikaci</string>
+    <string name="button_qrcode">Vytvořit QR</string>
+    <string name="change_ip">Změňit IP</string>
+    <string name="share_containing_folder">Sdílet složky</string>
+    <string name="share_url">Sdílet URL</string>
+    <string name="stop_server">Zastavit server</string>
 
-    <string name="now_sharing_anymore">The requested file is not being shared anymore.</string>
+    <string name="now_sharing_anymore">Požadovaný soubor již není sdílen.</string>
 
     <string name="alert_dialog_ok">OK</string>
-    <string name="alert_dialog_cancel">Cancel</string>
-    <string name="url_clipboard">URL has been copied to the clipboard.</string>
-    <string name="privacy_policy">Privacy Policy</string>
-    <string name="disconnected_ip">Disconnected: %s</string>
-    <string name="connected_ip">Connected: %s</string>
-    <string name="server_running">HTTP server running</string>
+    <string name="alert_dialog_cancel">Zrušit</string>
+    <string name="url_clipboard">Adresa URL byla zkopírována do schránky.</string>
+    <string name="privacy_policy">Zásady ochrany osobních údajů</string>
+    <string name="disconnected_ip">Odpojeno: %s</string>
+    <string name="connected_ip">Připojeno: %s</string>
+    <string name="server_running">HTTP server běží</string>
 </resources>
