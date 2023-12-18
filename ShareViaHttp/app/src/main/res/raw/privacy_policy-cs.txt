@@ -9,8 +9,8 @@ Myšlenkou této aplikace je pomoci VÁM sdílet VAŠE data s kýmkoli chcete.
 
 K tomu aplikace potřebuje určitá oprávnění.
 
-For example: In order to share the data on your SD CARD, it needs permissions to read the SD CARD.
-And in order to share you contacts, it needs permissions to read your contacts.
+Například: Aby bylo možné sdílet data na vaší SD kartě, potřebuje oprávnění ke čtení SD KARTY.
+A aby bylo možné sdílet vaše kontakty, potřebuje oprávnění ke čtení vašich kontaktů.
 
 Jediné, co aplikace dělá, je že vytvoří HTTP server s odkazem. Komukoli sdílíte tento odkaz, bude mít přístup k vašim datům.
 Já, vývojář, nemám přístup k odkazu, který vytvoříte. Aplikace mi nepodává žádné informace.
