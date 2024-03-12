@@ -1,0 +1,23 @@
+Zásady ochrany osobních údajů aplikace Share via HTTP
+
+Share via HTTP je bezplatná a open source aplikace.
+Která nemá žádné reklamy a nemá v úmyslu z vás jakýmkoli způsobem profitovat.
+
+Zdrojový kód lze získat zde: https://github.com/marcosdiez/shareviahttp
+
+Myšlenkou této aplikace je pomoci VÁM sdílet VAŠE data s kýmkoli chcete.
+
+K tomu aplikace potřebuje určitá oprávnění.
+
+Například: Aby bylo možné sdílet data na vaší SD kartě, potřebuje oprávnění ke čtení SD KARTY.
+A aby bylo možné sdílet vaše kontakty, potřebuje oprávnění ke čtení vašich kontaktů.
+
+Jediné, co aplikace dělá, je že vytvoří HTTP server s odkazem. Komukoli sdílíte tento odkaz, bude mít přístup k vašim datům.
+Já, vývojář, nemám přístup k odkazu, který vytvoříte. Aplikace mi nepodává žádné informace.
+Aplikace nemá ani analytiku, takže ani nevím, jestli mou aplikaci otevřete nebo ne.
+
+Pokud nejste spokojeni s těmito zásadami ochrany osobních údajů, okamžitě aplikaci smažte.
+
+Marcos Diez
+marcos ZAVINÁČ unitron TEČKA com TEČKA br
+2017-02-02
