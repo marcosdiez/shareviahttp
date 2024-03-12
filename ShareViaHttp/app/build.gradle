@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "com.MarcosDiez.shareviahttp"
         minSdkVersion 14
-        targetSdk 32
+        targetSdk 34
         versionCode 34
         versionName "2.0.14"
         setProperty("archivesBaseName", "$applicationId-$versionName")
