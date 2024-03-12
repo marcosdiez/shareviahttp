@@ -2,8 +2,6 @@
 <resources>
     <string name="app_name">Sdílejte přes HTTP</string>
 
-    <string name="standard_url" translatable="false">http://127.0.0.1/</string>
-
     <string name="technical_info">Technická omezení: V rámci WiFi to bude fungovat vždy. Jinde to bude záviset na firewallech, NAT atd. Neblokovaná IPv6 adresa by měla fungovat všude.</string>
 
     <string name="rate_app">Ohodnoťte aplikaci</string>
