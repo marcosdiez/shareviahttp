@@ -15,8 +15,10 @@
 
     <string name="alert_dialog_ok">OK</string>
     <string name="alert_dialog_cancel">Cancelar</string>
+    <string name="url_clipboard">A URL foi copiada para a área de transferência</string>
     <string name="privacy_policy">Política de Privacidade</string>
     <string name="connected_ip">Conectado: %s</string>
     <string name="disconnected_ip">Desconectado: %s</string>
+    <string name="server_running">Servidor HTTP rodando</string>
 
 </resources>

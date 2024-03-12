@@ -2,7 +2,6 @@
 <resources>
     <!-- Italian Translation provided by Sylvie Ventura <sylvieventura AT tiscali DOT it> -->
     <string name="app_name">Share via HTTP</string>
-    <string name="standard_url" translatable="false">http://127.0.0.1/</string>
     <string name="technical_info">Restrizioni tecniche: All\'interno di una rete wifi funziona sempre. Altrimenti dipende dalla configurazione del firewall, della NAT, e così via. Gl indirizzi IPv6 dovrebbero poter funzionare in ogni caso.</string>
     <string name="rate_app">Valuta l\'app</string>
     <string name="button_qrcode">Crea QR</string>

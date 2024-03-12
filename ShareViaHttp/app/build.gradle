@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdk 32
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.MarcosDiez.shareviahttp"
         minSdkVersion 14
-        targetSdk 32
-        versionCode 34
-        versionName "2.0.14"
+        targetSdk 34
+        versionCode 35
+        versionName "2.0.15"
         setProperty("archivesBaseName", "$applicationId-$versionName")
     }
 
