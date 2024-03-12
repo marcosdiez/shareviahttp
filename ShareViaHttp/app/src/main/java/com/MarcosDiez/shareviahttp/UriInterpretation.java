@@ -8,11 +8,13 @@ package com.MarcosDiez.shareviahttp;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 import android.provider.OpenableColumns;
 import android.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -45,6 +47,21 @@ public class UriInterpretation {
                 if (metadataCursor.moveToFirst()) {
                     path = name = metadataCursor.getString(0);
                     size = metadataCursor.getInt(1);
+
+                    // sometimes this ContentResolver gives me the wrong file size ...
+                    // here is the fix
+					// https://stackoverflow.com/questions/48302972/content-resolver-returns-wrong-size
+                    try {
+                        ParcelFileDescriptor pfd = contentResolver.openFileDescriptor(uri, "r");
+                        size = pfd.getStatSize();
+                        pfd.close();
+                    } catch (FileNotFoundException e) {
+                        // throw new RuntimeException(e);
+                        // since this is plan B, I don't care about the exception
+                    } catch (IOException e) {
+                        // throw new RuntimeException(e);
+                        // since this is plan B, I don't care about the exception
+                    }
                 }
             } finally {
                 metadataCursor.close();
