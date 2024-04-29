@@ -97,6 +97,7 @@ public class MainActivity extends BaseActivity {
         if (!"".equals(savedInstanceState.getCharSequence("uriPath"))) {
             setViewsVisible();
         }
+        generateBarCodeIfPossible();
     }
 
     @Override
