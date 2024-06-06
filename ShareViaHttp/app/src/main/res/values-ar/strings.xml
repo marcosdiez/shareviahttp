@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">المشاركة عبر HTTP</string>
+
+    <string name="standard_url" translatable="false">http://127.0.0.1/</string>
+
+    <string name="technical_info">قيود تقنية: التطبيق يعمل دائما ضمن شبكة WIFI.\n فى الظروف الأخرى فإنه قد يعتمد على الجدران النارية، ترجمة عناوين الشبكة، إلخ.\n عناوين الجيل السادس للشبكة IPv6 الغير محظورة يفترض بها أن تعمل دائما.</string>
+
+    <string name="rate_app">قيم التطبيق</string>
+    <string name="button_qrcode">أنشئ رمز استجابة</string>
+    <string name="change_ip">تغيير عنوان الشبكة</string>
+    <string name="share_containing_folder">شارك محتويات المجلد</string>
+    <string name="share_url">شارك الرابط</string>
+    <string name="stop_server">إيقاف الخادم</string>
+
+    <string name="now_sharing_anymore">لا تتم مشاركة الملف المطلوب بعد الآن</string>
+
+    <string name="alert_dialog_ok">حسنا</string>
+    <string name="alert_dialog_cancel">إلغاء</string>
+    <string name="url_clipboard">تم نسخ الرابط إلى الحافظة</string>
+    <string name="privacy_policy">سياسة الخصوصية</string>
+    <string name="disconnected_ip">%s قطع الاتصال</string>
+    <string name="connected_ip">%s اتصل</string>
+    <string name="server_running">خادم الHTTP نشط</string>
+</resources>
