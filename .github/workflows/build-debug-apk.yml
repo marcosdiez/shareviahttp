@@ -1,0 +1,41 @@
+name: Build Debug APK
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Grant execute permission to gradlew
+        run: chmod +x ./ShareViaHttp/gradlew
+
+      - name: Set env
+        run: echo "COMMIT_SHA=$(git log -n 1 --format='%h')" >> $GITHUB_ENV
+
+      - name: Encode git revision
+        run: sed -i -e "s/versionName = \"\([^ ]*\).*\"/versionName = \"\1 (git $COMMIT_SHA)\"/"  ShareViaHttp/app/build.gradle
+
+      - name: Build with Gradle
+        working-directory: ShareViaHttp
+        run: ./gradlew app:assembleDebug
+
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ShareViaHttp-debug-apk-${{ env.COMMIT_SHA }}
+          path: ShareViaHttp/app/build/outputs/apk/debug/*.apk
+          retention-days: 30
