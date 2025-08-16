@@ -8,11 +8,13 @@ import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.widget.TextView;
-import androidx.fragment.app.DialogFragment;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
+import androidx.fragment.app.DialogFragment;
 
 public class DisplayRawFileFragment extends DialogFragment {
 
