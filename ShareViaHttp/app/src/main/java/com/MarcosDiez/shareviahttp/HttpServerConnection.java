@@ -238,6 +238,7 @@ public class HttpServerConnection implements Runnable {
             try {
                 requestedfile = theUriInterpretation.getInputStream();
                 if(range_start != 0) skipped = requestedfile.skip(range_start);
+                if(range_end == -1) range_end = theUriInterpretation.getSize() - 1;
             } catch (FileNotFoundException e) {
                 try {
                     s("I couldn't locate file. I am sending the input as text/plain");
@@ -264,9 +265,10 @@ public class HttpServerConnection implements Runnable {
         Log.d("shareOneFile","Mime : "+ theUriInterpretation.getMime());
         Log.d("shareOneFile","Skipped : "+ Long.toString(skipped));
         Log.d("shareOneFile","range_start : "+ Long.toString(range_start));
+        Log.d("shareOneFile","range_end : "+ Long.toString(range_end));
         String outputString;
         if(skipped == 0) outputString = construct_http_header(200, theUriInterpretation.getMime());
-        else outputString = construct_http_header(206, theUriInterpretation.getMime(),null,skipped);
+        else outputString = construct_http_header(206, theUriInterpretation.getMime(),null,skipped,range_end);
 
         try {
             output.writeBytes(outputString);
@@ -279,12 +281,18 @@ public class HttpServerConnection implements Runnable {
                     zz.run();
                 } else {
                     byte[] buffer = new byte[4096];
-                    for (int n; (n = requestedfile.read(buffer)) != -1; ) {
+                    long sent = 0;
+                    long rangeLength = (range_end - skipped) + 1;
+                    int n;
+                    while (sent < rangeLength && (n = requestedfile.read(buffer)) != -1) {
+                        if (sent + n > rangeLength) {
+                            n = (int)(rangeLength - sent);
+                        }
                         output.write(buffer, 0, n);
+                        sent += n;
+                    }
                     }
                 }
-
-            }
             requestedfile.close();
         } catch (IOException e) {
         }
@@ -292,7 +300,7 @@ public class HttpServerConnection implements Runnable {
 
     private void redirectToFinalPath(DataOutputStream output, String thePath) {
 
-        String redirectOutput = construct_http_header(302, null, thePath,0);
+        String redirectOutput = construct_http_header(302, null, thePath,0,-1);
         try {
             // if you could not open the file send a 404
             output.writeBytes(redirectOutput);
@@ -363,7 +371,7 @@ public class HttpServerConnection implements Runnable {
     }
 
     private String construct_http_header(int return_code, String mime) {
-        return construct_http_header(return_code, mime,null,0);
+        return construct_http_header(return_code, mime,null,0,-1);
     }
 
     // it is not always possible to get the file size :(
@@ -386,14 +394,14 @@ public class HttpServerConnection implements Runnable {
     // the headers job is to tell the browser the result of the request
     // among if it was successful or not.
     private String construct_http_header(int return_code, String mime,
-                                         String location,long content_start) {
+                                         String location,long content_start, long content_end) {
 
         StringBuilder output = new StringBuilder();
         output.append("HTTP/1.0 ");
         output.append(httpReturnCodeToString(return_code) + "\r\n");
-        if(content_start != 0) {
-            output.append("Content-Range: bytes "+Long.toString(content_start)+"-"+Long.toString(theUriInterpretation.getSize())+"\r\n");
-            if(theUriInterpretation.getSize() > content_start) output.append("Content-Length: "+Long.toString(theUriInterpretation.getSize() - content_start)+"\r\n");
+        if(content_start != 0 && content_end != -1) {
+            output.append("Content-Range: bytes "+Long.toString(content_start)+"-"+Long.toString(content_end)+"/"+Long.toString(theUriInterpretation.getSize())+"\r\n");
+            if(content_end > content_start) output.append("Content-Length: "+Long.toString(content_end - content_start + 1)+"\r\n");
         }
         else output.append(getFileSizeHeader());
         SimpleDateFormat format = new SimpleDateFormat(
