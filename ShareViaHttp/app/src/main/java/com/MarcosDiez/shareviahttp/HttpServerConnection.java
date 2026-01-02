@@ -73,6 +73,8 @@ public class HttpServerConnection implements Runnable {
 
     private static String httpReturnCodeToString(int return_code) {
         switch (return_code) {
+            case 206:
+                return "206 Partial Content";
             case 200:
                 return "200 OK";
             case 302:
@@ -140,9 +142,31 @@ public class HttpServerConnection implements Runnable {
     // our implementation of the hypertext transfer protocol
     // its very basic and stripped down
     private void http_handler(BufferedReader input, DataOutputStream output) {
+        String line;
         String header;
+        long range_start = 0;
+        long range_end = -1;
+        String range = "";
         try {
             header = input.readLine();
+            
+            //start: Parsing Range From BufferedReader input
+            while(((line=input.readLine()) != null) && (!line.trim().isEmpty())){
+                if(line.toUpperCase().trim().startsWith("RANGE") && line.trim().split("=").length > 1){
+                range = line.trim().split("=")[1];
+                }
+            }
+            if(!range.isEmpty()){
+                range_start = Long.parseLong(range.split("-")[0].trim());
+                if(range.split("-").length>1 && !range.split("-")[1].trim().isEmpty()) range_end = Long.parseLong(range.split("-")[1].trim());
+            }
+            //end: Parsing Range From BufferedReader input
+
+            //Log.d("HTTP Handler","Header : "+header);
+            //Log.d("HTTP Handler","Range : "+range);
+            //Log.d("HTTP Handler","Range Start : "+range_start);
+            //Log.d("HTTP Handler","Range END : "+range_end);
+
         } catch (IOException e1) {
             e1.printStackTrace();
             return;
@@ -202,16 +226,18 @@ public class HttpServerConnection implements Runnable {
             shareRootUrl(output);
             return;
         }
-        shareOneFile(output, sendOnlyHeader, fileUriStr);
+        shareOneFile(output, sendOnlyHeader, fileUriStr,range_start,range_end);
     }
 
-    private void shareOneFile(DataOutputStream output, Boolean sendOnlyHeader, String fileUriStr) {
+    private void shareOneFile(DataOutputStream output, Boolean sendOnlyHeader, String fileUriStr, long range_start, long range_end) {
 
         InputStream requestedfile = null;
+        long skipped = 0;
 
         if (!theUriInterpretation.isDirectory()) {
             try {
                 requestedfile = theUriInterpretation.getInputStream();
+                if(range_start != 0) skipped = requestedfile.skip(range_start);
             } catch (FileNotFoundException e) {
                 try {
                     s("I couldn't locate file. I am sending the input as text/plain");
@@ -229,11 +255,18 @@ public class HttpServerConnection implements Runnable {
                     return;
                 }
             } // print error to gui
+            catch (IOException e3) {
+                s("IOException in file reading"+e3.getMessage());
+                return;
+            }
         }
         // happy day scenario
-
-        String outputString = construct_http_header(200,
-                theUriInterpretation.getMime());
+        Log.d("shareOneFile","Mime : "+ theUriInterpretation.getMime());
+        Log.d("shareOneFile","Skipped : "+ Long.toString(skipped));
+        Log.d("shareOneFile","range_start : "+ Long.toString(range_start));
+        String outputString;
+        if(skipped == 0) outputString = construct_http_header(200, theUriInterpretation.getMime());
+        else outputString = construct_http_header(206, theUriInterpretation.getMime(),null,skipped);
 
         try {
             output.writeBytes(outputString);
@@ -259,7 +292,7 @@ public class HttpServerConnection implements Runnable {
 
     private void redirectToFinalPath(DataOutputStream output, String thePath) {
 
-        String redirectOutput = construct_http_header(302, null, thePath);
+        String redirectOutput = construct_http_header(302, null, thePath,0);
         try {
             // if you could not open the file send a 404
             output.writeBytes(redirectOutput);
@@ -330,7 +363,7 @@ public class HttpServerConnection implements Runnable {
     }
 
     private String construct_http_header(int return_code, String mime) {
-        return construct_http_header(return_code, mime, null);
+        return construct_http_header(return_code, mime,null,0);
     }
 
     // it is not always possible to get the file size :(
@@ -353,12 +386,16 @@ public class HttpServerConnection implements Runnable {
     // the headers job is to tell the browser the result of the request
     // among if it was successful or not.
     private String construct_http_header(int return_code, String mime,
-                                         String location) {
+                                         String location,long content_start) {
 
         StringBuilder output = new StringBuilder();
         output.append("HTTP/1.0 ");
         output.append(httpReturnCodeToString(return_code) + "\r\n");
-        output.append(getFileSizeHeader());
+        if(content_start != 0) {
+            output.append("Content-Range: bytes "+Long.toString(content_start)+"-"+Long.toString(theUriInterpretation.getSize())+"\r\n");
+            if(theUriInterpretation.getSize() > content_start) output.append("Content-Length: "+Long.toString(theUriInterpretation.getSize() - content_start)+"\r\n");
+        }
+        else output.append(getFileSizeHeader());
         SimpleDateFormat format = new SimpleDateFormat(
                 "EEE, dd MMM yyyy HH:mm:ss zzz");
 
