@@ -7,8 +7,8 @@ android {
         applicationId "com.MarcosDiez.shareviahttp"
         minSdkVersion 14
         targetSdk 35
-        versionCode 36
-        versionName "2.0.15"
+        versionCode 38
+        versionName "2.0.17"
         setProperty("archivesBaseName", "$applicationId-$versionName")
     }
 
