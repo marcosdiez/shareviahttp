@@ -17,13 +17,17 @@ Simply *share* from this app, your gallery or a file manager with "Share via HTT
 
 ## Thanks
 
-The awesome UI was done by <a href="https://github.com/StefMa">Stefan M.</a>!
+* The awesome UI was done by <a href="https://github.com/StefMa">Stefan M.</a>!
+* HTTP Partial Content was implemented by <a href="https://github.com/tarun-ainampudi"> tarun-ainampudi</a>
 
 ## License
 See the [LICENSE](LICENSE.md) file for license rights and limitations.
 
 
 ## ChangeLog
+v2.17:
+- Support for HTTP Partial Content
+
 v2.08:
 - Better compatibility with older devices
 - Better Spanish translation
