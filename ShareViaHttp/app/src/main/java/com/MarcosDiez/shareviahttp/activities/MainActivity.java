@@ -9,12 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-
-import com.MarcosDiez.shareviahttp.BuildConfig;
 import com.MarcosDiez.shareviahttp.R;
 import com.MarcosDiez.shareviahttp.UriInterpretation;
 
@@ -23,6 +17,7 @@ import java.util.ArrayList;
 public class MainActivity extends BaseActivity {
 
     public static final int REQUEST_CODE = 1024;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,18 +32,18 @@ public class MainActivity extends BaseActivity {
         // debugSendFileActivity();
     }
 
-    private void debugSendFileActivity() {
-        if (!BuildConfig.BUILD_TYPE.equals("release")) {    // this should not happen
-            String path = "/mnt/sdcard/m.txt";
-
-            Intent intent = new Intent(this, SendFileActivity.class);
-            intent.addCategory("android.intent.category.DEFAULT");
-            intent.putExtra(Intent.EXTRA_TEXT, path);
-            // intent.setType("inode/directory");
-
-            startActivity(intent);
-        }
-    }
+//    private void debugSendFileActivity() {
+//        if (!BuildConfig.BUILD_TYPE.equals("release")) {    // this should not happen
+//            String path = "/mnt/sdcard/m.txt";
+//
+//            Intent intent = new Intent(this, SendFileActivity.class);
+//            intent.addCategory("android.intent.category.DEFAULT");
+//            intent.putExtra(Intent.EXTRA_TEXT, path);
+//            // intent.setType("inode/directory");
+//
+//            startActivity(intent);
+//        }
+//    }
 
     private void setupPickItemView() {
         findViewById(R.id.pick_items).setOnClickListener(new View.OnClickListener() {
