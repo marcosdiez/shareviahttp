@@ -234,15 +234,15 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_rate_app:
-                rate_this_app();
-                return super.onOptionsItemSelected(item);
-            case R.id.action_privacy_policy:
-                showPrivacyPolicy();
-                return super.onOptionsItemSelected(item);
-            default:
-                return super.onOptionsItemSelected(item);
+        int id = item.getItemId();
+        if (id == R.id.action_rate_app) {
+            rate_this_app();
+            return super.onOptionsItemSelected(item);
+        } else if (id == R.id.action_privacy_policy) {
+            showPrivacyPolicy();
+            return super.onOptionsItemSelected(item);
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 
