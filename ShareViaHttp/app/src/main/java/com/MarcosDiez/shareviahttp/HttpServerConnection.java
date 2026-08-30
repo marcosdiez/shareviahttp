@@ -295,9 +295,11 @@ public class HttpServerConnection implements Runnable {
                     byte[] buffer = new byte[4096];
                     long sent = 0;
                     long rangeLength = (range_end - skipped) + 1;
-                    int n;
+                    Log.d("shareOneFile", "rangeLength : " + Long.toString(rangeLength));
+                    int n;//the total number of bytes read into the buffer, or -1 if there is no more data because the end of the file has been reached.
                     while (sent < rangeLength && (n = requestedfile.read(buffer)) != -1) {
                         if (sent + n > rangeLength) {
+                            Log.d("shareOneFile", "sent + n > rangeLength : sent=" + Long.toString(sent)+" n="+Integer.toString(n));
                             n = (int) (rangeLength - sent);
                         }
                         output.write(buffer, 0, n);
@@ -387,13 +389,21 @@ public class HttpServerConnection implements Runnable {
     }
 
     // it is not always possible to get the file size :(
-    private String getFileSizeHeader() {
+    private String getFileSizeHeader(int return_code,long content_start,long content_end) {
         if (theUriInterpretation == null) {
             return "";
         }
-        if (fileUriZ.size() == 1 && theUriInterpretation.getSize() > 0) {
-            return "Content-Length: "
+        if ((return_code == 200 || return_code == 206) && fileUriZ.size() == 1) {
+            if(return_code == 206 && content_end >= content_start){
+                String lengthHeader = "Content-Length: " + Long.toString(content_end - content_start + 1) + "\r\n";
+                String rangeHeader = "Content-Range: bytes " + Long.toString(content_start) + "-" + Long.toString(content_end) + "/" + Long.toString(theUriInterpretation.getSize()) + "\r\n";
+                return rangeHeader + lengthHeader;
+            }
+            else if(theUriInterpretation.getSize() > 0)
+                return "Content-Length: "
                     + Long.toString(theUriInterpretation.getSize()) + "\r\n";
+            else
+                return "";
         }
         return "";
     }
@@ -411,11 +421,16 @@ public class HttpServerConnection implements Runnable {
         StringBuilder output = new StringBuilder();
         output.append("HTTP/1.0 ");
         output.append(httpReturnCodeToString(return_code) + "\r\n");
-        if (content_start != 0 && content_end != -1) {
-            output.append("Content-Range: bytes " + Long.toString(content_start) + "-" + Long.toString(content_end) + "/" + Long.toString(theUriInterpretation.getSize()) + "\r\n");
-            if (content_end > content_start)
-                output.append("Content-Length: " + Long.toString(content_end - content_start + 1) + "\r\n");
-        } else output.append(getFileSizeHeader());
+        if((return_code == 200 || return_code == 206) && fileUriZ.size() == 1){
+            output.append("Accept-Ranges: bytes\r\n");
+            try {
+                output.append("Content-Disposition: attachment; filename=\"" + theUriInterpretation.getName() + "\"; filename*=UTF-8''" + URLEncoder.encode(theUriInterpretation.getName(), "UTF-8") + "\r\n");
+            }
+            catch (UnsupportedEncodingException e){
+                s(Log.getStackTraceString(e));
+            }
+        }
+        output.append(getFileSizeHeader(return_code,content_start, content_end));
         SimpleDateFormat format = new SimpleDateFormat(
                 "EEE, dd MMM yyyy HH:mm:ss zzz");
 

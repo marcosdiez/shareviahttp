@@ -12,10 +12,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up JDK
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -34,7 +34,7 @@ jobs:
         run: ./gradlew app:assembleDebug
 
       - name: Upload Debug APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ShareViaHttp-debug-apk-${{ env.COMMIT_SHA }}
           path: ShareViaHttp/app/build/outputs/apk/debug/*.apk
