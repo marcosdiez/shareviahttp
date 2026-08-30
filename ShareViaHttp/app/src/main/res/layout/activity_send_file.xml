@@ -2,7 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/darker_blue"
+    android:fitsSystemWindows="true">
 
     <include
         android:id="@+id/toolbar"
@@ -16,6 +18,7 @@
         android:id="@+id/scrolling_information"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?attr/bgColor"
         android:layout_above="@+id/navigation_layout"
         android:layout_below="@id/link_layout">
 

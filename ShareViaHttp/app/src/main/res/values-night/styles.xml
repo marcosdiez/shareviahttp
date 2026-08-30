@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Base application theme. -->
+    <!-- Dark application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/dark_blue</item>
+	    <item name="colorPrimary">@color/dark_blue</item>
         <item name="colorPrimaryDark">@color/darker_blue</item>
         <item name="colorAccent">@color/dark_blue</item>
-        <item name="bgColor">@color/cardview_light_background</item>
+        <item name="bgColor">@color/cardview_dark_background</item>
     </style>
 
 </resources>

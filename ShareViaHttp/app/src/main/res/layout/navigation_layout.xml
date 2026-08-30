@@ -5,6 +5,7 @@
     android:id="@+id/navigation_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/bgColor"
     android:layout_alignParentBottom="true"
     android:layout_marginBottom="4dp"
     android:gravity="center_horizontal">
