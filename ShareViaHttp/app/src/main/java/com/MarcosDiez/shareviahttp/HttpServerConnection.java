@@ -66,7 +66,8 @@ public class HttpServerConnection implements Runnable {
     private ArrayList<UriInterpretation> fileUriZ;
     private String ipAddress = "";
 
-    public HttpServerConnection(ArrayList<UriInterpretation> fileUris, Socket connectionSocket, BaseActivity launcherActivity) {
+    public HttpServerConnection(ArrayList<UriInterpretation> fileUris, Socket connectionSocket,
+            BaseActivity launcherActivity) {
         this.fileUriZ = fileUris;
         this.connectionSocket = connectionSocket;
         this.launcherActivity = launcherActivity;
@@ -150,18 +151,23 @@ public class HttpServerConnection implements Runnable {
         long range_end = -1;
 
         // this variable is important.
-        // programs like axel send a "range: bytes=0-" to detect if the server supports multirange
+        // programs like axel send a "range: bytes=0-" to detect if the server supports
+        // multirange
         boolean has_range_headers = false;
+        boolean has_mozilla_in_header = false;
         String range = "";
         try {
             header = input.readLine();
 
-            //start: Parsing Range From BufferedReader input
+            // start: Parsing Range From BufferedReader input
             while (((line = input.readLine()) != null) && (!line.trim().isEmpty())) {
-                if (line.toUpperCase().trim().startsWith("RANGE") && line.trim().split("=").length > 1) {
+                Log.d("HTTP Handler", "Header Line : " + line.trim());
+                String parsedLine = line.toUpperCase().trim();
+                if (parsedLine.startsWith("RANGE") && line.trim().split("=").length > 1) {
                     range = line.trim().split("=")[1];
                     has_range_headers = true;
-                    break;
+                } else if (parsedLine.startsWith("USER-AGENT") && parsedLine.contains("MOZILLA")) {
+                    has_mozilla_in_header = true;
                 }
             }
             if (!range.isEmpty()) {
@@ -170,12 +176,12 @@ public class HttpServerConnection implements Runnable {
                     range_end = Long.parseLong(range.split("-")[1].trim());
                 }
             }
-            //end: Parsing Range From BufferedReader input
+            // end: Parsing Range From BufferedReader input
 
-            //Log.d("HTTP Handler","Header : "+header);
-            //Log.d("HTTP Handler","Range : "+range);
-            //Log.d("HTTP Handler","Range Start : "+range_start);
-            //Log.d("HTTP Handler","Range END : "+range_end);
+            // Log.d("HTTP Handler","Header : "+header);
+            // Log.d("HTTP Handler","Range : "+range);
+            // Log.d("HTTP Handler","Range Start : "+range_start);
+            // Log.d("HTTP Handler","Range END : "+range_end);
 
         } catch (IOException e1) {
             e1.printStackTrace();
@@ -236,10 +242,12 @@ public class HttpServerConnection implements Runnable {
             shareRootUrl(output);
             return;
         }
-        shareOneFile(output, sendOnlyHeader, fileUriStr, has_range_headers, range_start, range_end);
+        shareOneFile(output, sendOnlyHeader, fileUriStr, has_range_headers, has_mozilla_in_header, range_start,
+                range_end);
     }
 
-    private void shareOneFile(DataOutputStream output, Boolean sendOnlyHeader, String fileUriStr, boolean show_range_headers, long range_start, long range_end) {
+    private void shareOneFile(DataOutputStream output, Boolean sendOnlyHeader, String fileUriStr,
+            boolean show_range_headers, boolean has_mozilla_in_header, long range_start, long range_end) {
 
         InputStream requestedfile = null;
         long skipped = 0;
@@ -247,19 +255,20 @@ public class HttpServerConnection implements Runnable {
         if (!theUriInterpretation.isDirectory()) {
             try {
                 requestedfile = theUriInterpretation.getInputStream();
-                if (range_start != 0) skipped = requestedfile.skip(range_start);
-                if (range_end == -1) range_end = theUriInterpretation.getSize() - 1;
+                if (range_start != 0)
+                    skipped = requestedfile.skip(range_start);
+                if (range_end == -1)
+                    range_end = theUriInterpretation.getSize() - 1;
             } catch (FileNotFoundException e) {
                 try {
                     s("I couldn't locate file. I am sending the input as text/plain");
                     // instead of sending a 404, we will send the contact as text/plain
-                    output.writeBytes(construct_http_header(200, "text/plain"));
+                    output.writeBytes(construct_http_header(200, "text/plain", has_mozilla_in_header));
                     output.writeBytes(fileUriStr);
 
-
                     // if you could not open the file send a 404
-                    //s("Sending HTTP ERROR 404:" + e.getMessage());
-                    //output.writeBytes(construct_http_header(404, null));
+                    // s("Sending HTTP ERROR 404:" + e.getMessage());
+                    // output.writeBytes(construct_http_header(404, null));
                     return;
                 } catch (IOException e2) {
                     s("errorX:" + e2.getMessage());
@@ -278,9 +287,10 @@ public class HttpServerConnection implements Runnable {
         Log.d("shareOneFile", "range_end : " + Long.toString(range_end));
         String outputString;
         if (show_range_headers) {
-            outputString = construct_http_header(206, theUriInterpretation.getMime(), null, skipped, range_end);
+            outputString = construct_http_header(206, theUriInterpretation.getMime(), null, has_mozilla_in_header,
+                    skipped, range_end);
         } else {
-            outputString = construct_http_header(200, theUriInterpretation.getMime());
+            outputString = construct_http_header(200, theUriInterpretation.getMime(), has_mozilla_in_header);
         }
         try {
             output.writeBytes(outputString);
@@ -296,10 +306,12 @@ public class HttpServerConnection implements Runnable {
                     long sent = 0;
                     long rangeLength = (range_end - skipped) + 1;
                     Log.d("shareOneFile", "rangeLength : " + Long.toString(rangeLength));
-                    int n;//the total number of bytes read into the buffer, or -1 if there is no more data because the end of the file has been reached.
+                    int n;// the total number of bytes read into the buffer, or -1 if there is no more
+                          // data because the end of the file has been reached.
                     while (sent < rangeLength && (n = requestedfile.read(buffer)) != -1) {
                         if (sent + n > rangeLength) {
-                            Log.d("shareOneFile", "sent + n > rangeLength : sent=" + Long.toString(sent)+" n="+Integer.toString(n));
+                            Log.d("shareOneFile", "sent + n > rangeLength : sent=" + Long.toString(sent) + " n="
+                                    + Integer.toString(n));
                             n = (int) (rangeLength - sent);
                         }
                         output.write(buffer, 0, n);
@@ -314,7 +326,7 @@ public class HttpServerConnection implements Runnable {
 
     private void redirectToFinalPath(DataOutputStream output, String thePath) {
 
-        String redirectOutput = construct_http_header(302, null, thePath, 0, -1);
+        String redirectOutput = construct_http_header(302, null, thePath, false, 0, -1);
         try {
             // if you could not open the file send a 404
             output.writeBytes(redirectOutput);
@@ -342,7 +354,7 @@ public class HttpServerConnection implements Runnable {
     private void shareFavIcon(DataOutputStream output) {
         try {
             // if you could not open the file send a 404
-            output.writeBytes(construct_http_header(404, null));
+            output.writeBytes(construct_http_header(404, null, false));
             // close the stream
         } catch (IOException e2) {
         }
@@ -374,7 +386,7 @@ public class HttpServerConnection implements Runnable {
 
     private void dealWithUnsupportedMethod(DataOutputStream output) {
         try {
-            output.writeBytes(construct_http_header(501, null));
+            output.writeBytes(construct_http_header(501, null, false));
         } catch (Exception e3) { // if some error happened catch it
             s("_error:" + e3.getMessage());
         } // and display error
@@ -384,24 +396,24 @@ public class HttpServerConnection implements Runnable {
         Log.d(Util.myLogName, "[" + ipAddress + "] " + s2);
     }
 
-    private String construct_http_header(int return_code, String mime) {
-        return construct_http_header(return_code, mime, null, 0, -1);
+    private String construct_http_header(int return_code, String mime, boolean has_mozilla_in_header) {
+        return construct_http_header(return_code, mime, null, has_mozilla_in_header, 0, -1);
     }
 
     // it is not always possible to get the file size :(
-    private String getFileSizeHeader(int return_code,long content_start,long content_end) {
+    private String getFileSizeHeader(int return_code, long content_start, long content_end) {
         if (theUriInterpretation == null) {
             return "";
         }
         if ((return_code == 200 || return_code == 206) && fileUriZ.size() == 1) {
-            if(return_code == 206 && content_end >= content_start){
+            if (return_code == 206 && content_end >= content_start) {
                 String lengthHeader = "Content-Length: " + Long.toString(content_end - content_start + 1) + "\r\n";
-                String rangeHeader = "Content-Range: bytes " + Long.toString(content_start) + "-" + Long.toString(content_end) + "/" + Long.toString(theUriInterpretation.getSize()) + "\r\n";
+                String rangeHeader = "Content-Range: bytes " + Long.toString(content_start) + "-"
+                        + Long.toString(content_end) + "/" + Long.toString(theUriInterpretation.getSize()) + "\r\n";
                 return rangeHeader + lengthHeader;
-            }
-            else if(theUriInterpretation.getSize() > 0)
+            } else if (theUriInterpretation.getSize() > 0)
                 return "Content-Length: "
-                    + Long.toString(theUriInterpretation.getSize()) + "\r\n";
+                        + Long.toString(theUriInterpretation.getSize()) + "\r\n";
             else
                 return "";
         }
@@ -416,24 +428,28 @@ public class HttpServerConnection implements Runnable {
     // the headers job is to tell the browser the result of the request
     // among if it was successful or not.
     private String construct_http_header(int return_code, String mime,
-                                         String location, long content_start, long content_end) {
+            String location, boolean has_mozilla_in_header, long content_start, long content_end) {
 
         StringBuilder output = new StringBuilder();
         output.append("HTTP/1.0 ");
         output.append(httpReturnCodeToString(return_code) + "\r\n");
-        if((return_code == 200 || return_code == 206) && fileUriZ.size() == 1){
+        if ((return_code == 200 || return_code == 206) && fileUriZ.size() == 1) {
             output.append("Accept-Ranges: bytes\r\n");
-//            try {
-//                output.append("Content-Disposition: attachment; filename=\"" + theUriInterpretation.getName() + "\"; filename*=UTF-8''" + URLEncoder.encode(theUriInterpretation.getName(), "UTF-8") + "\r\n");
-//            }
-//            catch (UnsupportedEncodingException e){
-//                s(Log.getStackTraceString(e));
-//            }
+            String contentDispositionType = "attachment";
+            if (has_mozilla_in_header) {
+                contentDispositionType = "inline";
+            }
+            try {
+                output.append("Content-Disposition: " + contentDispositionType + "; filename=\"" + theUriInterpretation.getName()
+                        + "\"; filename*=UTF-8''" + URLEncoder.encode(theUriInterpretation.getName(), "UTF-8")
+                        + "\r\n");
+            } catch (UnsupportedEncodingException e) {
+                s(Log.getStackTraceString(e));
+            }
         }
-        output.append(getFileSizeHeader(return_code,content_start, content_end));
+        output.append(getFileSizeHeader(return_code, content_start, content_end));
         SimpleDateFormat format = new SimpleDateFormat(
                 "EEE, dd MMM yyyy HH:mm:ss zzz");
-
 
         output.append("Date: " + format.format(new Date()) + "\r\n");
 
@@ -446,7 +462,8 @@ public class HttpServerConnection implements Runnable {
         }
         if (location != null) {
             // we don't want cache for the root URL
-            if (!location.startsWith("http://") && !location.startsWith("https://")) {  //if it is already an URL leave it as it is
+            if (!location.startsWith("http://") && !location.startsWith("https://")) { // if it is already an URL leave
+                                                                                       // it as it is
                 try {
                     int pos = location.indexOf("://");
                     if (pos > 0 && pos < 10) {
