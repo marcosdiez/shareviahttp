@@ -423,12 +423,12 @@ public class HttpServerConnection implements Runnable {
         output.append(httpReturnCodeToString(return_code) + "\r\n");
         if((return_code == 200 || return_code == 206) && fileUriZ.size() == 1){
             output.append("Accept-Ranges: bytes\r\n");
-            try {
-                output.append("Content-Disposition: attachment; filename=\"" + theUriInterpretation.getName() + "\"; filename*=UTF-8''" + URLEncoder.encode(theUriInterpretation.getName(), "UTF-8") + "\r\n");
-            }
-            catch (UnsupportedEncodingException e){
-                s(Log.getStackTraceString(e));
-            }
+//            try {
+//                output.append("Content-Disposition: attachment; filename=\"" + theUriInterpretation.getName() + "\"; filename*=UTF-8''" + URLEncoder.encode(theUriInterpretation.getName(), "UTF-8") + "\r\n");
+//            }
+//            catch (UnsupportedEncodingException e){
+//                s(Log.getStackTraceString(e));
+//            }
         }
         output.append(getFileSizeHeader(return_code,content_start, content_end));
         SimpleDateFormat format = new SimpleDateFormat(
